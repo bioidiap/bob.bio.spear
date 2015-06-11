@@ -1,0 +1,19 @@
+setuptools
+bob.extension
+bob.blitz 
+bob.core 
+bob.io.base 
+bob.learn.activation
+bob.math 
+bob.sp 
+bob.ap
+bob.learn.linear 
+bob.learn.em 
+bob.measure 
+bob.db.base
+bob.db.verification.utils 
+bob.db.verification.filelist
+bob.bio.base 
+bob.db.mobio
+bob.db.voxforge
+matplotlib   # for plotting
