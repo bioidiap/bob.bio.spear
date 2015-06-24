@@ -41,8 +41,6 @@ class Cepstral(Extractor):
       with_energy = True,
       with_delta = True,
       with_delta_delta = True,
-      with_delta_energy = True,
-      with_delta_delta_energy = True,
       n_ceps = 19, # 0-->18
       pre_emphasis_coef = 0.95,
       features_mask = numpy.arange(0,60),
@@ -64,8 +62,6 @@ class Cepstral(Extractor):
         with_energy = with_energy,
         with_delta = with_delta,
         with_delta_delta = with_delta_delta,
-        with_delta_energy = with_delta_energy,
-        with_delta_delta_energy = with_delta_delta_energy,
         n_ceps = n_ceps,
         pre_emphasis_coef = pre_emphasis_coef,
         features_mask = features_mask,
@@ -83,8 +79,6 @@ class Cepstral(Extractor):
     self.with_energy = with_energy
     self.with_delta = with_delta
     self.with_delta_delta = with_delta_delta
-    self.with_delta_energy = with_delta_energy
-    self.with_delta_delta_energy = with_delta_delta_energy
     self.n_ceps = n_ceps
     self.pre_emphasis_coef = pre_emphasis_coef
     self.features_mask = features_mask
