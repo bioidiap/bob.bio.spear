@@ -13,7 +13,5 @@ bob.measure
 bob.db.base
 bob.db.verification.utils 
 bob.db.verification.filelist
-bob.bio.base 
-bob.db.mobio
-bob.db.voxforge
+bob.bio.base
 matplotlib   # for plotting
