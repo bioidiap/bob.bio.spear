@@ -23,6 +23,9 @@ import numpy
 import bob.ap
 from .. import utils
 
+import logging
+logger = logging.getLogger("bob.bio.spear")
+
 from bob.bio.base.extractor import Extractor
 
 
@@ -83,26 +86,26 @@ class Cepstral(Extractor):
     self.pre_emphasis_coef = pre_emphasis_coef
     self.features_mask = features_mask
     self.normalize_flag = normalize_flag
-    
-    
+
+
 
   def normalize_features(self, params):
   #########################
   ## Initialisation part ##
   #########################
-  
-    normalized_vector = [ [ 0 for i in range(params.shape[1]) ] for j in range(params.shape[0]) ] 
+
+    normalized_vector = [ [ 0 for i in range(params.shape[1]) ] for j in range(params.shape[0]) ]
     for index in range(params.shape[1]):
       vector = numpy.array([row[index] for row in params])
       n_samples = len(vector)
       norm_vector = utils.normalize_std_array(vector)
-      
+
       for i in range(n_samples):
-        normalized_vector[i][index]=numpy.asscalar(norm_vector[i])    
+        normalized_vector[i][index]=numpy.asscalar(norm_vector[i])
     data = numpy.array(normalized_vector)
     return data
-  
- 
+
+
 
 
   def __call__(self, input_data):
@@ -111,7 +114,7 @@ class Cepstral(Extractor):
     input_data[1] -->  sample data
     input_data[2] --> VAD array (either 0 or 1)
     """
-    
+
     rate             = input_data[0]
     wavsample = input_data[1]
     vad_labels  = input_data[2]
@@ -132,7 +135,7 @@ class Cepstral(Extractor):
     ceps.with_energy = self.with_energy
     ceps.with_delta = self.with_delta
     ceps.with_delta_delta = self.with_delta_delta
-       
+
     cepstral_features = ceps(wavsample)
     features_mask = self.features_mask
     if vad_labels is not None: # don't apply VAD
@@ -161,9 +164,7 @@ class Cepstral(Extractor):
     else:
       normalized_features = filtered_features
     if normalized_features.shape[0] == 0:
-      print("Warning: no speech found in: %s" % input_file)
+      logger.warn("No speech found in: %s", input_file)
       # But do not keep it empty!!! This avoids errors in next steps
       normalized_features=numpy.array([numpy.zeros(len(features_mask))])
     return normalized_features
-
-

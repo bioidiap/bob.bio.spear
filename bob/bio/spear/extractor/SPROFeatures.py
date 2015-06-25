@@ -24,6 +24,8 @@ import bob
 from .. import utils
 import struct
 
+import logging
+logger = logging.getLogger("bob.bio.spear")
 
 from bob.bio.base.extractor import Extractor
 
@@ -45,38 +47,34 @@ class SPROFeatures(Extractor):
     # copy parameters
     self.features_mask = features_mask
     self.normalize_flag = normalize_flag
-   
-   
-   # TODO: remove redundent code by creating base class 
+
+
+   # TODO: remove redundent code by creating base class
   def normalize_features(self, params):
-    normalized_vector = [ [ 0 for i in range(params.shape[1]) ] for j in range(params.shape[0]) ] 
+    normalized_vector = [ [ 0 for i in range(params.shape[1]) ] for j in range(params.shape[0]) ]
     for index in range(params.shape[1]):
       vector = numpy.array([row[index] for row in params])
       n_samples = len(vector)
       norm_vector = utils.normalize_std_array(vector)
-      
+
       for i in range(n_samples):
-        normalized_vector[i][index]=numpy.asscalar(norm_vector[i])    
+        normalized_vector[i][index]=numpy.asscalar(norm_vector[i])
     data = numpy.array(normalized_vector)
-    return data 
+    return data
   def SPRORead(self, input_file):
-    
+
     with open(input_file, "rb") as fid:
       vect_size = struct.unpack("h", fid.read(2))[0]
       flag = struct.unpack('i', fid.read(4))[0]
       rate = struct.unpack('f', fid.read(4))[0]
-      #print "vect_size = ", vect_size
-      #print "flag = ", flag
-      #print "rate = ", rate 
 
       header_size = 2 + 4 + 4
       list_features=[]
- 
-      while 1: 
+
+      while 1:
         chunk = fid.read(4)
         if not chunk: break
         var = struct.unpack('f', chunk)[0]
-        #print var
         feat = numpy.zeros((1, vect_size))
         feat[0, 0] = var
         for l in range(1, vect_size):
@@ -85,20 +83,17 @@ class SPROFeatures(Extractor):
           var = struct.unpack('f', chunk)[0]
           feat[0,l] = var
         list_features.append(feat)
-        #print feat
-      #print len(list_features)
       features = numpy.vstack(list_features)
-      #print features.shape
 
     return features
-    
+
     nb = (int) (file.len() - header_size) / (getFeatureSize * 4)
-  
+
   def __call__(self, data):
     """Read the SPRO feature file and (optionally) returns normalized cepstral features for the given VAD labels """
     spro_file = data[0]
     vad_labels = data[1]
-    
+
     # Read SPRO features
     cepstral_features=self.SPRORead(spro_file)
 
@@ -106,7 +101,7 @@ class SPROFeatures(Extractor):
     filtered_features = numpy.ndarray(shape=((vad_labels == 1).sum(),len(features_mask)), dtype=numpy.float64)
     i=0
     cur_i=0
-   
+
     for row in cepstral_features:
       if vad_labels[i]==1:
         for k in range(len(features_mask)):
@@ -119,9 +114,7 @@ class SPROFeatures(Extractor):
     else:
       normalized_features = filtered_features
     if normalized_features.shape[0] == 0:
-      print("Warning: no speech found in: %s" % input_file)
+      logger.warn("No speech found in: %s", input_file)
       # But do not keep it empty!!! This avoids errors in next steps
       normalized_features=numpy.array([numpy.zeros(len(features_mask))])
     return normalized_features
-
-

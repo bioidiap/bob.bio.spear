@@ -43,7 +43,6 @@ def _compare(data, reference, write_function = bob.bio.base.save, read_function 
 
 
 def _wav():
-  print "read wav file"
   base_preprocessor = bob.bio.spear.preprocessor.Base()
   return base_preprocessor.read_original_data(pkg_resources.resource_filename('bob.bio.spear.test', 'data/sample.wav'))
 
@@ -51,11 +50,11 @@ def _wav():
 def test_mfcc():
   # read input wave file
   wav = _wav()
-  
+
   extractor = bob.bio.base.load_resource('mfcc_60', 'extractor')
   assert isinstance(extractor, bob.bio.spear.extractor.Cepstral)
 
-  # test the Cepstral extractor 
+  # test the Cepstral extractor
   extractor = bob.bio.spear.extractor.Cepstral()
   # but we need to apply VAD first
   preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()
@@ -66,11 +65,11 @@ def test_mfcc():
 def test_lfcc():
   # read input wave file
   wav = _wav()
-  
+
   extractor = bob.bio.base.load_resource('lfcc_60', 'extractor')
   assert isinstance(extractor, bob.bio.spear.extractor.Cepstral)
 
-  # test the Cepstral extractor 
+  # test the Cepstral extractor
   extractor = bob.bio.spear.extractor.Cepstral(mel_scale=False)
   # but we need to apply VAD first
   preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()

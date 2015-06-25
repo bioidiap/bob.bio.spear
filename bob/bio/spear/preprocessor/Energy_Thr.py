@@ -24,10 +24,9 @@ import bob
 import math
 from .. import utils
 import logging
+logger = logging.getLogger("bob.bio.spear")
+
 from .Base import Base
-logger = logging.getLogger("bob.c++")
-
-
 from bob.bio.base.preprocessor import Preprocessor
 
 
@@ -36,7 +35,7 @@ class Energy_Thr(Base):
   def __init__(
       self,
       win_length_ms = 20.,        # 20 ms
-      win_shift_ms = 10.,           # 10 ms 
+      win_shift_ms = 10.,           # 10 ms
       smoothing_window = 10, # 10 frames (i.e. 100 ms)
       ratio_threshold = 0.15,       # 0.1 of the maximum energy
       **kwargs
@@ -45,7 +44,7 @@ class Energy_Thr(Base):
     Preprocessor.__init__(
         self,
         win_length_ms = win_length_ms,
-        win_shift_ms = win_shift_ms, 
+        win_shift_ms = win_shift_ms,
         smoothing_window = smoothing_window,
         ratio_threshold = ratio_threshold,
     )
@@ -54,7 +53,7 @@ class Energy_Thr(Base):
     self.win_shift_ms = win_shift_ms
     self.smoothing_window = smoothing_window
     self.ratio_threshold = ratio_threshold
-    
+
 
   def _voice_activity_detection(self, energy):
 
@@ -71,26 +70,26 @@ class Energy_Thr(Base):
     return label
 
 
-  
+
   def _compute_energy(self, rate_wavsample):
     """retreive the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
-    
+
     e = bob.ap.Energy(rate_wavsample[0], self.win_length_ms, self.win_shift_ms)
     energy_array = e(rate_wavsample[1])
     labels = self._voice_activity_detection(energy_array)
     # discard isolated speech a number of frames defined in smoothing_window
-    labels = utils.smoothing(labels,self.smoothing_window) 
-    print("After thresholded Energy-based VAD there are %d frames remaining over %d" %(numpy.sum(labels), len(labels)))    
+    labels = utils.smoothing(labels,self.smoothing_window)
+    logger.info("After thresholded Energy-based VAD there are %d frames remaining over %d", numpy.sum(labels), len(labels))
     return labels
-    
-  
+
+
   def __call__(self, input_signal, annotations=None):
     """labels speech (1) and non-speech (0) parts of the given input wave file using thresholded Energy
         Input parameter:
            * input_signal[0] --> rate
-           * input_signal[1] --> signal 
+           * input_signal[1] --> signal
         """
-    
+
     labels = self._compute_energy(input_signal)
     rate    =  input_signal[0]
     data = input_signal[1]

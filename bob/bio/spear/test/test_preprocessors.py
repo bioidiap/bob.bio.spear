@@ -49,7 +49,6 @@ def _compare(data, reference, write_function = bob.bio.base.save, read_function 
 
 
 def _wav():
-  print "read wav file"
   base_preprocessor = bob.bio.spear.preprocessor.Base()
   return base_preprocessor.read_original_data(pkg_resources.resource_filename('bob.bio.spear.test', 'data/sample.wav'))
 
@@ -60,7 +59,7 @@ def test_energy_2gauss():
   preprocessor = bob.bio.base.load_resource('energy_2gauss', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.spear.preprocessor.Energy_2Gauss)
 
-  # test the energy-based VAD preprocessor 
+  # test the energy-based VAD preprocessor
   preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()
   _compare(preprocessor(wav), pkg_resources.resource_filename('bob.bio.spear.test', 'data/vad_energy_2gauss.hdf5'), preprocessor.write_data, preprocessor.read_data)
 
@@ -71,7 +70,7 @@ def test_energy_thr():
   preprocessor = bob.bio.base.load_resource('energy_thr', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.spear.preprocessor.Energy_Thr)
 
-  # test the energy-based VAD preprocessor 
+  # test the energy-based VAD preprocessor
   preprocessor = bob.bio.spear.preprocessor.Energy_Thr()
   _compare(preprocessor(wav), pkg_resources.resource_filename('bob.bio.spear.test', 'data/vad_energy_thr.hdf5'), preprocessor.write_data, preprocessor.read_data)
 
@@ -82,7 +81,6 @@ def test_mod_4hz():
   preprocessor = bob.bio.base.load_resource('mod_4hz', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.spear.preprocessor.Mod_4Hz)
 
-  # test the Mod-4hz based VAD preprocessor 
+  # test the Mod-4hz based VAD preprocessor
   preprocessor = bob.bio.spear.preprocessor.Mod_4Hz()
   _compare(preprocessor(wav), pkg_resources.resource_filename('bob.bio.spear.test', 'data/vad_mod_4hz.hdf5'), preprocessor.write_data, preprocessor.read_data)
-
