@@ -148,7 +148,7 @@ class Mod_4Hz(Base):
     Energy = Energy/mean_Energy
 
     win_size = int (2.0 ** math.ceil(math.log(win_length) / math.log(2)))
-    n_frames = 1 + (rate_wavsample[1].shape[0] - win_length) / win_shift
+    n_frames = 1 + (rate_wavsample[1].shape[0] - win_length) // win_shift
     range_modulation = int(fs/win_length) # This corresponds to 1 sec
     res = numpy.zeros(n_frames)
     if n_frames < range_modulation:
