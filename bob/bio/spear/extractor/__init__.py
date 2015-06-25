@@ -19,7 +19,9 @@
 
 """Feature extraction tools"""
 
-from Cepstral import Cepstral
-from HTKFeatures import HTKFeatures
-from SPROFeatures import SPROFeatures
+from .Cepstral import Cepstral
+from .HTKFeatures import HTKFeatures
+from .SPROFeatures import SPROFeatures
 
+# gets sphinx autodoc done right - don't remove it
+__all__ = [_ for _ in dir() if not _.startswith('_')]
