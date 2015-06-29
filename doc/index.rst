@@ -12,6 +12,9 @@ SPEAR: A Speaker Recognition Toolkit based on Bob
 ====================================================
 
 
+.. todo::
+   Update the documentation so that it is conform with the other ``bob.bio`` packages.
+
 SPEAR is a speaker recognition toolkit based on Bob, designed to run speaker verification/recognition
 experiments . It was originally inspired from facereclib tool:
 https://pypi.python.org/pypi/facereclib
@@ -55,7 +58,7 @@ II- Running experiments
 ------------------------
 
 The above two commands will automatically download all desired packages from `pypi`_ and generate some scripts in the bin directory, including the following scripts::
-  
+
    $ bin/spkverif_gmm.py
    $ bin/spkverif_isv.py
    $ bin/spkverif_jfa.py
@@ -66,9 +69,9 @@ The above two commands will automatically download all desired packages from `py
    $ bin/fusion_llr.py
    $ bin/evaluate.py
    $ bin/det.py
-   
+
 The first four toolchains are the basic toolchains for GMM, ISV, JFA and I-Vector. The next three toolchains are the parallel implementation of GMM, ISV, and I-Vector.
- 
+
 To use the 7 first (main) toolchains you have to specify at least four command line parameters (see also the ``--help`` option):
 
 * ``--database``: The configuration file for the database
@@ -93,9 +96,9 @@ It is also safe to design one experiment and re-use one configuration file for a
 * The preprocessing: ``preprocessor = spkrec.preprocessing.<PREPROCESSOR>``;
 * The feature extraction: ``extractor = spkrec.feature_extraction.<EXTRACTOR>``;
 * The tool: ``tool = spkrec.tools.<TOOL>``; plus configurations of the tool itself
-* Grid parameters: They help to configure which queues are used for each of the steps, how much files per job, etc. 
+* Grid parameters: They help to configure which queues are used for each of the steps, how much files per job, etc.
 
-If no grid configuration file is specified, the experiment is run sequentially on the local machine with a single core. 
+If no grid configuration file is specified, the experiment is run sequentially on the local machine with a single core.
 
 If you want to run on a local machine with multiple cores, you have to precise the grid type in your configuration file:
 
@@ -123,7 +126,7 @@ To be very flexible, the tool chains in the `SPEAR`_ are designed in several sta
 
 Note that not all tools implement all of the stages.
 
-1. Voice Activity Detection 
+1. Voice Activity Detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This step aims to filter out the non speech part. Depending on the configuration file, several routines can be enabled or disabled.
 
@@ -142,18 +145,18 @@ This step aims to extract features. Depending on the configuration file, several
 
 3. Universal Background Model Training and Projection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This step aims at computing the universal background model referenced as `Projector`. The training includes both k-means and ML steps. In the parallel implementation, the E (Estimation) step is split to run on parallel processes. 
+This step aims at computing the universal background model referenced as `Projector`. The training includes both k-means and ML steps. In the parallel implementation, the E (Estimation) step is split to run on parallel processes.
 Then, the computation of sufficient statistics in `SPEAR`_ is referenced as the **projection-ubm** step.
 It aims at projecting the cepstral features using the previously trained Projector.
 
-4. Subspace Training and Projection 
+4. Subspace Training and Projection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This steps aims at estimating the subspaces needed by ISV, JFA and I-Vector. The I-Vector can also be parallelized similarly to the UBM. The projection here is referenced by either `projection-isv`, `projection-jfa`, or `projection-ivector`. Notice that the I-Vector projection process is the extraction of the i-vectors. 
+This steps aims at estimating the subspaces needed by ISV, JFA and I-Vector. The I-Vector can also be parallelized similarly to the UBM. The projection here is referenced by either `projection-isv`, `projection-jfa`, or `projection-ivector`. Notice that the I-Vector projection process is the extraction of the i-vectors.
 
 5. Conditioning and Compensation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This steps is used by the I-Vector toolchain. It includes Whitening, Length Normalization, LDA and WCCN projection.
- 
+
 6. Model Enrollment
 ~~~~~~~~~~~~~~~~~~~
 Model enrollment defines the stage, where several (projected or compensated) features of one identity are used to enroll the model for that identity.
@@ -168,18 +171,18 @@ In addition, there are independent scripts for fusion and evaluation.
 
 8. Fusion
 ~~~~~~~~~
-The fusion of scores from different systems is done using `logistic regression`_ that should be trained normally on the development scores. 
+The fusion of scores from different systems is done using `logistic regression`_ that should be trained normally on the development scores.
 
 9. Evaluation
 ~~~~~~~~~~~~~
 One way to compute the final result is to use the *bin/evaluate.py* e.g., by calling::
 
-  $ bin/evaluate.py -d PATH/TO/USER/DIRECTORY/scores-dev -e PATH/TO/USER/DIRECTORY/scores-eval -c EER -D DET.pdf -x 
-  
+  $ bin/evaluate.py -d PATH/TO/USER/DIRECTORY/scores-dev -e PATH/TO/USER/DIRECTORY/scores-eval -c EER -D DET.pdf -x
+
 This will compute the EER, the minCLLR, CLLR, and draw the DET curve. To better compare different systems using DET curves, a separate script can be used like in this example::
 
   $ ./bin/det.py -s gmm-scores isv-scores ivector-scores -n GMM ISV i-vectors
-  
+
 
 IV- Command line options
 ------------------------
@@ -232,17 +235,17 @@ In this README, we give examples of different toolchains applied on different da
 Unlike TIMIT and BANCA, this dataset is completely free of charge.
 
 More details about how to download the audio files used in our experiments, and how the data is split into Training, Development and Evaluation set can be found here::
-  
+
   https://pypi.python.org/pypi/bob.db.voxforge
-  
+
 One example of command line is::
 
-  $ bin/verify.py  -d voxforge -p energy_2gauss -e mfcc_60 -a gmm_256g -s ubm_gmm --groups {dev,eval} 
+  $ bin/verify.py  -d voxforge -p energy_2gauss -e mfcc_60 -a gmm_256g -s ubm_gmm --groups {dev,eval}
 
-  
+
 In this example, we used the following configuration:
 
-* Energy-based VAD,  
+* Energy-based VAD,
 * (19 MFCC features + Energy) + First and second derivatives,
 * **UBM-GMM** Modelling (with 256 Gaussians), the scoring is done using the linear approximation of the LLR.
 
@@ -275,42 +278,42 @@ In this example, the number of nodes is 6.
 
 Another example is to use **ISV** toolchain instead of UBM-GMM::
 
-  $ ./bin/spkverif_isv.py -d config/database/voxforge.py -p config/preprocessing/energy.py \ 
-   -f config/features/mfcc_60.py -t config/tools/isv/isv_256g_u50.py  -z -b isv \ 
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR  
+  $ ./bin/spkverif_isv.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
+   -f config/features/mfcc_60.py -t config/tools/isv/isv_256g_u50.py  -z -b isv \
+   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
 
 * ``DEV: EER = 1.67%``
 * ``EVAL: HTER = 1.28%``
 
 One can also try **JFA** toolchain::
 
-  $ ./bin/spkverif_jfa.py -d config/database/voxforge.py -p config/preprocessing/energy.py \ 
-   -f config/features/mfcc_60.py -t config/tools/jfa/jfa_256_v5_u10.py  -z -b jfa \ 
+  $ ./bin/spkverif_jfa.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
+   -f config/features/mfcc_60.py -t config/tools/jfa/jfa_256_v5_u10.py  -z -b jfa \
    --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
-   
+
 * ``DEV: EER = 4.33%``
-* ``EVAL: HTER = 5.89%``   
-  
+* ``EVAL: HTER = 5.89%``
+
 or also **IVector** toolchain where **Whitening, L-Norm, LDA, WCCN** are used like in this example where the score computation is done using **Cosine distance**::
 
   $ ./bin/spkverif_ivector.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
-   -f config/features/mfcc_60.py -t config/tools/ivec/ivec_256g_t100_cosine.py -z -b ivector_cosine \ 
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR 
-  
+   -f config/features/mfcc_60.py -t config/tools/ivec/ivec_256g_t100_cosine.py -z -b ivector_cosine \
+   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
+
 * ``DEV: EER = 15.33%``
 * ``EVAL: HTER = 15.78%``
-  
+
 The scoring computation can also be done using **PLDA**::
 
-  $ ./bin/spkverif_ivector.py -d config/database/voxforge.py -p config/preprocessing/energy.py \ 
+  $ ./bin/spkverif_ivector.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
    -f config/features/mfcc_60.py -t config/tools/ivec/ivec_256g_t100_plda.py -z -b ivector_plda \
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR 
+   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
 
 * ``DEV: EER = 15.33%``
 * ``EVAL: HTER = 16.93%``
 
 
-Note that in the previous examples, our goal is not to optimize the parameters on the DEV set but to provide examples of use. 
+Note that in the previous examples, our goal is not to optimize the parameters on the DEV set but to provide examples of use.
 
 2. BANCA dataset
 ~~~~~~~~~~~~~~~~
@@ -332,25 +335,25 @@ Here is the performance of this system:
 ~~~~~~~~~~~~~~~~
 `TIMIT`_ is one of the oldest databases (year 1993) used to evaluate speaker recognition systems. In the following example, the processing is done on the development set, and LFCC features are used::
 
-  $ ./bin/spkverif_gmm.py -d config/database/timit.py -p config/preprocessing/energy.py \ 
-    -f config/features/lfcc_60.py -t config/tools/ubm_gmm/ubm_gmm_256G.py \ 
+  $ ./bin/spkverif_gmm.py -d config/database/timit.py -p config/preprocessing/energy.py \
+    -f config/features/lfcc_60.py -t config/tools/ubm_gmm/ubm_gmm_256G.py \
     --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR -b lfcc -z --groups dev
-  
+
 Here is the performance of the system on the Development set:
 
 * ``DEV: EER = 2.68%``
 
 
-4. MOBIO dataset 
+4. MOBIO dataset
 ~~~~~~~~~~~~~~~~
 This is a more challenging database. The noise and the short duration of the segments make the task of speaker recognition relatively difficult. The following experiment on male group (Mobile-0) uses the 4Hz modulation energy based VAD, and the ISV (with dimU=50) modelling technique::
 
-  $ ./bin/spkverif_isv.py -d config/database/mobio/mobile0-male.py -p config/preprocessing/mod_4hz.py \ 
-   -f config/features/mfcc_60.py -t config/tools/isv/isv_u50.py \ 
+  $ ./bin/spkverif_isv.py -d config/database/mobio/mobile0-male.py -p config/preprocessing/mod_4hz.py \
+   -f config/features/mfcc_60.py -t config/tools/isv/isv_u50.py \
    --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR -z
-  
+
 Here is the performance of this system:
-  
+
 * ``DEV: EER = 10.40%``
 * ``EVAL: EER = 10.36%``
 
@@ -366,7 +369,7 @@ We first invite you to read the paper describing our system submitted to the NIS
 .. note::
   For any additional information, please use our mailing list::
   https://groups.google.com/forum/#!forum/bob-devel
-  
+
 
 
 Documentation
@@ -376,13 +379,13 @@ References
 -----------
 
 .. [Reynolds2000] *Reynolds, Douglas A., Thomas F. Quatieri, and Robert B. Dunn*. **Speaker Verification Using Adapted Gaussian Mixture Models**, Digital signal processing 10.1 (2000): 19-41.
-..   [Vogt2008]   *R. Vogt, S. Sridharan*. **'Explicit Modelling of Session Variability for Speaker Verification'**, Computer Speech & Language, 2008, vol. 22, no. 1, pp. 17-38
-..   [McCool2013] *C. McCool, R. Wallace, M. McLaren, L. El Shafey, S. Marcel*. **'Session Variability Modelling for Face Authentication'**, IET Biometrics, 2013
-..   [Dehak2010] *N. Dehak, P. Kenny, R. Dehak, P. Dumouchel, P. Ouellet*, **'Front End Factor Analysis for Speaker Verification'**, IEEE Transactions on Audio, Speech and Language Processing, 2010, vol. 19, issue 4, pp. 788-798
-..   [ElShafey2014] *Laurent El Shafey, Chris McCool, Roy Wallace, Sebastien Marcel*. **'A Scalable Formulation of Probabilistic Linear Discriminant Analysis: Applied to Face Recognition'**, TPAMI'2014
-..   [PrinceElder2007] *Prince and Elder*. **'Probabilistic Linear Discriminant Analysis for Inference About Identity'**, ICCV'2007
-..   [LiFu2012] *Li, Fu, Mohammed, Elder and Prince*. **'Probabilistic Models for Inference about Identity'**,  TPAMI'2012
-..   [WikiEM] `Expectation Maximization <http://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm>`_
+.. [Vogt2008]   *R. Vogt, S. Sridharan*. **'Explicit Modelling of Session Variability for Speaker Verification'**, Computer Speech & Language, 2008, vol. 22, no. 1, pp. 17-38
+.. [McCool2013] *C. McCool, R. Wallace, M. McLaren, L. El Shafey, S. Marcel*. **'Session Variability Modelling for Face Authentication'**, IET Biometrics, 2013
+.. [Dehak2010] *N. Dehak, P. Kenny, R. Dehak, P. Dumouchel, P. Ouellet*, **'Front End Factor Analysis for Speaker Verification'**, IEEE Transactions on Audio, Speech and Language Processing, 2010, vol. 19, issue 4, pp. 788-798
+.. [ElShafey2014] *Laurent El Shafey, Chris McCool, Roy Wallace, Sebastien Marcel*. **'A Scalable Formulation of Probabilistic Linear Discriminant Analysis: Applied to Face Recognition'**, TPAMI'2014
+.. [PrinceElder2007] *Prince and Elder*. **'Probabilistic Linear Discriminant Analysis for Inference About Identity'**, ICCV'2007
+.. [LiFu2012] *Li, Fu, Mohammed, Elder and Prince*. **'Probabilistic Models for Inference about Identity'**,  TPAMI'2012
+.. [WikiEM] `Expectation Maximization <http://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm>`_
 
 
 
@@ -402,5 +405,3 @@ References
 .. _Spro: https://gforge.inria.fr/projects/spro
 .. _HTK: http://htk.eng.cam.ac.uk/
 .. _bob.db.mobio: https://pypi.python.org/pypi/bob.db.mobio
-
-

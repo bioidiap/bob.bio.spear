@@ -2,7 +2,6 @@
 .. Elie Khoury <Elie.Khoury@idiap.ch>
 .. Fri 12 Jun 11:30:03 CEST 2015
 
-
 .. image:: http://img.shields.io/badge/docs-stable-yellow.png
    :target: http://pythonhosted.org/bob.bio.spear/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.png
@@ -22,15 +21,18 @@
  Run speaker recognition algorithms
 =====================================
 
+This package is part of the ``bob.bio`` packages, which allow to run comparable and reproducible biometric recognition experiments on publicly available databases.
+
 This package contains functionality to run speaker recognition experiments.
 It is an extension to the `bob.bio.base <http://pypi.python.org/pypi/bob.bio.base>`_ package, which provides the basic scripts.
 In this package, utilities that are specific for speaker recognition are contained, such as:
 
 * Audio databases
-* voice activity detection preprocessing
+* Voice activity detection preprocessing
 * Acoustic feature extractors
 * Recognition algorithms based on acoustic features
 
+For further information about ``bob.bio``, please read `its Documentation <http://pythonhosted.org/bob.bio.base/index.html>`_.
 
 Installation
 ------------
