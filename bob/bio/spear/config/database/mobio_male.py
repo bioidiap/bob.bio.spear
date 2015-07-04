@@ -3,8 +3,8 @@
 import bob.db.mobio
 import bob.bio.base
 
-mobio_wav_directory = "[YOUR_MOBIO_WAV_DIRECTORY]"
-
+#mobio_wav_directory = "[YOUR_MOBIO_WAV_DIRECTORY]"
+mobio_wav_directory = '/idiap/resource/database/mobio/denoisedAUDIO_16k'
 database = bob.bio.base.database.DatabaseBobZT(
     database = bob.db.mobio.Database(
         original_directory = mobio_wav_directory,

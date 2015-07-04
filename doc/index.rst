@@ -240,7 +240,7 @@ More details about how to download the audio files used in our experiments, and 
 
 One example of command line is::
 
-  $ bin/verify.py  -d voxforge -p energy_2gauss -e mfcc_60 -a gmm_256g -s ubm_gmm --groups {dev,eval}
+  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc_60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}
 
 
 In this example, we used the following configuration:
@@ -251,66 +251,50 @@ In this example, we used the following configuration:
 
 The performance of the system on DEV and EVAL are:
 
-* ``DEV: EER = 2.00%``
-* ``EVAL: HTER = 1.46%``
+* ``DEV: EER = 1.89%``
+* ``EVAL: HTER = 1.56%``
 
 If you want to run the same experiment on SGE::
 
-  $ bin/verify.py  -d voxforge -p energy_2gauss -e mfcc_60 -a gmm_256g -s ubm_gmm --groups {dev,eval}  -g grid
+  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}  -g grid
 
 
 If you want to run the parallel implementation of the UBM on the SGE::
 
-  $ ./bin/para_ubm_spkverif_gmm.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
-    -f config/features/mfcc_60.py -t config/tools/ubm_gmm/ubm_gmm_256G.py -b ubm_gmm -z \
-    --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR -g config/grid/para_training_sge.py
+  $ bin/verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_sge --groups {dev,eval} -g local
 
 
 If you want to run the parallel implementation of the UBM on your local machine::
 
-  $ ./bin/para_ubm_spkverif_gmm.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
-    -f config/features/mfcc_60.py -t config/tools/ubm_gmm/ubm_gmm_256G.py -b ubm_gmm -z \
-    --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR -g config/grid/para_training_local.py
-
-$ bin/jman --local -vv run-scheduler --parallel 6
-
-In this example, the number of nodes is 6.
+  $ bin/verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_local --groups {dev,eval} -g local
 
 Another example is to use **ISV** toolchain instead of UBM-GMM::
 
-  $ ./bin/spkverif_isv.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
-   -f config/features/mfcc_60.py -t config/tools/isv/isv_256g_u50.py  -z -b isv \
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
+  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a isv-voxforge -s isv --groups {dev,eval} -g grid
 
-* ``DEV: EER = 1.67%``
-* ``EVAL: HTER = 1.28%``
+* ``DEV: EER = 1.41%``
+* ``EVAL: HTER = 1.52%``
 
 One can also try **JFA** toolchain::
 
-  $ ./bin/spkverif_jfa.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
-   -f config/features/mfcc_60.py -t config/tools/jfa/jfa_256_v5_u10.py  -z -b jfa \
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
+  $  bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a jfa-voxforge -s jfa --groups {dev,eval} -g grid
 
-* ``DEV: EER = 4.33%``
-* ``EVAL: HTER = 5.89%``
+* ``DEV: EER = 4.04%``
+* ``EVAL: HTER = 5.11%``
 
 or also **IVector** toolchain where **Whitening, L-Norm, LDA, WCCN** are used like in this example where the score computation is done using **Cosine distance**::
 
-  $ ./bin/spkverif_ivector.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
-   -f config/features/mfcc_60.py -t config/tools/ivec/ivec_256g_t100_cosine.py -z -b ivector_cosine \
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
+  $  bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a ivec-cosine-voxforge -s ivec-cosine --groups {dev,eval} -g grid
 
-* ``DEV: EER = 15.33%``
-* ``EVAL: HTER = 15.78%``
+* ``DEV: EER = 7.33%``
+* ``EVAL: HTER = 13.80%``
 
 The scoring computation can also be done using **PLDA**::
 
-  $ ./bin/spkverif_ivector.py -d config/database/voxforge.py -p config/preprocessing/energy.py \
-   -f config/features/mfcc_60.py -t config/tools/ivec/ivec_256g_t100_plda.py -z -b ivector_plda \
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR
+  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a ivec-plda-voxforge -s ivec-plda --groups {dev,eval} -g grid
 
-* ``DEV: EER = 15.33%``
-* ``EVAL: HTER = 16.93%``
+* ``DEV: EER = 11.33%``
+* ``EVAL: HTER = 13.15%``
 
 
 Note that in the previous examples, our goal is not to optimize the parameters on the DEV set but to provide examples of use.
@@ -319,25 +303,21 @@ Note that in the previous examples, our goal is not to optimize the parameters o
 ~~~~~~~~~~~~~~~~
 `BANCA`_ is a simple bimodal database with relatively clean data. The results are already very good with a simple baseline UBM-GMM system. An example of use can be::
 
-  $ bin/spkverif_gmm.py -d config/database/banca_audio_G.py -p config/preprocessing/energy.py \
-    -f config/features/mfcc_60.py -t config/tools/ubm_gmm/ubm_gmm_256G_regular_scoring.py \
-    --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR -z
+  $ bin/verify.py -vv -d banca-audio -p energy-2gauss -e mfcc-60 -a gmm-banca -s banca_G --groups {dev,eval}
 
 The configuration in this example is similar to the previous one with the only difference of using the regular LLR instead of its linear approximation.
 
 Here is the performance of this system:
 
-* ``DEV: EER = 1.66%``
-* ``EVAL: EER = 0.69%``
+* ``DEV: EER = 0.91%``
+* ``EVAL: EER = 0.75%``
 
 
 3. TIMIT dataset
 ~~~~~~~~~~~~~~~~
 `TIMIT`_ is one of the oldest databases (year 1993) used to evaluate speaker recognition systems. In the following example, the processing is done on the development set, and LFCC features are used::
 
-  $ ./bin/spkverif_gmm.py -d config/database/timit.py -p config/preprocessing/energy.py \
-    -f config/features/lfcc_60.py -t config/tools/ubm_gmm/ubm_gmm_256G.py \
-    --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR -b lfcc -z --groups dev
+  $ bin/verify.py -vv -d timit -p energy-2gauss -e lfcc-60 -a gmm-timit -s timit
 
 Here is the performance of the system on the Development set:
 
@@ -395,7 +375,6 @@ References
 .. _BuildOut: http://www.buildout.org/
 .. _NIST: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _bob.db.verification.filelist: https://pypi.python.org/pypi/bob.db.verification.filelist
-.. _bob.sox: https://pypi.python.org/pypi/bob.sox
 .. _spear: https://pypi.python.org/pypi/bob.spear
 .. _pypi: https://pypi.python.org/pypi
 .. _Voxforge: http://www.voxforge.org/

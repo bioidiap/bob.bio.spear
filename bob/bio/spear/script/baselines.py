@@ -43,7 +43,7 @@ def command_line_arguments(command_line_parameters):
 
   # add parameters
   # - the algorithm to execute
-  parser.add_argument('-a', '--algorithms', choices = all_algorithms, default = ('gmm_256g',), nargs = '+', help = 'Select one (or more) algorithms that you want to execute.')
+  parser.add_argument('-a', '--algorithms', choices = all_algorithms, default = ('gmm-voxforge',), nargs = '+', help = 'Select one (or more) algorithms that you want to execute.')
   parser.add_argument('--all', action = 'store_true', help = 'Select all algorithms.')
   # - the database to choose
   parser.add_argument('-d', '--database', choices = available_databases, default = 'voxforge', help = 'The database on which the baseline algorithm is executed.')
@@ -87,9 +87,9 @@ def command_line_arguments(command_line_parameters):
 CONFIGURATIONS = {
 
   'gmm': dict(
-    preprocessor = 'energy_2gauss',
-    extractor    = 'mfcc_60',
-    algorithm    = 'gmm_256g',
+    preprocessor = 'energy-2gauss',
+    extractor    = 'mfcc-60',
+    algorithm    = 'gmm-voxforge',
     grid         = 'demanding',
     script       = './bin/verify_gmm.py'
   ),

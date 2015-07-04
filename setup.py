@@ -107,30 +107,41 @@ setup(
       ],
 
       'bob.bio.database': [
-        'voxforge           = bob.bio.spear.config.database.voxforge:database',
-        'mobio-male      = bob.bio.spear.config.database.mobio_male:database', # MOBIO gender-dependent training
-        'mobio-female   = bob.bio.spear.config.database.mobio_female:database', # MOBIO gender-dependent training
-        
+        'voxforge            = bob.bio.spear.config.database.voxforge:database',
+        'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
+        'timit                   = bob.bio.spear.config.database.timit:database',
+        'mobio-audio-male       = bob.bio.spear.config.database.mobio_male:database', # MOBIO gender-dependent training
+        'mobio-audio-female    = bob.bio.spear.config.database.mobio_female:database', # MOBIO gender-dependent training
       ],
 
       'bob.bio.preprocessor': [
-        'energy_2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor', # two Gauss energy
-        'energy_thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy        
-        'mod_4hz           = bob.bio.spear.config.preprocessor.mod_4hz:preprocessor', # mod_4hz
+        'energy-2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor', # two Gauss energy
+        'energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy        
+        'mod-4hz           = bob.bio.spear.config.preprocessor.mod_4hz:preprocessor', # mod_4hz
         'external            = bob.bio.spear.config.preprocessor.external:preprocessor', # external VAD
       ],
 
       'bob.bio.extractor': [
-        'mfcc_60    = bob.bio.spear.config.extractor.mfcc_60:extractor', # 60-dim MFCC features
-        'lfcc_60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
+        'mfcc-60    = bob.bio.spear.config.extractor.mfcc_60:extractor', # 60-dim MFCC features
+        'lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
         'htk            = bob.bio.spear.config.extractor.htk:extractor', # HTK features
         'spro          = bob.bio.spear.config.extractor.spro:extractor', # SPRO features
         
       ],
 
       'bob.bio.algorithm': [
-        'gmm_256g          = bob.bio.spear.config.algorithm.gmm_256g:algorithm', # GMM with 256 Gaussians
-        
+        'gmm-voxforge      = bob.bio.spear.config.algorithm.gmm_voxforge:algorithm', # GMM config used for voxforge
+        'ivec-cosine-voxforge  = bob.bio.spear.config.algorithm.ivec_cosine_voxforge:algorithm', # IVec Cosine config used for voxforge
+        'ivec-plda-voxforge     = bob.bio.spear.config.algorithm.ivec_plda_voxforge:algorithm', # IVec PLDA used for voxforge
+        'isv-voxforge               = bob.bio.spear.config.algorithm.isv_voxforge:algorithm', # ISV config used for voxforge
+        'jfa-voxforge               = bob.bio.spear.config.algorithm.jfa_voxforge:algorithm', # JFA config used for voxforge
+        'gmm-timit                  = bob.bio.spear.config.algorithm.gmm_timit:algorithm', # GMM config used for TIMIT
+        'gmm-banca                = bob.bio.spear.config.algorithm.gmm_regular_banca:algorithm', # GMM config used for BANCA
+        'ivec-plda-mobio         = bob.bio.spear.config.algorithm.ivec_plda_mobio:algorithm', # IVec PLDA used for MOBIO
+      ],
+      
+      'bob.bio.grid':[
+      'demanding      = bob.bio.spear.config.grid.demanding:grid',
       ],
    },
 
