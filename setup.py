@@ -103,7 +103,8 @@ setup(
 
       # scripts should be declared using this entry:
       'console_scripts' : [
-        'baselines.py      = bob.bio.spear.script.baselines:main'
+        'baselines.py      = bob.bio.spear.script.baselines:main',
+        'fusion_llr.py           = bob.bio.spear.script.fusion_llr:main',
       ],
 
       'bob.bio.database': [
@@ -138,6 +139,7 @@ setup(
         'gmm-timit                  = bob.bio.spear.config.algorithm.gmm_timit:algorithm', # GMM config used for TIMIT
         'gmm-banca                = bob.bio.spear.config.algorithm.gmm_regular_banca:algorithm', # GMM config used for BANCA
         'ivec-plda-mobio         = bob.bio.spear.config.algorithm.ivec_plda_mobio:algorithm', # IVec PLDA used for MOBIO
+        'isv-mobio         = bob.bio.spear.config.algorithm.isv_mobio:algorithm', # ISV used for MOBIO
       ],
       
       'bob.bio.grid':[

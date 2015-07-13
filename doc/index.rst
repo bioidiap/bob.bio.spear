@@ -59,30 +59,30 @@ II- Running experiments
 
 The above two commands will automatically download all desired packages from `pypi`_ and generate some scripts in the bin directory, including the following scripts::
 
-   $ bin/spkverif_gmm.py
-   $ bin/spkverif_isv.py
-   $ bin/spkverif_jfa.py
-   $ bin/spkverif_ivector.py
-   $ bin/para_ubm_spkverif_isv.py
-   $ bin/para_ubm_spkverif_ivector.py
-   $ bin/para_ubm_spkverif_gmm.py
-   $ bin/fusion_llr.py
+   $ bin/verify.py
+   $ bin/verify_gmm.py
+   $ bin/verify_isv.py
+   $ bin/verify_ivector.py
+   $ bin/train_gmm.py
+   $ bin/train_isv.py
+   $ bin/train_ivector.py
    $ bin/evaluate.py
    $ bin/det.py
 
-The first four toolchains are the basic toolchains for GMM, ISV, JFA and I-Vector. The next three toolchains are the parallel implementation of GMM, ISV, and I-Vector.
+The first toolchain is the basic toolchain for GMM, ISV and I-Vector. The next six toolchains are the parallel implementation of GMM, ISV, and I-Vector.
 
 To use the 7 first (main) toolchains you have to specify at least four command line parameters (see also the ``--help`` option):
 
 * ``--database``: The configuration file for the database
-* ``--preprocessing``: The configuration file for Voice Activity Detection
-* ``--feature-extraction``: The configuration file for feature extraction
-* ``--tool-chain``: The configuration file for the speaker verification tool chain
-
+* ``--preprocessor``: The configuration file for Voice Activity Detection
+* ``--extractor``: The configuration file for feature extraction
+* ``--algorithm``: The configuration file for the speaker verification tool chain
+* ``--sub-directory``: The sub-directory where to store data
+ 
 If you are not at Idiap, please precise the TEMP and USER directories:
 
 * ``--temp-directory``: This typically contains the features, the UBM model, the client models, etc.
-* ``--user-directory``: This will contain the output scores (in text format)
+* ``--result-directory``: This will contain the output scores (in text format)
 
 If you want to run the experiments in the GRID at Idiap or any equivalent SGE, you can simply specify:
 
@@ -90,25 +90,12 @@ If you want to run the experiments in the GRID at Idiap or any equivalent SGE, y
 
 For several datasets, feature types, recognition algorithms, and grid requirements the `SPEAR`_ provides these configuration files.
 They are located in the *config/...* directories.
-It is also safe to design one experiment and re-use one configuration file for all options as long as the configuration file includes all desired information:
-
-* The database: ``name, db, protocol; wav_input_dir, wav_input_ext``;
-* The preprocessing: ``preprocessor = spkrec.preprocessing.<PREPROCESSOR>``;
-* The feature extraction: ``extractor = spkrec.feature_extraction.<EXTRACTOR>``;
-* The tool: ``tool = spkrec.tools.<TOOL>``; plus configurations of the tool itself
-* Grid parameters: They help to configure which queues are used for each of the steps, how much files per job, etc.
 
 If no grid configuration file is specified, the experiment is run sequentially on the local machine with a single core.
 
 If you want to run on a local machine with multiple cores, you have to precise the grid type in your configuration file:
 
 * ``grid_type='local'``
-
-Then run your script with the new configuration file and excute the following command line after precising the number of parallel jobs to be used (e.g. 8)::
-
-   $ bin/jman --local -vv run-scheduler --parallel 8
-
-By default, the ZT score normalization is activated. To deactivate it, please add the ``-z`` to the command line.
 
 
 III- Experiment design
@@ -119,7 +106,7 @@ To be very flexible, the tool chains in the `SPEAR`_ are designed in several sta
   1. Preprocessing (Voice Activity Detection)
   2  Feature Extraction
   3. UBM Training and Projection (computation of sufficient statistics)
-  4. Subspace Training and Projection (for ISV, JFA and I-Vector modeling)
+  4. Subspace Training and Projection (for ISV and I-Vector modeling)
   5. Conditioning and Compensation (for I-Vector modeling)
   6. Client Model Enrollment
   7. Scoring and score normalization
@@ -143,19 +130,22 @@ This step aims to extract features. Depending on the configuration file, several
 * `HTK`_ Feature reader
 * `SPro`_ Feature reader
 
-3. Universal Background Model Training and Projection
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This step aims at computing the universal background model referenced as `Projector`. The training includes both k-means and ML steps. In the parallel implementation, the E (Estimation) step is split to run on parallel processes.
-Then, the computation of sufficient statistics in `SPEAR`_ is referenced as the **projection-ubm** step.
-It aims at projecting the cepstral features using the previously trained Projector.
-
-4. Subspace Training and Projection
+3. Universal Background Model Training
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This steps aims at estimating the subspaces needed by ISV, JFA and I-Vector. The I-Vector can also be parallelized similarly to the UBM. The projection here is referenced by either `projection-isv`, `projection-jfa`, or `projection-ivector`. Notice that the I-Vector projection process is the extraction of the i-vectors.
+This step aims at computing the universal background model referenced as `Projector`. The training includes both k-means and ML steps. In the parallel implementation, the E (Estimation) step is split to run on parallel processes.
+
+4. Subspace Training
+~~~~~~~~~~~~~~~~~~~
+This steps aims at estimating the subspaces needed by ISV, JFA and I-Vector. The I-Vector can also be parallelized similarly to the UBM. For design convenience, the `Projector` and `Enroller` are put together in one HDF5 file. 
+
 
 5. Conditioning and Compensation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This steps is used by the I-Vector toolchain. It includes Whitening, Length Normalization, LDA and WCCN projection.
+This steps is used by the I-Vector toolchain. It includes Whitening, Length Normalization, LDA and WCCN projection. The trained machines are appended to the same HDF5 of `Projector`.
+
+6. Projection
+~~~~~~~~~~~~~~
+It aims at projecting the cepstral features using the previously trained Projector.
 
 6. Model Enrollment
 ~~~~~~~~~~~~~~~~~~~
@@ -328,20 +318,18 @@ Here is the performance of the system on the Development set:
 ~~~~~~~~~~~~~~~~
 This is a more challenging database. The noise and the short duration of the segments make the task of speaker recognition relatively difficult. The following experiment on male group (Mobile-0) uses the 4Hz modulation energy based VAD, and the ISV (with dimU=50) modelling technique::
 
-  $ ./bin/spkverif_isv.py -d config/database/mobio/mobile0-male.py -p config/preprocessing/mod_4hz.py \
-   -f config/features/mfcc_60.py -t config/tools/isv/isv_u50.py \
-   --user-directory PATH/TO/USER/DIR --temp-directory PATH/TO/TEMP/DIR -z
+  $ bin/verify_isv.py -vv -d mobio-audio-male -p mod-4hz -e mfcc-60 -a isv-mobio -s isv --groups {dev,eval} -g demanding
 
 Here is the performance of this system:
 
-* ``DEV: EER = 10.40%``
-* ``EVAL: EER = 10.36%``
+* ``DEV: EER = 13.81%``
+* ``EVAL: HTER = 10.90%``
 
 To generate the results presented in the ICASSP 2014 paper, please check the script included in the `icassp` folder of the toolbox.
 Note that the MOBIO dataset has different protocols, and that are all implemented in `bob.db.mobio`_. But in this toolbox, we provide separately mobile-0 protocol (into filelist format) for simplicity.
 
 5. NIST SRE 2012
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 We first invite you to read the paper describing our system submitted to the NIST SRE 2012 Evaluation. The protocols on the development set are the results of a joint work by the I4U group. To reproduce the results, please check this dedicated package::
 
   https://pypi.python.org/pypi/spear.nist_sre12
@@ -353,7 +341,7 @@ We first invite you to read the paper describing our system submitted to the NIS
 
 
 Documentation
--------------
+------------------------
 
 References
 -----------
