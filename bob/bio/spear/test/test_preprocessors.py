@@ -56,7 +56,7 @@ def _wav():
 def test_energy_2gauss():
   # read input
   wav = _wav()
-  preprocessor = bob.bio.base.load_resource('energy_2gauss', 'preprocessor')
+  preprocessor = bob.bio.base.load_resource('energy-2gauss', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.spear.preprocessor.Energy_2Gauss)
 
   # test the energy-based VAD preprocessor
@@ -67,7 +67,7 @@ def test_energy_2gauss():
 def test_energy_thr():
   # read input
   wav = _wav()
-  preprocessor = bob.bio.base.load_resource('energy_thr', 'preprocessor')
+  preprocessor = bob.bio.base.load_resource('energy-thr', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.spear.preprocessor.Energy_Thr)
 
   # test the energy-based VAD preprocessor
@@ -78,7 +78,7 @@ def test_energy_thr():
 def test_mod_4hz():
   # read input
   wav = _wav()
-  preprocessor = bob.bio.base.load_resource('mod_4hz', 'preprocessor')
+  preprocessor = bob.bio.base.load_resource('mod-4hz', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.spear.preprocessor.Mod_4Hz)
 
   # test the Mod-4hz based VAD preprocessor
