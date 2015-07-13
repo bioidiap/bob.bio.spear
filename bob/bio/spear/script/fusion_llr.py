@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Laurent El Shafey <laurent.el-shafey@idiap.ch>
-# Tue Jan  8 13:36:12 CET 2013
+# Elie El Khoury <elie.khoury@idiap.ch>
+#Mon 13 Jul 11:55:34 CEST 2015
 #
 # Copyright (C) 2011-2013 Idiap Research Institute, Martigny, Switzerland
 #
@@ -49,7 +50,7 @@ def parse_command_line(command_line_options):
   return args
 
 def main(command_line_options = None):
-  """Computes and plots the CMC curve."""
+  """Score Fusion using logistic regresssion"""
   args = parse_command_line(command_line_options)
 
   # read data
