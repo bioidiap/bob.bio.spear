@@ -68,6 +68,8 @@ The above two commands will automatically download all desired packages from `py
    $ bin/train_ivector.py
    $ bin/evaluate.py
    $ bin/det.py
+   $ bin/fusion_llr.py
+  
 
 The first toolchain is the basic toolchain for GMM, ISV and I-Vector. The next six toolchains are the parallel implementation of GMM, ISV, and I-Vector.
 

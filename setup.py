@@ -104,7 +104,6 @@ setup(
       # scripts should be declared using this entry:
       'console_scripts' : [
         'baselines.py      = bob.bio.spear.script.baselines:main',
-        'fusion_llr.py           = bob.bio.spear.script.fusion_llr:main',
       ],
 
       'bob.bio.database': [
