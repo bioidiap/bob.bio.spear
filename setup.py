@@ -101,11 +101,6 @@ setup(
     # the version of bob.
     entry_points = {
 
-      # scripts should be declared using this entry:
-      'console_scripts' : [
-        'baselines.py      = bob.bio.spear.script.baselines:main',
-      ],
-
       'bob.bio.database': [
         'voxforge            = bob.bio.spear.config.database.voxforge:database',
         'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
