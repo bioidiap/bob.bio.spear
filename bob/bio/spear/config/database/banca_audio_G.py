@@ -3,8 +3,7 @@
 import bob.db.verification.filelist
 import bob.bio.base
 
-#banca_wav_directory = "[YOUR_BANCA_WAV_DIRECTORY]"
-banca_wav_directory = '/idiap/temp/ekhoury/databases/banca/wav'
+banca_wav_directory = "[YOUR_BANCA_WAV_DIRECTORY]"
 
 database = bob.bio.base.database.DatabaseBob(
     database = bob.db.verification.filelist.Database('bob/bio/spear/config/database/banca/',
