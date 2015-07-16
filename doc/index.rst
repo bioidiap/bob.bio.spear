@@ -12,9 +12,6 @@ SPEAR: A Speaker Recognition Toolkit based on Bob
 ====================================================
 
 
-.. todo::
-   Update the documentation so that it is conform with the other ``bob.bio`` packages.
-
 This package is part of the ``bob.bio`` packages, which provide open source tools to run comparable and reproducible biometric recognition experiments.
 In this package, tools for executing speaker recognition experiments are provided.
 
