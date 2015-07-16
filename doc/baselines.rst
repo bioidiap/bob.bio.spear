@@ -13,8 +13,7 @@ The first thing you might want to do is to execute one of the speaker recognitio
 Setting up your Database
 ----------------------------------------------
 
-As mentioned in the documentation of :ref:`bob.bio.base <bob.bio.base>`, the voice databases are not included in this package, so you have to download them.
-For example, you can easily download the images of the `Voxforge database`_, for links to other utilizable image databases please read the :ref:`bob.bio.spear.databases` section.
+For example, you can easily download the audio samples of the `Voxforge`_ database.
 
 By default, ``bob.bio`` does not know, where the wav files are located.
 Hence, before running experiments you have to specify the voice database directories.
@@ -55,7 +54,7 @@ For the ``./bin/verify.py`` script, the grid configuration is adapted to each of
 Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option, without parameters.
 Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
 
-When running the algorithms from the :ref:`bob.bio.gmm <bob.bio.gmm>` package in parallel, the specialized scripts are executed.
+When running the algorithms from the `bob.bio.gmm`_ package in parallel, the specialized scripts are executed.
 This will speed up the training of the UBM (and possible additional steps) tremendously.
 
 
@@ -64,20 +63,20 @@ The Algorithms
 
 The algorithms present a set of state-of-the-art speaker recognition algorithms. Here is the list of short-cuts:
 
-* ``gmm``: *Gaussian Mixture Models* (GMM) [Rey00]_.
+* ``gmm``: *Gaussian Mixture Models* (GMM) `[Rey00]`.
 
   - algorithm : :py:class:`bob.bio.gmm.algorithm.GMM`
 
-* ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [Vogt08]_ is used to learn what variations in samples are introduced by identity changes and which not.
+* ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling `[Vogt08]` is used to learn what variations in samples are introduced by identity changes and which not.
 
   - algorithm : :py:class:`bob.bio.gmm.algorithm.ISV`
 
-* ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling [Dehak11]_ (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
+* ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling `[Dehak11]` (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
 
   - algorithm : :py:class:`bob.bio.gmm.algorithm.IVector`
 
 .. note::
-  The ``ivector`` algorithm needs a lot of training data and fails on small databases such as the `Voxforge database`_.
+  The ``ivector`` algorithm needs a lot of training data and fails on small databases such as the `Voxforge`_ database.
 
 
 Evaluation Results

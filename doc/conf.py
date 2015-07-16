@@ -131,11 +131,11 @@ if sphinx.__version__ >= "1.0":
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = 'bob'
 
-# The name of an image file (relative to this directory) to place at the top
+# The name of an audio file (relative to this directory) to place at the top
 # of the sidebar.
 html_logo = ''
 
-# The name of an image file (within the static path) to use as favicon of the
+# The name of an audio file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 html_favicon = ''
@@ -205,7 +205,7 @@ latex_documents = [
    u'Biometrics Group, Idiap Research Institute', 'manual'),
 ]
 
-# The name of an image file (relative to this directory) to place at the top of
+# The name of an audio file (relative to this directory) to place at the top of
 # the title page.
 latex_logo = ''
 

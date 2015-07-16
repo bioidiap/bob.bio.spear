@@ -27,9 +27,10 @@ This includes:
 
 Notice that most of the machine learning tools (GMM, ISV, JFA, IVectors) are now handle by  bob.bio.gmm
 
-`SPEAR`_ is adapted to run speaker verification/recognition experiments with the SGE grid infrastructure at Idiap.
+`spear`_ is adapted to run speaker verification/recognition experiments with the SGE grid infrastructure at Idiap.
 
 If you use this package and/or its results, please cite the following paper published at ICASSP 2014::
+
     @inproceedings{spear,
       author = {Khoury, E. and El Shafey, L. and Marcel, S.},
       title = {Spear: An open source toolbox for speaker recognition based on {B}ob},
@@ -37,7 +38,6 @@ If you use this package and/or its results, please cite the following paper publ
       year = {2014},
       url = {http://publications.idiap.ch/downloads/papers/2014/Khoury_ICASSP_2014.pdf},
     }
-
 
 For more detailed information about the structure of the ``bob.bio`` packages, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.
 Particularly, the installation of this and other ``bob.bio`` packages, please read the :ref:`bob.bio.base.installation`.
@@ -54,6 +54,7 @@ Users Guide
    baselines
    implementation
 
+
 ================
 Reference Manual
 ================
@@ -64,7 +65,7 @@ Reference Manual
    implemented
 
 
-.. include:: references.rst
+.. include:: links.rst
 
 .. todolist::
 
