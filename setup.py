@@ -47,7 +47,7 @@ setup(
     # information before releasing code publicly.
     name = 'bob.bio.spear',
     version = open("version.txt").read().rstrip(),
-    description = 'Tools for running face recognition experiments',
+    description = 'Tools for running speaker recognition experiments',
 
     url = 'https://www.github.com/bioidiap/bob.bio.spear',
     license = 'GPLv3',
