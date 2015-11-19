@@ -80,10 +80,7 @@ setup(
     # Our database packages are good examples of namespace implementations
     # using several layers. You can check them out here:
     # https://github.com/idiap/bob/wiki/Satellite-Packages
-    namespace_packages = [
-      'bob',
-      'bob.bio',
-    ],
+
 
     # This entry defines which scripts you will have inside the 'bin' directory
     # once you install the package (or run 'bin/buildout'). The order of each
