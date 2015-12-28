@@ -102,7 +102,7 @@ More details about how to download the audio files used in our experiments, and 
 
 One example of command line is::
 
-  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc_60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}
+  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}
 
 
 In this example, we used the following configuration:
