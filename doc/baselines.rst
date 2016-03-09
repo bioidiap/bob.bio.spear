@@ -123,7 +123,7 @@ If you want to run the same experiment on SGE::
 
 If you want to run the parallel implementation of the UBM on the SGE::
 
-  $ bin/verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_sge --groups {dev,eval} -g local
+  $ bin/verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_sge --groups {dev,eval} -g grid
 
 
 If you want to run the parallel implementation of the UBM on your local machine::
