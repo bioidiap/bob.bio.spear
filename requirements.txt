@@ -11,7 +11,6 @@ bob.learn.linear
 bob.learn.em 
 bob.measure 
 bob.db.base
-bob.db.verification.utils 
-bob.db.verification.filelist
 bob.bio.base
+bob.bio.db
 matplotlib   # for plotting
