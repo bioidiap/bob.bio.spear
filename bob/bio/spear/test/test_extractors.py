@@ -19,17 +19,13 @@
 
 
 import unittest
-import os
 import numpy
-from nose.plugins.skip import SkipTest
-
 import pkg_resources
 
 regenerate_refs = False
 
 import bob.bio.base
 import bob.bio.spear
-import bob.db.verification.utils
 
 
 def _compare(data, reference, write_function = bob.bio.base.save, read_function = bob.bio.base.load):

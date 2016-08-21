@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
-import bob.bio.base
-import bob.db.mobio
+from bob.bio.db import MobioBioDatabase
 
 mobio_wav_directory = "[YOUR_MOBIO_WAV_DIRECTORY]"
 
-database = bob.bio.base.database.DatabaseBobZT(
-    database=bob.db.mobio.Database(
-        original_directory=mobio_wav_directory,
-        original_extension=".wav",
-    ),
-    name="mobio-male",
+database = bob.bio.db.MobioBioDatabase(
+    name="male-male",
+    original_directory=mobio_wav_directory,
+    original_extension=".wav",
     protocol='male',
     models_depend_on_protocol=True,
 
@@ -20,3 +17,4 @@ database = bob.bio.base.database.DatabaseBobZT(
     enroller_training_options={'gender': 'male'},
     z_probe_options={'gender': 'male'}
 )
+

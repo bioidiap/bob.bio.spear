@@ -49,7 +49,7 @@ setup(
     version = open("version.txt").read().rstrip(),
     description = 'Tools for running speaker recognition experiments',
 
-    url = 'https://www.github.com/bioidiap/bob.bio.spear',
+    url = 'https://www.gitlab.idiap.ch/bob/bob.bio.spear',
     license = 'GPLv3',
     author = '<YourName>',
     author_email = '<YourEmail>',
