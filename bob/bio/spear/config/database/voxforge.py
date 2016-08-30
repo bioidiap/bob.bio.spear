@@ -2,7 +2,7 @@
 
 import bob.bio.db
 
-voxforge_wav_directory = "/idiap/resource/database/VoxForge/audio/original/Trunk/Audio/Main/16kHz_16bit"
+voxforge_wav_directory = "[YOUR_VOXFORGE_DIRECTORY]"
 
 database = bob.bio.db.VoxforgeBioDatabase(
     original_directory=voxforge_wav_directory,
