@@ -103,8 +103,6 @@ setup(
         'voxforge            = bob.bio.spear.config.database.voxforge:database',
         'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
         'timit                   = bob.bio.spear.config.database.timit:database',
-        'mobio-audio-male       = bob.bio.spear.config.database.mobio_male:database', # MOBIO gender-dependent training
-        'mobio-audio-female    = bob.bio.spear.config.database.mobio_female:database', # MOBIO gender-dependent training
       ],
 
       'bob.bio.preprocessor': [
