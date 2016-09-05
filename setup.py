@@ -100,9 +100,9 @@ setup(
     entry_points = {
 
       'bob.bio.database': [
-        'voxforge            = bob.bio.spear.config.database.voxforge:database',
-        'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
-        'timit                   = bob.bio.spear.config.database.timit:database',
+        'voxforge            = bob.bio.db.default_configs.voxforge:database',
+        'banca-audio      = bob.bio.db.default_configs.banca_audio_G:database',
+        'timit                   = bob.bio.db.default_configs.timit:database',
       ],
 
       'bob.bio.preprocessor': [
