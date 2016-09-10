@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-import bob.bio.spear
-
+from bob.bio.spear.database import MobioBioDatabase
 mobio_wav_directory = "[YOUR_MOBIO_WAV_DIRECTORY]"
 
-mobio_audio_male = bob.bio.spear.database.MobioBioDatabase(
+mobio_audio_male = MobioBioDatabase(
     original_directory=mobio_wav_directory,
     original_extension=".wav",
     protocol='male',
@@ -16,7 +15,7 @@ mobio_audio_male = bob.bio.spear.database.MobioBioDatabase(
     z_probe_options={'gender': 'male'}
 )
 
-mobio_audio_female = bob.bio.spear.database.MobioBioDatabase(
+mobio_audio_female = MobioBioDatabase(
     original_directory=mobio_wav_directory,
     original_extension=".wav",
     protocol='female',
