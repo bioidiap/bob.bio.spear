@@ -37,6 +37,9 @@ variables:
     - if [ -x ./bin/bob_dbmanage.py ]; then ./bin/bob_dbmanage.py all download --force; fi
     - ./bin/sphinx-build doc sphinx
     - ./bin/python setup.py bdist_wheel --python-tag ${WHEEL_TAG}
+    - cd ./src/bob.bio.base
+    - ../../bin/python setup.py bdist_wheel --dist-dir ../../dist --python-tag ${WHEEL_TAG}
+    - cd ../../
   after_script:
     - rm -rf ${CONDA_PREFIX}
   artifacts:
