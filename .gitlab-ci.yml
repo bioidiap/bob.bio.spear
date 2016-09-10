@@ -33,7 +33,7 @@ variables:
   variables: &build_variables
     BOB_DOCUMENTATION_SERVER: "http://www.idiap.ch/software/bob/docs/latest/bob/%s/master/"
   script:
-    - ./bin/buildout
+    - ./bin/buildout -c buildout-dev.cfg
     - if [ -x ./bin/bob_dbmanage.py ]; then ./bin/bob_dbmanage.py all download --force; fi
     - ./bin/sphinx-build doc sphinx
     - ./bin/python setup.py bdist_wheel --python-tag ${WHEEL_TAG}
