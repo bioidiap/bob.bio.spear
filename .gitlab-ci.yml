@@ -76,7 +76,7 @@ variables:
   before_script:
     - ./bootstrap-conda.sh ${CONDA_FOLDER} ${PYTHON_VER} ${CONDA_PREFIX}
     - source ${CONDA_FOLDER}/bin/activate ${CONDA_PREFIX}
-    - pip install --use-wheel --no-index --pre dist/*.whl
+    - pip install --use-wheel --upgrade --no-index --pre dist/*.whl
   script:
     - cd ${CONDA_PREFIX}
     - python -c "from ${CI_PROJECT_NAME} import get_config; print(get_config())"
