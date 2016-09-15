@@ -33,13 +33,10 @@ variables:
   variables: &build_variables
     BOB_DOCUMENTATION_SERVER: "http://www.idiap.ch/software/bob/docs/latest/bob/%s/master/"
   script:
-    - ./bin/buildout -c buildout-dev.cfg
+    - ./bin/buildout
     - if [ -x ./bin/bob_dbmanage.py ]; then ./bin/bob_dbmanage.py all download --force; fi
     - ./bin/sphinx-build doc sphinx
     - ./bin/python setup.py bdist_wheel --python-tag ${WHEEL_TAG}
-    - cd ./src/bob.bio.base
-    - ../../bin/python setup.py bdist_wheel --dist-dir ../../dist --python-tag ${WHEEL_TAG}
-    - cd ../../
   after_script:
     - rm -rf ${CONDA_PREFIX}
   artifacts:
@@ -79,7 +76,7 @@ variables:
   before_script:
     - ./bootstrap-conda.sh ${CONDA_FOLDER} ${PYTHON_VER} ${CONDA_PREFIX}
     - source ${CONDA_FOLDER}/bin/activate ${CONDA_PREFIX}
-    - pip install --use-wheel --upgrade --no-index --pre dist/*.whl
+    - pip install --use-wheel --no-index --pre dist/*.whl
   script:
     - cd ${CONDA_PREFIX}
     - python -c "from ${CI_PROJECT_NAME} import get_config; print(get_config())"
