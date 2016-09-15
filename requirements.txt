@@ -12,5 +12,4 @@ bob.learn.em
 bob.measure 
 bob.db.base
 bob.bio.base
-bob.bio.db
 matplotlib   # for plotting

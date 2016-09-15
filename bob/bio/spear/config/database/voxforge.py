@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-import bob.bio.db
-
+from bob.bio.spear.database import VoxforgeBioDatabase
 voxforge_wav_directory = "[YOUR_VOXFORGE_DIRECTORY]"
 
-database = bob.bio.db.VoxforgeBioDatabase(
+database = VoxforgeBioDatabase(
     original_directory=voxforge_wav_directory,
     original_extension=".wav",
 )
