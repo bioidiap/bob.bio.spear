@@ -13,14 +13,13 @@ import numpy
 
 
 class AudioBioFile(BioFile):
-    def __init__(self, f):
+    def __init__(self, client_id, path, file_id):
         """
         Initializes this File object with an File equivalent for
         VoxForge database.
         """
-        super(AudioBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
+        super(AudioBioFile, self).__init__(client_id=client_id, path=path, file_id=file_id)
 
-        self.__f = f
 
     def load(self, directory=None, extension='.wav'):        
         rate, audio = scipy.io.wavfile.read(self.make_path(directory, extension))
