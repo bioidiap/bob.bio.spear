@@ -75,4 +75,4 @@ class VoxforgeBioDatabase(BioDatabase):
                                     model_ids=model_ids, purposes=purposes)
 
         # make sure to return BioFile representation of a file, not the database one
-        return [AudioBioFile(BioFile(client_id=f.client_id, path=f.path, file_id=f.id)) for f in objects]
+        return [AudioBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in objects]

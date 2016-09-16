@@ -38,12 +38,12 @@ class MobioBioDatabase(ZTBioDatabase):
 
     def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
         retval = self.__db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [AudioBioFile(f) for f in retval]
+        return [AudioBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
 
     def tobjects(self, groups=None, protocol=None, model_ids=None, **kwargs):
         retval = self.__db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
-        return [AudioBioFile(f) for f in retval]
+        return [AudioBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
 
     def zobjects(self, groups=None, protocol=None, **kwargs):
         retval = self.__db.zobjects(groups=groups, protocol=protocol, **kwargs)
-        return [AudioBioFile(f) for f in retval]
+        return [AudioBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
