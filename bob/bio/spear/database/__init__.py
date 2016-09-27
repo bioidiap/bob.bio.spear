@@ -22,6 +22,7 @@
 from .database import AudioBioFile
 from .mobio import MobioBioDatabase
 from .voxforge import VoxforgeBioDatabase
+from .nist_sre12 import NistSre12BioDatabase
 
 # gets sphinx autodoc done right - don't remove it
 __all__ = [_ for _ in dir() if not _.startswith('_')]
