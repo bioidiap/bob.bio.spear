@@ -51,8 +51,8 @@ setup(
 
     url = 'https://www.gitlab.idiap.ch/bob/bob.bio.spear',
     license = 'GPLv3',
-    author = '<YourName>',
-    author_email = '<YourEmail>',
+    author = 'Andre Anjos',
+    author_email = '<andre.anjos@idiap.ch>',
     keywords = 'bob, biometric recognition, evaluation',
 
     # If you have a better, long description of your package, place it on the
@@ -105,6 +105,10 @@ setup(
         'timit            = bob.bio.spear.config.database.timit:database',
         'mobio-audio-male       = bob.bio.spear.config.database.mobio_audio_male:database',
         'mobio-audio-female       = bob.bio.spear.config.database.mobio_audio_female:database',
+        'avspoof-licit             = bob.bio.spear.config.database.avspoof:database_licit',
+        'avspoof-spoof             = bob.bio.spear.config.database.avspoof:database_spoof',
+        'asvspoof-licit             = bob.bio.spear.config.database.asvspoof:database_licit',
+        'asvspoof-spoof             = bob.bio.spear.config.database.asvspoof:database_spoof',
       ],
 
       'bob.bio.preprocessor': [

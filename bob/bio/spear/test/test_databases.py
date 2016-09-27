@@ -42,3 +42,39 @@ def test_mobio():
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+@db_available('avspoof-licit')
+def test_avspoof_licit():
+    database = bob.bio.base.load_resource('licit', 'database', preferred_package='bob.bio.spear')
+    try:
+        check_database(database, groups=('dev', 'eval'), training_depends=True)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+@db_available('asvspoof-licit')
+def test_asvspoof_licit():
+    database = bob.bio.base.load_resource('ASV-female', 'database', preferred_package='bob.bio.spear')
+    try:
+        check_database(database, groups=('dev', 'eval'), training_depends=True, skip_train=True)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+@db_available('avspoof-spoof')
+def test_avspoof_spoof():
+    database = bob.bio.base.load_resource('physical_access-spoof', 'database', preferred_package='bob.bio.spear')
+    try:
+        check_database(database, groups=('dev', 'eval'), training_depends=True)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+@db_available('asvspoof-spoof')
+def test_asvspoof_spoof():
+    database = bob.bio.base.load_resource('ASV-female-spoof', 'database', preferred_package='bob.bio.spear')
+    try:
+        check_database(database, groups=('dev', 'eval'), training_depends=True, skip_train=True)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
