@@ -50,6 +50,7 @@ Users Guide
 
    baselines
    implementation
+   references
 
 
 ================

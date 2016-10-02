@@ -111,7 +111,7 @@ pygments_style = 'sphinx'
 
 # Some variables which are useful for generated material
 project_variable = project.replace('.', '_')
-short_description = u'Run speaker recognition algorithms'
+short_description = u'Tools for running biometric recognition experiments'
 owner = [u'Idiap Research Institute']
 
 
@@ -216,8 +216,13 @@ autodoc_default_flags = [
   ]
 
 # For inter-documentation mapping:
-from bob.extension.utils import link_documentation
-intersphinx_mapping = link_documentation()
+from bob.extension.utils import link_documentation, load_requirements
+sphinx_requirements = "./extra-intersphinx.txt"
+if os.path.exists(sphinx_requirements):
+    intersphinx_mapping = link_documentation(additional_packages=load_requirements(sphinx_requirements))
+else:
+    intersphinx_mapping = link_documentation()
+
 
 # We want to remove all private (i.e. _. or __.__) members
 # that are not in the list of accepted functions
