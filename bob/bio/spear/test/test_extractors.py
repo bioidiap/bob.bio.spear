@@ -18,14 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import unittest
 import numpy
 import pkg_resources
 
-regenerate_refs = False
-
 import bob.bio.base
 import bob.bio.spear
+
+from .test_preprocessors import _wav
+
+regenerate_refs = False
 
 
 def _compare(data, reference, write_function = bob.bio.base.save, read_function = bob.bio.base.load):
@@ -36,11 +37,6 @@ def _compare(data, reference, write_function = bob.bio.base.save, read_function 
   # compare reference
   reference = read_function(reference)
   assert numpy.allclose(data, reference, atol=1e-5)
-
-
-def _wav():
-  base_preprocessor = bob.bio.spear.preprocessor.Base()
-  return base_preprocessor.read_original_data(pkg_resources.resource_filename('bob.bio.spear.test', 'data/sample.wav'))
 
 
 def test_mfcc():

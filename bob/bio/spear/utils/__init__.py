@@ -88,7 +88,7 @@ def probes_used_extract_scores(full_scores, same_probes):
 
 def read(filename):
   """Read audio file"""
-  # Depricated: use read_original_data() function from bob.bio.spear.proprocessor.Base
+  # Depricated: use load() function from bob.bio.spear.database.AudioBioFile
   #TODO: update xbob.sox first. This will enable the use of formats like NIST sphere and other
   #import xbob.sox
   #audio = xbob.sox.reader(filename)
