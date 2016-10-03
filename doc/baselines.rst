@@ -210,9 +210,6 @@ We first invite you to read the paper describing our system submitted to the NIS
   For any additional information, please use our mailing list::
   https://groups.google.com/forum/#!forum/bob-devel
 
-
-.. include:: references.rst
-
 .. include:: links.rst
 
 

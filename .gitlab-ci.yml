@@ -1,12 +1,7 @@
-# This build file is defined in two parts: 1) a generic set of instructions you
-# probably **don't** need to change and 2) a part you may have to tune to your
-# project. It heavily uses template features from YAML to help you in only
-# changing a minimal part of it and avoid code duplication to a maximum while
-# still providing a nice pipeline display on your package.
+# This build file heavily uses template features from YAML so it is generic
+# enough for any Bob project. Don't modify it unless you know what you're
+# doing.
 
-
-# 1) Generic instructions (only change if you know what you're doing)
-# -------------------------------------------------------------------
 
 # Definition of our build pipeline
 stages:
@@ -14,12 +9,12 @@ stages:
   - test
   - docs
   - wheels
+  - deploy
 
 
-# Global variables
-variables:
-  CONDA_PREFIX: env
-
+# ---------
+# Templates
+# ---------
 
 # Template for the build stage
 # Needs to run on all supported architectures, platforms and python versions
@@ -27,104 +22,98 @@ variables:
   stage: build
   before_script:
     - git clean -ffdx
-    - curl --silent https://gitlab.idiap.ch/bob/bob/snippets/7/raw | tr -d '\r' > bootstrap-conda.sh
-    - chmod 755 ./bootstrap-conda.sh
-    - ./bootstrap-conda.sh ${CONDA_FOLDER} ${PYTHON_VER} ${CONDA_PREFIX}
-  variables: &build_variables
-    BOB_DOCUMENTATION_SERVER: "http://www.idiap.ch/software/bob/docs/latest/bob/%s/master/"
+    - mkdir _ci
+    - curl --silent "https://gitlab.idiap.ch/bob/bob.admin/raw/master/gitlab/install.sh" > _ci/install.sh
+    - chmod 755 _ci/install.sh
+    - ./_ci/install.sh _ci #updates
+    - ./_ci/before_build.sh
   script:
-    - ./bin/buildout
-    - if [ -x ./bin/bob_dbmanage.py ]; then ./bin/bob_dbmanage.py all download --force; fi
-    - ./bin/sphinx-build doc sphinx
-    - ./bin/python setup.py bdist_wheel --python-tag ${WHEEL_TAG}
+    - ./_ci/build.sh
   after_script:
-    - rm -rf ${CONDA_PREFIX}
+    - ./_ci/after_build.sh
   artifacts:
-    expire_in: 1 day
+    expire_in: 1 week
     paths:
-      - bootstrap-conda.sh
+      - _ci/
       - dist/
       - sphinx/
 
 
-# Template for building on a Linux machine
-.build_linux_template: &linux_build_job
-  <<: *build_job
-  variables: &linux_build_variables
-    <<: *build_variables
-    CONDA_FOLDER: "/local/conda"
-    CFLAGS: "-D_GLIBCXX_USE_CXX11_ABI=0 -coverage"
-    CXXFLAGS: "-D_GLIBCXX_USE_CXX11_ABI=0 -coverage"
-
-
-# Template for building on a Mac OSX machine
-.build_mac_template: &macosx_build_job
-  <<: *build_job
-  variables: &macosx_build_variables
-    <<: *build_variables
-    CONDA_FOLDER: "/opt/conda"
-    MACOSX_DEPLOYMENT_TARGET: "10.9"
-    CFLAGS: "-pthread -coverage"
-    CXXFLAGS: "-pthread -coverage"
-    LDFLAGS: "-lpthread"
-
-
-# Template for the test stage - re-install from uploaded wheels
+# Template for the test stage - re-installs from uploaded wheels
 # Needs to run on all supported architectures, platforms and python versions
 .test_template: &test_job
   stage: test
   before_script:
-    - ./bootstrap-conda.sh ${CONDA_FOLDER} ${PYTHON_VER} ${CONDA_PREFIX}
-    - source ${CONDA_FOLDER}/bin/activate ${CONDA_PREFIX}
-    - pip install --use-wheel --no-index --pre dist/*.whl
+    - ./_ci/install.sh _ci #updates
+    - ./_ci/before_test.sh
   script:
-    - cd ${CONDA_PREFIX}
-    - python -c "from ${CI_PROJECT_NAME} import get_config; print(get_config())"
-    - coverage run --source=${CI_PROJECT_NAME} ./bin/nosetests -sv ${CI_PROJECT_NAME}
-    - coverage report
-    - sphinx-build -b doctest ../doc ../sphinx
+    - ./_ci/test.sh
   after_script:
-    - rm -rf ${CONDA_PREFIX}
+    - ./_ci/after_test.sh
 
 
 # Template for the wheel uploading stage
-# Needs to run against one combination of python 2.x and 3.x if it is a python
-# only package, otherwise, needs to run in both pythons to all supported
-# architectures (Linux and Mac OSX 64-bit)
+# Needs to run against one supported architecture, platform and python version
 .wheels_template: &wheels_job
   stage: wheels
+  environment: intranet
   only:
     - master
-    - tags
+    - /^v\d+\.\d+\.\d+([abc]\d*)?$/  # PEP-440 compliant version (tags)
   before_script:
-    - curl --silent https://gitlab.idiap.ch/bob/bob/snippets/8/raw | tr -d '\r' > upload-wheel.sh
-    - chmod 755 upload-wheel.sh
+    - ./_ci/install.sh _ci #updates
+    - ./_ci/before_wheels.sh
   script:
-    - ./upload-wheel.sh
+    - ./_ci/wheels.sh
+  after_script:
+    - ./_ci/after_wheels.sh
 
 
 # Template for (latest) documentation upload stage
 # Only one real job needs to do this
 .docs_template: &docs_job
   stage: docs
+  environment: intranet
   only:
     - master
   before_script:
-    - curl --silent https://gitlab.idiap.ch/bob/bob/snippets/9/raw | tr -d '\r' > upload-sphinx.sh
-    - chmod 755 upload-sphinx.sh
+    - ./_ci/install.sh _ci #updates
+    - ./_ci/before_docs.sh
   script:
-    - ./upload-sphinx.sh
+    - ./_ci/docs.sh
+  after_script:
+    - ./_ci/after_docs.sh
 
 
-# 2) Package specific instructions (you may tune this if needed)
-# --------------------------------------------------------------
+# Template for the deployment stage - re-installs from uploaded wheels
+# Needs to run on a single architecture only
+# Will deploy your package to PyPI and other required services
+# Only runs for tags
+.deploy_template: &deploy_job
+  stage: deploy
+  environment: internet
+  only:
+    - /^v\d+\.\d+\.\d+([abc]\d*)?$/  # PEP-440 compliant version (tags)
+  except:
+    - branches
+  before_script:
+    - ./_ci/install.sh _ci #updates
+    - ./_ci/before_deploy.sh
+  script:
+    - ./_ci/deploy.sh
+  after_script:
+    - ./_ci/after_deploy.sh
 
-# Linux + Python 2.7: Builds, tests, uploads wheel
+
+# -------------
+# Build Targets
+# -------------
+
+# Linux + Python 2.7: Builds, tests, uploads wheel and deploys (if needed)
 build_linux_27:
-  <<: *linux_build_job
+  <<: *build_job
   variables: &linux_27_build_variables
-    <<: *linux_build_variables
-    PYTHON_VER: "2.7"
+    PYTHON_VERSION: "2.7"
     WHEEL_TAG: "py27"
   tags:
     - conda-linux
@@ -139,6 +128,15 @@ test_linux_27:
 
 wheels_linux_27:
   <<: *wheels_job
+  variables: *linux_27_build_variables
+  dependencies:
+    - build_linux_27
+  tags:
+    - conda-linux
+
+deploy_linux_27:
+  <<: *deploy_job
+  variables: *linux_27_build_variables
   dependencies:
     - build_linux_27
   tags:
@@ -147,10 +145,9 @@ wheels_linux_27:
 
 # Linux + Python 3.4: Builds and tests
 build_linux_34:
-  <<: *linux_build_job
+  <<: *build_job
   variables: &linux_34_build_variables
-    <<: *linux_build_variables
-    PYTHON_VER: "3.4"
+    PYTHON_VERSION: "3.4"
     WHEEL_TAG: "py3"
   tags:
     - conda-linux
@@ -164,12 +161,11 @@ test_linux_34:
     - conda-linux
 
 
-# Linux + Python 3.5: Builds, tests, uploads wheel
+# Linux + Python 3.5: Builds, tests and uploads wheel
 build_linux_35:
-  <<: *linux_build_job
+  <<: *build_job
   variables: &linux_35_build_variables
-    <<: *linux_build_variables
-    PYTHON_VER: "3.5"
+    PYTHON_VERSION: "3.5"
     WHEEL_TAG: "py3"
   tags:
     - conda-linux
@@ -184,6 +180,7 @@ test_linux_35:
 
 wheels_linux_35:
   <<: *wheels_job
+  variables: *linux_35_build_variables
   dependencies:
     - build_linux_35
   tags:
@@ -191,6 +188,7 @@ wheels_linux_35:
 
 docs_linux_35:
   <<: *docs_job
+  variables: *linux_35_build_variables
   dependencies:
     - build_linux_35
   tags:
@@ -199,10 +197,9 @@ docs_linux_35:
 
 # Mac OSX + Python 2.7: Builds and tests
 build_macosx_27:
-  <<: *macosx_build_job
+  <<: *build_job
   variables: &macosx_27_build_variables
-    <<: *macosx_build_variables
-    PYTHON_VER: "2.7"
+    PYTHON_VERSION: "2.7"
     WHEEL_TAG: "py27"
   tags:
     - conda-macosx
@@ -218,10 +215,9 @@ test_macosx_27:
 
 # Mac OSX + Python 3.4: Builds and tests
 build_macosx_34:
-  <<: *macosx_build_job
+  <<: *build_job
   variables: &macosx_34_build_variables
-    <<: *macosx_build_variables
-    PYTHON_VER: "3.4"
+    PYTHON_VERSION: "3.4"
     WHEEL_TAG: "py3"
   tags:
     - conda-macosx
@@ -237,10 +233,9 @@ test_macosx_34:
 
 # Mac OSX + Python 3.5: Builds and tests
 build_macosx_35:
-  <<: *macosx_build_job
+  <<: *build_job
   variables: &macosx_35_build_variables
-    <<: *macosx_build_variables
-    PYTHON_VER: "3.5"
+    PYTHON_VERSION: "3.5"
     WHEEL_TAG: "py3"
   tags:
     - conda-macosx
