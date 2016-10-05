@@ -4,7 +4,7 @@
 # Wed 13 Jul 16:43:22 CEST 2016
 
 """
-  MOBIO database implementation of bob.bio.db.ZTDatabase interface.
+  MOBIO database implementation of bob.bio.base.ZTDatabase interface.
   It is an extension of an SQL-based database interface, which directly talks to Mobio database, for
   verification experiments (good to use in bob.bio.base framework).
 """
