@@ -1,40 +1,39 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Pavel Korshunov <pavel.korshunov@idiap.ch>
-# Tue 17 May 15:43:22 CEST 2016
+# Tue 11 Oct 15:43:22 2016
 
 """
-  ASVspoof database implementation of bob.bio.db.BioDatabase interface.
-  It is an extension of an SQL-based database interface, which directly talks to ASVspoof database, for
+  This is the implementation of VoicePA database high level interface for verification experiments.
+  It is an extension of an SQL-based database interface, which directly talks to VoicePA database, for
   verification experiments (good to use in bob.bio.base framework).
 """
-
 
 from bob.bio.base.database import BioDatabase
 from bob.bio.spear.database import AudioBioFile
 
 
-class ASVspoofBioFile(AudioBioFile):
+class VoicePABioFile(AudioBioFile):
     def __init__(self, f):
         """
         Initializes this File object with an File equivalent from the underlying SQl-based interface for
-        ASVspoof database.
+        VoicePA database.
         """
-        super(ASVspoofBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
+        super(VoicePABioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
 
         self.__f = f
 
 
-class ASVspoofBioDatabase(BioDatabase):
+class VoicePABioDatabase(BioDatabase):
     """
-    Implements verification API for querying ASVspoof database.
+    Implements verification API for querying VoicePA database.
     """
 
     def __init__(self, **kwargs):
         # call base class constructors to open a session to the database
-        super(ASVspoofBioDatabase, self).__init__(name='asvspoof', **kwargs)
+        super(VoicePABioDatabase, self).__init__(name='voicepa', **kwargs)
 
-        from bob.db.asvspoof.query import Database as LowLevelDatabase
+        from bob.db.voicepa.query import Database as LowLevelDatabase
         self.__db = LowLevelDatabase()
 
         self.low_level_group_names = ('train', 'dev', 'eval')
@@ -71,33 +70,23 @@ class ASVspoofBioDatabase(BioDatabase):
             # put back everything except the appendix into the protocol
             protocol = '-'.join(protocol.split('-')[:-1])
 
-        # if protocol was empty, we set it to the ASV-female, which is the female data for verification experiments
+        # if protocol was empty, we set it to the grandtest, which is the whole data
         if not protocol:
-            protocol = 'ASV-female'
+            protocol = 'grandtest'
 
         correct_purposes = purposes
         # licit protocol is for real access data only
         if appendix == 'licit':
             # by default we assume all real data
             if purposes is None:
-                correct_purposes = ('real', 'impostor')
-            # otherwise replace 'probe' with 'impostor'
-            elif isinstance(purposes, (tuple, list)):
-                correct_purposes = []
-                for purpose in purposes:
-                    if purpose == 'probe':
-                        correct_purposes += ['impostor']
-                    else:
-                        correct_purposes += [purpose]
-            elif purposes == 'probe':
-                correct_purposes = ('impostor',)
+                correct_purposes = ('enroll', 'probe')
 
-        # for any other protocol use real data and spoofed data (probe)
+        # spoof protocol uses real data for enrollment and spoofed data for probe
         # so, probe set is the same as attack set
-        else:
+        if appendix == 'spoof':
             # by default we return all data (enroll:realdata + probe:attackdata)
             if purposes is None:
-                correct_purposes = ('real', 'attack')
+                correct_purposes = ('enroll', 'attack')
             # otherwise replace 'probe' with 'attack'
             elif isinstance(purposes, (tuple, list)):
                 correct_purposes = []
@@ -109,8 +98,8 @@ class ASVspoofBioDatabase(BioDatabase):
             elif purposes == 'probe':
                 correct_purposes = ('attack',)
 
-        # now, query the actual ASVspoof database
-        objects = self.__db.objects(protocol=protocol, groups=matched_groups, purposes=correct_purposes,
+        # now, query the actual VoicePA database
+        objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
                                     clients=model_ids, **kwargs)
-        # make sure to return AudioBioFile representation of a file, not the database one
-        return [ASVspoofBioFile(f) for f in objects]
+        # make sure to return BioFile representation of a file, not the database one
+        return [VoicePABioFile(f) for f in objects]
