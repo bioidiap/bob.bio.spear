@@ -40,16 +40,14 @@ class AVspoofBioDatabase(BioDatabase):
         self.high_level_group_names = ('world', 'dev', 'eval')
 
     def model_ids_with_protocol(self, groups=None, protocol=None, gender=None):
-        groups = self.convert_names_to_lowlevel(
-            groups, self.low_level_group_names, self.high_level_group_names)
+        groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
         return [client.id for client in self.__db.clients(groups=groups, gender=gender)]
 
-    def objects(self, protocol=None, purposes=None, model_ids=None,
-                groups=None, gender=None):
+    def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, **kwargs):
+
         # convert group names from the conventional in verification experiments to the internal database names
-        matched_groups = self.convert_names_to_lowlevel(
-            groups, self.low_level_group_names, self.high_level_group_names)
+        matched_groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
         # this conversion of the protocol with appended '-licit' or '-spoof' is a hack for verification experiments.
         # To adapt spoofing databases to the verification experiments, we need to be able to split a given protocol
@@ -102,6 +100,6 @@ class AVspoofBioDatabase(BioDatabase):
 
         # now, query the actual AVspoof database
         objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
-                                    clients=model_ids, gender=gender)
+                                    clients=model_ids, **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [AVspoofBioFile(f) for f in objects]

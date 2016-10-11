@@ -109,6 +109,8 @@ setup(
         'avspoof-spoof             = bob.bio.spear.config.database.avspoof:database_spoof',
         'asvspoof-licit             = bob.bio.spear.config.database.asvspoof:database_licit',
         'asvspoof-spoof             = bob.bio.spear.config.database.asvspoof:database_spoof',
+        'voicepa-licit             = bob.bio.spear.config.database.voicepa:database_licit',
+        'voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof',
       ],
 
       'bob.bio.preprocessor': [
@@ -123,7 +125,8 @@ setup(
         'lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
         'htk            = bob.bio.spear.config.extractor.htk:extractor', # HTK features
         'spro          = bob.bio.spear.config.extractor.spro:extractor', # SPRO features
-        
+
+
       ],
 
       'bob.bio.algorithm': [
@@ -139,7 +142,7 @@ setup(
       ],
       
       'bob.bio.grid':[
-      'demanding      = bob.bio.spear.config.grid.demanding:grid',
+        'demanding      = bob.bio.spear.config.grid.demanding:grid',
       ],
    },
 
