@@ -125,8 +125,20 @@ setup(
         'lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
         'htk            = bob.bio.spear.config.extractor.htk:extractor', # HTK features
         'spro          = bob.bio.spear.config.extractor.spro:extractor', # SPRO features
-
-
+        # 20 SSFCs with delta and delta-delta
+        'ssfc20  = bob.bio.spear.config.extractor.ssfc20:extractor',
+        # 20 SCFCs with delta and delta-delta
+        'scfc20  = bob.bio.spear.config.extractor.scfc20:extractor',
+        # 20 SCMCs with delta and delta-delta
+        'scmc20  = bob.bio.spear.config.extractor.scmc20:extractor',
+        # 20 RFCCs with delta and delta-delta
+        'rfcc20  = bob.bio.spear.config.extractor.rfcc20:extractor',
+        # 20 MFCC with delta and delta-delta
+        'mfcc20  = bob.bio.spear.config.extractor.mfcc20:extractor',
+        # 20 IMFCC with delta and delta-delta
+        'imfcc20  = bob.bio.spear.config.extractor.imfcc20:extractor',
+        # 20 LFCCs with delta and delta-delta
+        'lfcc20  = bob.bio.spear.config.extractor.lfcc20:extractor',
       ],
 
       'bob.bio.algorithm': [
@@ -139,10 +151,18 @@ setup(
         'gmm-banca                = bob.bio.spear.config.algorithm.gmm_regular_banca:algorithm', # GMM config used for BANCA
         'ivec-plda-mobio         = bob.bio.spear.config.algorithm.ivec_plda_mobio:algorithm', # IVec PLDA used for MOBIO
         'isv-mobio         = bob.bio.spear.config.algorithm.isv_mobio:algorithm', # ISV used for MOBIO
+        'ivec-avspoof  = bob.bio.spear.config.algorithm.ivec_avspoof:algorithm',  # IVec PLDA used for AVspoof
+        # I-Vector config used for AVspoof
+        'isv-avspoof  = bob.bio.spear.config.algorithm.isv_avspoof:algorithm',  # ISV config used for AVspoof
+        # GMM training algorithm as per the paper "A Comparison of Features for Synthetic Speech Detection"
+        'gmm-tomi  = bob.bio.spear.config.algorithm.gmm_tomi:algorithm',
+        # the same as above but with smaller thresholds
+        'gmm-tomi-scfc  = bob.bio.spear.config.algorithm.gmm_tomi_scfc:algorithm',
       ],
       
       'bob.bio.grid':[
         'demanding      = bob.bio.spear.config.grid.demanding:grid',
+        'modest         = bob.bio.spear.config.grid.modest:grid',
       ],
    },
 
