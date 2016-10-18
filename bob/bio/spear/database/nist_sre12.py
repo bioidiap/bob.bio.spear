@@ -13,6 +13,7 @@
 from .database import AudioBioFile
 from bob.bio.base.database import BioDatabase, BioFile
 import numpy as np
+import os
 
 class NistSre12BioFile(AudioBioFile):
     def __init__(self, f):
@@ -30,6 +31,25 @@ class NistSre12BioFile(AudioBioFile):
 
         data= np.cast['float'](data)
         return rate, data  
+
+    def make_path(self, directory=None, extension=None):
+        """Wraps the current path so that a complete path is formed
+
+        Keyword Parameters:
+
+        directory
+          An optional directory name that will be prefixed to the returned result.
+
+        extension
+          An optional extension that will be suffixed to the returned filename. The
+          extension normally includes the leading ``.`` character as in ``.jpg`` or
+          ``.hdf5``.
+
+        Returns a string containing the newly generated file path.
+        """
+        # assure that directory and extension are actually strings
+        # create the path
+        return str(os.path.join(directory or '', os.path.dirname(self.__f.path), self.__f.id + (extension or '')))
 
 
 class NistSre12BioDatabase(BioDatabase):
