@@ -25,6 +25,7 @@ class NistSre12BioFile(AudioBioFile):
         super(NistSre12BioFile, self).__init__(client_id='M_ID_X', path=f.path, file_id=f.id)
 
         self.__f = f
+        self.path = os.path.join( os.path.dirname(self.__f.path), self.__f.id)
         
     def load(self, directory=None, extension='.sph'):
         rate, data = self.__f.load(directory, extension)
