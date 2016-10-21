@@ -112,6 +112,7 @@ setup(
         'voicepa-licit             = bob.bio.spear.config.database.voicepa:database_licit',
         'voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof',
         'nist-sre12       = bob.bio.spear.config.database.nist_sre12:database', 
+        'nist-sre10       = bob.bio.spear.config.database.nist_sre10:database', 
       ],
 
       'bob.bio.preprocessor': [
