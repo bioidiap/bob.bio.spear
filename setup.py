@@ -106,6 +106,7 @@ setup(
         'mobio-audio-male       = bob.bio.spear.config.database.mobio_audio_male:database',
         'mobio-audio-female       = bob.bio.spear.config.database.mobio_audio_female:database',
         'nist-sre12       = bob.bio.spear.config.database.nist_sre12:database', 
+        'nist-sre10       = bob.bio.spear.config.database.nist_sre10:database', 
       ],
 
       'bob.bio.preprocessor': [
