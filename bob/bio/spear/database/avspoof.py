@@ -4,7 +4,7 @@
 # Wed 18 May 16:43:22 CEST 2016
 
 """
-  AVspoof database implementation of bob.bio.db.BioDatabase interface.
+  AVspoof database implementation of bob.bio.base.BioDatabase interface.
   It is an extension of an SQL-based database interface, which directly talks to AVspoof database, for
   verification experiments (good to use in bob.bio.base framework).
 """

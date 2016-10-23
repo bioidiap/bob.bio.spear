@@ -6,13 +6,12 @@
 
 .. _facereclib: http://pypi.python.org/pypi/facereclib
 .. _idiap: http://www.idiap.ch
-.. _github: http://www.github.com/idiap
+.. _gitlab: http://gitlab.idiap.ch/bob
 .. _bob: http://www.idiap.ch/software/bob
-.. _github bug reporting system: http://github.com/idiap/facereclib/issues
-.. _idiap at github: http://www.github.com/bioidiap
+.. _idiap at gitlab: http://gitlab.idiap.ch/bob
 .. _at&t database: http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html
-.. _bob's github page: http://idiap.github.com/bob
-.. _gridtk: http://github.com/idiap/gridtk
+.. _bob's gitlab page: http://gitlab.idiap.ch/bob
+.. _gridtk: http://gitlab.idiap.ch/bob/gridtk
 .. _buildout: http://www.buildout.org
 .. _nist: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _pypi: http://pypi.python.org
@@ -29,7 +28,7 @@
 .. _Spro: https://gforge.inria.fr/projects/spro
 .. _HTK: http://htk.eng.cam.ac.uk/
 .. _bob.db.mobio: https://pypi.python.org/pypi/bob.db.mobio
-.. _bob.db.verification.filelist: https://pypi.python.org/pypi/bob.db.verification.filelist
+.. _bob.db.bio_filelist: https://pypi.python.org/pypi/bob.db.bio_filelist
 .. _NIST: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _bob.bio.gmm: https://pypi.python.org/pypi/bob.bio.gmm
 
