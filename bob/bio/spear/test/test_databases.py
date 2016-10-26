@@ -26,6 +26,14 @@ from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import check_database, check_database_zt
 
 
+def test_timit():
+    database = bob.bio.base.load_resource('timit', 'database', preferred_package='bob.bio.spear')
+    check_database(database, groups=('dev',))
+
+def test_banca():
+    database = bob.bio.base.load_resource('banca-audio', 'database', preferred_package='bob.bio.spear')
+    check_database(database, groups=('dev', 'eval'))
+
 @db_available('voxforge')
 def test_voxforge():
     database = bob.bio.base.load_resource('voxforge', 'database', preferred_package='bob.bio.spear')
