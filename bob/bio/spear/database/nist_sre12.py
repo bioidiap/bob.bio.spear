@@ -23,11 +23,11 @@ class NistSre12BioFile(AudioBioFile):
         """
         super(NistSre12BioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
 
-        self.__f = f
-        self.path = os.path.join( os.path.dirname(self.__f.path), self.__f.id)
+        self.f = f
+        self.path = os.path.join( os.path.dirname(self.f.path), self.f.id)
         
     def load(self, directory=None, extension='.sph'):
-        rate, data = self.__f.load(directory, extension)
+        rate, data = self.f.load(directory, extension)
 
         data= np.cast['float'](data)
         return rate, data  
@@ -49,7 +49,7 @@ class NistSre12BioFile(AudioBioFile):
         """
         # assure that directory and extension are actually strings
         # create the path
-        return str(os.path.join(directory or '', os.path.dirname(self.__f.path), self.__f.id + (extension or '')))
+        return str(os.path.join(directory or '', os.path.dirname(self.f.path), self.f.id + (extension or '')))
 
 
 class NistSre12BioDatabase(BioDatabase):
