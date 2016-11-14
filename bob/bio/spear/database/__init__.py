@@ -28,6 +28,8 @@ from .voicepa import VoicePABioDatabase
 from .nist_sre12 import NistSre12BioDatabase
 from .nist_sre10 import NistSre10BioDatabase
 from .nist_sre08 import NistSre08BioDatabase
+from .nist_sre06 import NistSre06BioDatabase
+from .nist_sre05 import NistSre05BioDatabase
 
 # gets sphinx autodoc done right - don't remove it
 __all__ = [_ for _ in dir() if not _.startswith('_')]

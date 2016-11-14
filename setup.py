@@ -114,6 +114,8 @@ setup(
         'nist-sre12       = bob.bio.spear.config.database.nist_sre12:database', 
         'nist-sre10       = bob.bio.spear.config.database.nist_sre10:database', 
         'nist-sre08       = bob.bio.spear.config.database.nist_sre08:database'
+        'nist-sre06       = bob.bio.spear.config.database.nist_sre06:database'
+        'nist-sre05       = bob.bio.spear.config.database.nist_sre05:database'
       ],
 
       'bob.bio.preprocessor': [
