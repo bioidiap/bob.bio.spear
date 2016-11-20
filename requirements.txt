@@ -13,3 +13,4 @@ bob.measure
 bob.db.base
 bob.bio.base
 matplotlib   # for plotting
+bob.bio.db

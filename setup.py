@@ -111,6 +111,8 @@ setup(
         'asvspoof-spoof             = bob.bio.spear.config.database.asvspoof:database_spoof',
         'voicepa-licit             = bob.bio.spear.config.database.voicepa:database_licit',
         'voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof',
+        'cpqd_replay-licit             = bob.bio.spear.config.database.cpqd_replay:database_licit',
+        'cpqd_replay-spoof             = bob.bio.spear.config.database.cpqd_replay:database_spoof',
       ],
 
       'bob.bio.preprocessor': [

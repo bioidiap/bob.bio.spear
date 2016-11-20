@@ -5,3 +5,4 @@ bob.db.bio_filelist
 bob.db.avspoof
 bob.db.asvspoof
 bob.db.voicepa
+bob.db.cpqd_replay
