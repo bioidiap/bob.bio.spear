@@ -4,11 +4,11 @@
 # Tue 11 Oct 15:43:22 2016
 
 """
-  This is the implementation of CPqD Replay database high level interface that can be used in 
+  This is the implementation of CPqD Replay database high level interface that can be used in
   `bob.bio.base` framework. IMPORTANT: this interface is not suitable for running the verification experiments,
   since CPqD Replay does not have verification protocols. This interface is just a simple wrapper around
   presentation attack detection protocols, providing data for `licit` (real access) and `spoof` (attacks) scenarios,
-  so that training scripts provided by `bob.bio.base` can be run on this database. 
+  so that training scripts provided by `bob.bio.base` can be run on this database.
   Also, this is an extension of a FileList based database interface.
 """
 
@@ -102,7 +102,7 @@ class CPqDReplayBioDatabase(BioDatabase):
                 correct_purposes = ('attack',)
 
         # now, query the actual CPqDReplay database
-        objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
-                                    clients=model_ids, **kwargs)
+        objects = self.__db.objects(protocol=protocol, groups=matched_groups, purposes=correct_purposes,
+                                     **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [CPqDReplayBioFile(f) for f in objects]
