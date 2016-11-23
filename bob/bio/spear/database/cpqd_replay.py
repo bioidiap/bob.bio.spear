@@ -102,7 +102,7 @@ class CPqDReplayBioDatabase(BioDatabase):
                 correct_purposes = ('attack',)
 
         # now, query the actual CPqDReplay database
-        objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
-                                    clients=model_ids, **kwargs)
+        objects = self.__db.objects(protocol=protocol, groups=matched_groups, purposes=correct_purposes,
+                                    **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [CPqDReplayBioFile(f) for f in objects]

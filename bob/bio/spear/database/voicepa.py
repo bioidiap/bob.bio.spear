@@ -84,9 +84,10 @@ class VoicePABioDatabase(BioDatabase):
         # spoof protocol uses real data for enrollment and spoofed data for probe
         # so, probe set is the same as attack set
         if appendix == 'spoof':
-            # by default we return all data (enroll:realdata + probe:attackdata)
+            # by default we return attacks only for 'world' group
+            # and (enroll:realdata + probe:attackdata) for dev and eval
             if purposes is None:
-                correct_purposes = ('enroll', 'attack')
+                correct_purposes = ('attack',) if 'world' in matched_groups else ('enroll', 'attack')
             # otherwise replace 'probe' with 'attack'
             elif isinstance(purposes, (tuple, list)):
                 correct_purposes = []
