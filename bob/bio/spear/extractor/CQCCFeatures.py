@@ -37,33 +37,37 @@ class CQCCFeatures(Preprocessor, Extractor):
             **kwargs
     ):
         # call base class constructor with its set of parameters
-        Preprocessor.__init__(self, read_original_data=self.do_nothing_function, **kwargs)
+        Preprocessor.__init__(self, read_original_data=self.read_matlab_files, **kwargs)
         Extractor.__init__(self, requires_training=False, split_training_data_by_client=split_training_data_by_client,
                            **kwargs)
         self.features_mask = features_mask
 
-    def do_nothing_function(self, biofile, directory, extension):
+    def read_matlab_files(self, biofile, directory, extension):
         """
         We have no preprocessing, so this function does nothing
         """
-        return None
-
-    def write_data(self, data, data_file, compression=0):
-        """
-        We have no preprocessing, so this function does nothing
-        """
-        pass
-
-    def read_data(self, data_file):
-        """
-        Here we read Matlab file and extract the CQCC features
-        They will be passed to the __call__() function by the extractor of bob.bio.base
-        """
-        # we require bob.io.matlab to be available at this moment but it does not need to be available
-        # in the bob.bio.spear package as a whole
         import bob.io.matlab
         # return the numpy array read from the data_file
-        return bob.io.base.load(data_file)
+        data_path = biofile.make_path(directory, extension)
+        return bob.io.base.load(data_path)
+
+
+#    def write_data(self, data, data_file, compression=0):
+#        """
+#        We have no preprocessing, so this function does nothing
+#        """
+#        pass
+#
+#    def read_data(self, data_file):
+#        """
+#        Here we read Matlab file and extract the CQCC features
+#        They will be passed to the __call__() function by the extractor of bob.bio.base
+#        """
+#        # we require bob.io.matlab to be available at this moment but it does not need to be available
+#        # in the bob.bio.spear package as a whole
+#        import bob.io.matlab
+#        # return the numpy array read from the data_file
+#        return bob.io.base.load(data_file)
 
     def __call__(self, input_data, annotations):
         """
@@ -77,11 +81,16 @@ class CQCCFeatures(Preprocessor, Extractor):
 
         # From now on we are acting as an Extractor that has received correctly read Matlab CQCC features
 
+        features = input_data
         # return features that we have just read with self.read_data()
-        assert (self.features_mask.shape, input_data.shape)
-        features = numpy.ma.array(input_data, self.features_mask)
+        assert(self.features_mask.shape[0] < input_data.shape[0])
+        if self.features_mask.shape[0] < input_data.shape[0]:
+            print("In Preprocesing, creating masking array")
+            features = input_data[self.features_mask]
 
-        return features
+        # transpose, because of the way original Matlab-based features are
+        # computed
+        return numpy.transpose(features)
 
 
 cqcc_reader = CQCCFeatures()

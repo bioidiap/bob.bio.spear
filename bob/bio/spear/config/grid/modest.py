@@ -15,7 +15,7 @@ grid = bob.bio.base.grid.Grid(
   # feature projection
   projection_queue = '4G-io-big',
   # model enrollment
-  enrollment_queue = '8G',
+  enrollment_queue = '8G-io-big',
   # scoring
   scoring_queue = '8G-io-big'
 )
