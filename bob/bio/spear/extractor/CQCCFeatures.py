@@ -44,52 +44,27 @@ class CQCCFeatures(Preprocessor, Extractor):
 
     def read_matlab_files(self, biofile, directory, extension):
         """
-        We have no preprocessing, so this function does nothing
+        Read pre-computed CQCC Matlab features here
         """
         import bob.io.matlab
         # return the numpy array read from the data_file
         data_path = biofile.make_path(directory, extension)
         return bob.io.base.load(data_path)
 
-
-#    def write_data(self, data, data_file, compression=0):
-#        """
-#        We have no preprocessing, so this function does nothing
-#        """
-#        pass
-#
-#    def read_data(self, data_file):
-#        """
-#        Here we read Matlab file and extract the CQCC features
-#        They will be passed to the __call__() function by the extractor of bob.bio.base
-#        """
-#        # we require bob.io.matlab to be available at this moment but it does not need to be available
-#        # in the bob.bio.spear package as a whole
-#        import bob.io.matlab
-#        # return the numpy array read from the data_file
-#        return bob.io.base.load(data_file)
-
     def __call__(self, input_data, annotations):
         """
-        When this function is called in the capacity of Preprocessor, we do nothing.
-        When it is called as an Extractor, we assume that Matlab features were read correctly,
-        so we can process them
+        When this function is called in the capacity of Preprocessor, we apply feature mask to the features.
+        When it is called as an Extractor, we assume that we have correct CQCC features already,
+        so we can pass them on to the classifier
         """
 
-        if input_data is None:  # acting as an empty Preprocessor
-            return 0  # do not return None to avoid preprocessing warnings
-
-        # From now on we are acting as an Extractor that has received correctly read Matlab CQCC features
-
         features = input_data
-        # return features that we have just read with self.read_data()
+        # features mask cannot be large the the features themselves
         assert(self.features_mask.shape[0] < input_data.shape[0])
-        if self.features_mask.shape[0] < input_data.shape[0]:
-            print("In Preprocesing, creating masking array")
+        if self.features_mask.shape[0] < input_data.shape[0]:  # apply the mask
             features = input_data[self.features_mask]
 
-        # transpose, because of the way original Matlab-based features are
-        # computed
+        # transpose, because of the way original Matlab-based features are computed
         return numpy.transpose(features)
 
 

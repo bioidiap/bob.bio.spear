@@ -4,8 +4,8 @@ from bob.bio.spear.database import ASVspoofBioDatabase
 
 
 # directory where the wave files are stored
-asvspoof_wav_directory = "/idiap/temp/pkorshunov/avspoof_cqcc/ASVspoof_d3/prms"
-asvspoof_input_ext = ".mat"
+asvspoof_wav_directory = "[YOUR_ASVSPOOF_WAV_DIRECTORY]"
+asvspoof_input_ext = ".wav"
 
 
 database_licit = ASVspoofBioDatabase(
