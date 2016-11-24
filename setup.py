@@ -100,7 +100,6 @@ setup(
     entry_points = {
 
       'bob.bio.database': [
-        'voxforge         = bob.bio.spear.config.database.voxforge:database',
         'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
         'timit            = bob.bio.spear.config.database.timit:database',
         'mobio-audio-male       = bob.bio.spear.config.database.mobio_audio_male:database',
