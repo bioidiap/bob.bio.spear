@@ -23,6 +23,7 @@ from .Cepstral import Cepstral
 from .HTKFeatures import HTKFeatures
 from .SPROFeatures import SPROFeatures
 from .cepstral_extended import CepstralExtended
+from CQCCFeatures import CQCCFeatures
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -43,5 +44,6 @@ __appropriate__(
     HTKFeatures,
     SPROFeatures,
     CepstralExtended,
+    CQCCFeatures,
     )
 __all__ = [_ for _ in dir() if not _.startswith('_')]
