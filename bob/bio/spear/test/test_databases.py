@@ -35,6 +35,7 @@ def test_voxforge():
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
+
 @db_available('mobio')
 def test_mobio():
     database = bob.bio.base.load_resource('mobio-audio-male', 'database', preferred_package='bob.bio.spear')
@@ -43,6 +44,7 @@ def test_mobio():
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
 
 @db_available('avspoof')
 def test_avspoof_licit():
@@ -53,6 +55,7 @@ def test_avspoof_licit():
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
+
 @db_available('asvspoof')
 def test_asvspoof_licit():
     database = bob.bio.base.load_resource('asvspoof-licit', 'database', preferred_package='bob.bio.spear')
@@ -61,6 +64,7 @@ def test_asvspoof_licit():
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
 
 @db_available('voicepa')
 def test_voicepa_licit():
@@ -81,6 +85,7 @@ def test_avspoof_spoof():
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
+
 @db_available('asvspoof')
 def test_asvspoof_spoof():
     database = bob.bio.base.load_resource('asvspoof-spoof', 'database', preferred_package='bob.bio.spear')
@@ -90,11 +95,30 @@ def test_asvspoof_spoof():
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
+
 @db_available('voicepa')
 def test_voicepa_spoof():
     database = bob.bio.base.load_resource('voicepa-spoof', 'database', preferred_package='bob.bio.spear')
     try:
         check_database(database, groups=('dev', 'eval'), training_depends=True, skip_train=True)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+
+def test_timit():
+    database = bob.bio.base.load_resource('timit', 'database', preferred_package='bob.bio.spear')
+    try:
+        check_database(database, groups=('dev',))
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+
+def test_banca():
+    database = bob.bio.base.load_resource('banca-audio', 'database', preferred_package='bob.bio.spear')
+    try:
+        check_database(database, groups=('dev', 'eval'))
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)

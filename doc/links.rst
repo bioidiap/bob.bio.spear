@@ -28,7 +28,6 @@
 .. _Spro: https://gforge.inria.fr/projects/spro
 .. _HTK: http://htk.eng.cam.ac.uk/
 .. _bob.db.mobio: https://pypi.python.org/pypi/bob.db.mobio
-.. _bob.db.bio_filelist: https://pypi.python.org/pypi/bob.db.bio_filelist
 .. _NIST: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _bob.bio.gmm: https://pypi.python.org/pypi/bob.bio.gmm
 
