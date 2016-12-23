@@ -21,7 +21,6 @@
 
 from .database import AudioBioFile
 from .mobio import MobioBioDatabase
-from .voxforge import VoxforgeBioDatabase
 from .asvspoof import ASVspoofBioDatabase
 from .avspoof import AVspoofBioDatabase
 from .voicepa import VoicePABioDatabase
@@ -43,7 +42,6 @@ def __appropriate__(*args):
 __appropriate__(
     AudioBioFile,
     MobioBioDatabase,
-    VoxforgeBioDatabase,
     ASVspoofBioDatabase,
     AVspoofBioDatabase,
     VoicePABioDatabase,
