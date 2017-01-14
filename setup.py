@@ -80,7 +80,7 @@ setup(
     #
     # Our database packages are good examples of namespace implementations
     # using several layers. You can check them out here:
-    # https://gitlab.idiap.ch/bob/bob/wikis/Packages
+    # https://www.idiap.ch/software/bob/packages
 
 
     # This entry defines which scripts you will have inside the 'bin' directory
