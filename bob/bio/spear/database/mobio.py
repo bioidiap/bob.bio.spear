@@ -11,7 +11,7 @@
 
 
 from .database import AudioBioFile
-from bob.bio.base.database import ZTBioDatabase, BioFile
+from bob.bio.base.database import ZTBioDatabase
 
 
 class MobioBioDatabase(ZTBioDatabase):
@@ -21,29 +21,44 @@ class MobioBioDatabase(ZTBioDatabase):
 
     def __init__(
             self,
+            original_directory=None,
+            original_extension=None,
+            annotation_directory=None,
+            annotation_extension='.pos',
             **kwargs
     ):
         # call base class constructors to open a session to the database
-        super(MobioBioDatabase, self).__init__(name='mobio',
-                                               **kwargs)
+        super(MobioBioDatabase, self).__init__(
+            name='mobio',
+            original_directory=original_directory,
+            original_extension=original_extension,
+            annotation_directory=annotation_directory,
+            annotation_extension=annotation_extension,
+            **kwargs)
 
         from bob.db.mobio.query import Database as LowLevelDatabase
-        self.__db = LowLevelDatabase()
+        self._db = LowLevelDatabase(original_directory,
+                                    original_extension,
+                                    annotation_directory,
+                                    annotation_extension)
 
     def model_ids_with_protocol(self, groups=None, protocol=None, gender=None):
-        return self.__db.model_ids(groups=groups, protocol=protocol, gender=gender)
+        return self._db.model_ids(groups=groups, protocol=protocol, gender=gender)
 
     def tmodel_ids_with_protocol(self, protocol=None, groups=None, **kwargs):
-        return self.__db.tmodel_ids(protocol=protocol, groups=groups, **kwargs)
+        return self._db.tmodel_ids(protocol=protocol, groups=groups, **kwargs)
 
     def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
-        retval = self.__db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
+        retval = self._db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
         return [AudioBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
 
     def tobjects(self, groups=None, protocol=None, model_ids=None, **kwargs):
-        retval = self.__db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
+        retval = self._db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
         return [AudioBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
 
     def zobjects(self, groups=None, protocol=None, **kwargs):
-        retval = self.__db.zobjects(groups=groups, protocol=protocol, **kwargs)
+        retval = self._db.zobjects(groups=groups, protocol=protocol, **kwargs)
         return [AudioBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
+
+    def annotations(self, file):
+        return None

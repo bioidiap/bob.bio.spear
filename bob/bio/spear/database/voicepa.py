@@ -34,7 +34,7 @@ class VoicePABioDatabase(BioDatabase):
         super(VoicePABioDatabase, self).__init__(name='voicepa', **kwargs)
 
         from bob.db.voicepa.query import Database as LowLevelDatabase
-        self.__db = LowLevelDatabase()
+        self._db = LowLevelDatabase()
 
         self.low_level_group_names = ('train', 'dev', 'eval')
         self.high_level_group_names = ('world', 'dev', 'eval')
@@ -42,7 +42,7 @@ class VoicePABioDatabase(BioDatabase):
     def model_ids_with_protocol(self, groups=None, protocol=None, gender=None):
         groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
-        return [client.id for client in self.__db.clients(groups=groups, gender=gender)]
+        return [client.id for client in self._db.clients(groups=groups, gender=gender)]
 
     def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, **kwargs):
 
@@ -99,7 +99,10 @@ class VoicePABioDatabase(BioDatabase):
                 correct_purposes = ('attack',)
 
         # now, query the actual VoicePA database
-        objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
+        objects = self._db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
                                     clients=model_ids, **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [VoicePABioFile(f) for f in objects]
+
+    def annotations(self, file):
+        return None
