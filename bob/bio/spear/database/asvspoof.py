@@ -48,6 +48,8 @@ class ASVspoofBioDatabase(BioDatabase):
     def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, **kwargs):
 
         # convert group names from the conventional in verification experiments to the internal database names
+        if groups is None:  # all groups are assumed
+            groups = self.high_level_group_names
         matched_groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
         # this conversion of the protocol with appended '-licit' or '-spoof' is a hack for verification experiments.

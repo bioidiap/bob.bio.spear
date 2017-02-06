@@ -4,3 +4,4 @@ bob.db.avspoof
 bob.db.asvspoof
 bob.db.voicepa
 bob.db.cpqd_replay
+bob.db.asvspoof2017
