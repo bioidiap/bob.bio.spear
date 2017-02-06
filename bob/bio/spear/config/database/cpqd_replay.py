@@ -4,7 +4,7 @@ from bob.bio.spear.database import CPqDReplayBioDatabase
 
 
 # directory where the wave files are stored
-cpqd_replay_wav_directory = "/idiap/resource/database/CPqD/"
+cpqd_replay_wav_directory = "[YOUR_CPQDREPLAY_WAV_DIRECTORY]"
 cpqd_replay_input_ext = ".wav"
 
 

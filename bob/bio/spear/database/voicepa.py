@@ -34,7 +34,7 @@ class VoicePABioDatabase(BioDatabase):
         super(VoicePABioDatabase, self).__init__(name='voicepa', **kwargs)
 
         from bob.db.voicepa.query import Database as LowLevelDatabase
-        self.__db = LowLevelDatabase()
+        self._db = LowLevelDatabase()
 
         self.low_level_group_names = ('train', 'dev', 'eval')
         self.high_level_group_names = ('world', 'dev', 'eval')
@@ -42,11 +42,13 @@ class VoicePABioDatabase(BioDatabase):
     def model_ids_with_protocol(self, groups=None, protocol=None, gender=None):
         groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
-        return [client.id for client in self.__db.clients(groups=groups, gender=gender)]
+        return [client.id for client in self._db.clients(groups=groups, gender=gender)]
 
     def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, **kwargs):
 
         # convert group names from the conventional in verification experiments to the internal database names
+        if groups is None:  # all groups are assumed
+            groups = self.high_level_group_names
         matched_groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
         # this conversion of the protocol with appended '-licit' or '-spoof' is a hack for verification experiments.
@@ -84,9 +86,10 @@ class VoicePABioDatabase(BioDatabase):
         # spoof protocol uses real data for enrollment and spoofed data for probe
         # so, probe set is the same as attack set
         if appendix == 'spoof':
-            # by default we return all data (enroll:realdata + probe:attackdata)
+            # by default we return attacks only for 'world' group
+            # and (enroll:realdata + probe:attackdata) for dev and eval
             if purposes is None:
-                correct_purposes = ('enroll', 'attack')
+                correct_purposes = ('attack',) if 'train' in matched_groups else ('enroll', 'attack')
             # otherwise replace 'probe' with 'attack'
             elif isinstance(purposes, (tuple, list)):
                 correct_purposes = []
@@ -99,7 +102,10 @@ class VoicePABioDatabase(BioDatabase):
                 correct_purposes = ('attack',)
 
         # now, query the actual VoicePA database
-        objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
+        objects = self._db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
                                     clients=model_ids, **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [VoicePABioFile(f) for f in objects]
+
+    def annotations(self, file):
+        return None

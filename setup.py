@@ -80,7 +80,7 @@ setup(
     #
     # Our database packages are good examples of namespace implementations
     # using several layers. You can check them out here:
-    # https://gitlab.idiap.ch/bob/bob/wikis/Packages
+    # https://www.idiap.ch/software/bob/packages
 
 
     # This entry defines which scripts you will have inside the 'bin' directory
@@ -100,7 +100,6 @@ setup(
     entry_points = {
 
       'bob.bio.database': [
-        'voxforge         = bob.bio.spear.config.database.voxforge:database',
         'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
         'timit            = bob.bio.spear.config.database.timit:database',
         'mobio-audio-male       = bob.bio.spear.config.database.mobio_audio_male:database',
@@ -113,9 +112,12 @@ setup(
         'voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof',
         'cpqd_replay-licit             = bob.bio.spear.config.database.cpqd_replay:database_licit',
         'cpqd_replay-spoof             = bob.bio.spear.config.database.cpqd_replay:database_spoof',
+        'asvspoof2017-licit             = bob.bio.spear.config.database.asvspoof2017:database_licit',
+        'asvspoof2017-spoof             = bob.bio.spear.config.database.asvspoof2017:database_spoof',
       ],
 
       'bob.bio.preprocessor': [
+        'cqcc20p            = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Empty preprocessor for CQCC features
         'energy-2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor', # two Gauss energy
         'energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy        
         'mod-4hz           = bob.bio.spear.config.preprocessor.mod_4hz:preprocessor', # mod_4hz
@@ -123,6 +125,7 @@ setup(
       ],
 
       'bob.bio.extractor': [
+        'cqcc20e = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Extractor (reads Matlab files) for CQCC features
         'mfcc-60    = bob.bio.spear.config.extractor.mfcc_60:extractor', # 60-dim MFCC features
         'lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
         'htk            = bob.bio.spear.config.extractor.htk:extractor', # HTK features

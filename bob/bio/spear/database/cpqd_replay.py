@@ -12,7 +12,7 @@
   Also, this is an extension of a FileList based database interface.
 """
 
-from bob.bio.db.database import BioDatabase
+from bob.bio.base.database import BioDatabase
 from bob.bio.spear.database import AudioBioFile
 
 
@@ -50,6 +50,8 @@ class CPqDReplayBioDatabase(BioDatabase):
     def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, **kwargs):
 
         # convert group names from the conventional names in verification experiments to the internal database names
+        if groups is None:  # all groups are assumed
+            groups = self.high_level_group_names
         matched_groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
         # this conversion of the protocol with appended '-licit' or '-spoof' is a hack for verification experiments.
@@ -103,6 +105,6 @@ class CPqDReplayBioDatabase(BioDatabase):
 
         # now, query the actual CPqDReplay database
         objects = self.__db.objects(protocol=protocol, groups=matched_groups, purposes=correct_purposes,
-                                     **kwargs)
+                                    **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [CPqDReplayBioFile(f) for f in objects]

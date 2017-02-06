@@ -11,7 +11,7 @@
 .. _idiap at gitlab: http://gitlab.idiap.ch/bob
 .. _at&t database: http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html
 .. _bob's gitlab page: http://gitlab.idiap.ch/bob
-.. _gridtk: http://gitlab.idiap.ch/bob/gridtk
+.. _gridtk: https://pypi.python.org/pypi/gridtk
 .. _buildout: http://www.buildout.org
 .. _nist: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _pypi: http://pypi.python.org
@@ -28,7 +28,6 @@
 .. _Spro: https://gforge.inria.fr/projects/spro
 .. _HTK: http://htk.eng.cam.ac.uk/
 .. _bob.db.mobio: https://pypi.python.org/pypi/bob.db.mobio
-.. _bob.db.bio_filelist: https://pypi.python.org/pypi/bob.db.bio_filelist
 .. _NIST: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _bob.bio.gmm: https://pypi.python.org/pypi/bob.bio.gmm
 

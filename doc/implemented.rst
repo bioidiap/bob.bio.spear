@@ -7,6 +7,16 @@ Tools implemented in bob.bio.spear
 Summary
 ----------------
 
+Databases
+~~~~~~~~~
+
+.. autosummary::
+   bob.bio.spear.database.ASVspoofBioDatabase
+   bob.bio.spear.database.AVspoofBioDatabase
+   bob.bio.spear.database.MobioBioDatabase
+   bob.bio.spear.database.VoicePABioDatabase
+
+
 Speech Preprocessors
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -26,6 +36,11 @@ Voice Feature Extractors
    bob.bio.spear.extractor.SPROFeatures
    bob.bio.spear.extractor.HTKFeatures
 
+
+Databases
+---------
+
+.. automodule:: bob.bio.spear.database
 
 Preprocessors
 ----------------------
