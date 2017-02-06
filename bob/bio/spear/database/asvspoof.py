@@ -48,6 +48,8 @@ class ASVspoofBioDatabase(BioDatabase):
     def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, **kwargs):
 
         # convert group names from the conventional in verification experiments to the internal database names
+        if groups is None:  # all groups are assumed
+            groups = self.high_level_group_names
         matched_groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
         # this conversion of the protocol with appended '-licit' or '-spoof' is a hack for verification experiments.
@@ -98,7 +100,7 @@ class ASVspoofBioDatabase(BioDatabase):
             # by default we return attacks only for 'world' group
             # and (real:realdata + probe:attackdata) for dev and eval
             if purposes is None:
-                correct_purposes = ('attack',) if 'world' in matched_groups else ('real', 'attack')
+                correct_purposes = ('attack',) if 'train' in matched_groups else ('real', 'attack')
             # otherwise replace 'probe' with 'attack'
             elif isinstance(purposes, (tuple, list)):
                 correct_purposes = []
