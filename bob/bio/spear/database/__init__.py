@@ -24,7 +24,7 @@ from .mobio import MobioBioDatabase
 from .asvspoof import ASVspoofBioDatabase
 from .avspoof import AVspoofBioDatabase
 from .voicepa import VoicePABioDatabase
-
+from .cpqd_replay import CPqDReplayBioDatabase
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
   """Says object was actually declared here, and not in the import module.
@@ -45,5 +45,6 @@ __appropriate__(
     ASVspoofBioDatabase,
     AVspoofBioDatabase,
     VoicePABioDatabase,
+    CPqDReplayBioDatabase,
     )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

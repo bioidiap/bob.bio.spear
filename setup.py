@@ -110,9 +110,12 @@ setup(
         'asvspoof-spoof             = bob.bio.spear.config.database.asvspoof:database_spoof',
         'voicepa-licit             = bob.bio.spear.config.database.voicepa:database_licit',
         'voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof',
+        'cpqd_replay-licit             = bob.bio.spear.config.database.cpqd_replay:database_licit',
+        'cpqd_replay-spoof             = bob.bio.spear.config.database.cpqd_replay:database_spoof',
       ],
 
       'bob.bio.preprocessor': [
+        'cqcc20p            = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Empty preprocessor for CQCC features
         'energy-2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor', # two Gauss energy
         'energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy        
         'mod-4hz           = bob.bio.spear.config.preprocessor.mod_4hz:preprocessor', # mod_4hz
@@ -120,6 +123,7 @@ setup(
       ],
 
       'bob.bio.extractor': [
+        'cqcc20e = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Extractor (reads Matlab files) for CQCC features
         'mfcc-60    = bob.bio.spear.config.extractor.mfcc_60:extractor', # 60-dim MFCC features
         'lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
         'htk            = bob.bio.spear.config.extractor.htk:extractor', # HTK features

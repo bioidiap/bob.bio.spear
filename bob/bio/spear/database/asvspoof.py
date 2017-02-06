@@ -95,9 +95,10 @@ class ASVspoofBioDatabase(BioDatabase):
         # for any other protocol use real data and spoofed data (probe)
         # so, probe set is the same as attack set
         else:
-            # by default we return all data (enroll:realdata + probe:attackdata)
+            # by default we return attacks only for 'world' group
+            # and (real:realdata + probe:attackdata) for dev and eval
             if purposes is None:
-                correct_purposes = ('real', 'attack')
+                correct_purposes = ('attack',) if 'world' in matched_groups else ('real', 'attack')
             # otherwise replace 'probe' with 'attack'
             elif isinstance(purposes, (tuple, list)):
                 correct_purposes = []
