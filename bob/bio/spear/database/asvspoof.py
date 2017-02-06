@@ -100,7 +100,7 @@ class ASVspoofBioDatabase(BioDatabase):
             # by default we return attacks only for 'world' group
             # and (real:realdata + probe:attackdata) for dev and eval
             if purposes is None:
-                correct_purposes = ('attack',) if 'world' in matched_groups else ('real', 'attack')
+                correct_purposes = ('attack',) if 'train' in matched_groups else ('real', 'attack')
             # otherwise replace 'probe' with 'attack'
             elif isinstance(purposes, (tuple, list)):
                 correct_purposes = []
