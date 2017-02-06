@@ -108,3 +108,6 @@ class CPqDReplayBioDatabase(BioDatabase):
                                     **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [CPqDReplayBioFile(f) for f in objects]
+
+    def annotations(self, file):
+        return None

@@ -108,3 +108,6 @@ class ASVspoof2017BioDatabase(BioDatabase):
                                     **kwargs)
         # make sure to return BioFile representation of a file, not the database one
         return [ASVspoof2017BioFile(f) for f in objects]
+
+    def annotations(self, file):
+        return None
