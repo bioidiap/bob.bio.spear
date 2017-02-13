@@ -24,7 +24,6 @@ from .mobio import MobioBioDatabase
 from .asvspoof import ASVspoofBioDatabase
 from .avspoof import AVspoofBioDatabase
 from .voicepa import VoicePABioDatabase
-from .cpqd_replay import CPqDReplayBioDatabase
 from .asvspoof2017 import ASVspoof2017BioDatabase
 
 # gets sphinx autodoc done right - don't remove it
@@ -47,7 +46,6 @@ __appropriate__(
     ASVspoofBioDatabase,
     AVspoofBioDatabase,
     VoicePABioDatabase,
-    CPqDReplayBioDatabase,
     ASVspoof2017BioDatabase,
     )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

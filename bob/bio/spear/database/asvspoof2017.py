@@ -75,7 +75,7 @@ class ASVspoof2017BioDatabase(BioDatabase):
             # put back everything except the appendix into the protocol
             protocol = '-'.join(protocol.split('-')[:-1])
 
-        # if protocol was empty, we set it to the cpqdlspk1, which is one of the protocols in the CPqD Replay
+        # if protocol was empty, we set it to the default 'competition'
         if not protocol:
             protocol = 'competition'
 
