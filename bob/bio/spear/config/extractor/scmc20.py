@@ -6,6 +6,7 @@ extractor = bob.bio.spear.extractor.CepstralExtended(
     # Md Sahidullah, Tomi Kinnunen, Cemal Hanilci
     # SCMC features as per paper that compares different features
 
+#    keep_only_deltas=False, # keep them as well temporarily
     pre_emphasis_coef=0.97, # as per the algorithm implemented in the paper
     n_ceps=20, # number of SCMC coefficients should be 20 - this is the number we cut off from whole Cepstrum
     n_filters=20, # number of filters in the bank is also 20

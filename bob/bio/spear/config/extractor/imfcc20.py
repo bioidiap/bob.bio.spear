@@ -5,6 +5,7 @@ extractor = bob.bio.spear.extractor.CepstralExtended(
     # the parameters emulate the ones in the paper "A Comparison of Features for Synthetic Speech Detection" by
     # Md Sahidullah, Tomi Kinnunen, Cemal Hanilci
 
+#    keep_only_deltas=False, # keep them as well temporarily
     pre_emphasis_coef=0.97, # as per the algorithm implemented in the paper
     n_ceps=20, # number of Inversed MFCC coefficients should be 20 - this is the number we cut off from whole Cepstrum
     n_filters=20, # number of filters in the bank is also 20

@@ -59,7 +59,7 @@ class CepstralExtended(Extractor):
             keep_only_deltas=True,
             log_filter=True,
             energy_filter=False,
-            vad_filter="no_filter",  # we do apply any trim filter by default
+            vad_filter="no_filter",  # we do not apply any trim filter by default
             normalize_feature_vector = False,
             **kwargs
     ):

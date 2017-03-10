@@ -4,11 +4,11 @@
 # Tue 11 Oct 15:43:22 2016
 
 """
-  This is the implementation of ASVspoof2017 Competition database high level interface that can be used in 
+  This is the implementation of ASVspoof2017 Competition database high level interface that can be used in
   `bob.bio.base` framework. IMPORTANT: this interface is not suitable for running the verification experiments,
   since ASVspoof2017 does not have verification protocols. This interface is just a simple wrapper around
   presentation attack detection protocols, providing data for `licit` (real access) and `spoof` (attacks) scenarios,
-  so that training scripts provided by `bob.bio.base` can be run on this database. 
+  so that training scripts provided by `bob.bio.base` can be run on this database.
   Also, this is an extension of a FileList based database interface.
 """
 
@@ -79,6 +79,14 @@ class ASVspoof2017BioDatabase(BioDatabase):
         if not protocol:
             protocol = 'competition'
 
+        print (matched_groups)
+        if protocol == 'largetrain':
+            protocol = 'competition'
+            if matched_groups == 'train' or 'train' in matched_groups:
+                matched_groups = ('train', 'dev')
+            if matched_groups == 'dev':
+                matched_groups = 'eval'
+        print (matched_groups)
         correct_purposes = purposes
         # licit protocol is for real access data only
         if appendix == 'licit':

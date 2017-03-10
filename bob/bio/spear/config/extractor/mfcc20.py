@@ -17,5 +17,6 @@ extractor = bob.bio.spear.extractor.CepstralExtended(
     energy_filter =True, # The paper uses power of FFT magnitude
     dct_norm = True, # The paper uses normed DCT-II variant
     delta_win=1, # the paper computes deltas on window of size 1
+#    keep_only_deltas=False, # keep them as well temporarily
 )
 
