@@ -112,6 +112,7 @@ setup(
         'voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof',
         'asvspoof2017-licit             = bob.bio.spear.config.database.asvspoof2017:database_licit',
         'asvspoof2017-spoof             = bob.bio.spear.config.database.asvspoof2017:database_spoof',
+        'ami         = bob.bio.spear.config.database.ami:database',
       ],
 
       'bob.bio.preprocessor': [

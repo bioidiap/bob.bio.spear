@@ -21,6 +21,7 @@
 .. _virtualbox: https://www.virtualbox.org
 .. _hdf5: http://www.hdfgroup.org/HDF5
 .. _Voxforge: http://www.voxforge.org/
+.. _Ami: http://groups.inf.ed.ac.uk/ami/corpus/
 .. _BANCA: http://www.ee.surrey.ac.uk/CVSSP/banca/
 .. _TIMIT: http://www.ldc.upenn.edu/Catalog/catalogEntry.jsp?catalogId=LDC93S1
 .. _logistic regression: http://en.wikipedia.org/wiki/Logistic_regression

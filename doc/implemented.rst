@@ -15,6 +15,7 @@ Databases
    bob.bio.spear.database.AVspoofBioDatabase
    bob.bio.spear.database.MobioBioDatabase
    bob.bio.spear.database.VoicePABioDatabase
+   bob.bio.spear.database.AmiBioDatabase
 
 
 Speech Preprocessors

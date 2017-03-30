@@ -35,6 +35,14 @@ def test_mobio():
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
+@db_available('ami')
+def test_ami():
+    database = bob.bio.base.load_resource('ami', 'database', preferred_package='bob.bio.spear')
+    try:
+        check_database(database, groups=('dev', 'eval'))
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)   
 
 @db_available('avspoof')
 def test_avspoof_licit():

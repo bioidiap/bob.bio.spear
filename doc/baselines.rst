@@ -200,7 +200,47 @@ Here is the performance of this system:
 To generate the results presented in the ICASSP 2014 paper, please check the script included in the `icassp` folder of the toolbox.
 Note that the MOBIO dataset has different protocols, and that are all implemented in `bob.db.mobio`_. But in this toolbox, we provide separately mobile-0 protocol (into filelist format) for simplicity.
 
-5. NIST SRE 2012
+5. AMIcorpus dataset
+~~~~~~~~~~~~~~~~
+`AMI`_ is one of the most difficult databases for verification, mainly because of the length of the audio files, the noise and to the fact that there's no single-speaker files. So to use AMI for veification, we assumed that the headset recordings belong to only one speaker, although other people's could be heared clearly in some of these files. In the following example to evaluate speaker recognition systems, we used MFCC features, comined with energy2gauss preprocessor:
+
+  $ bin/verify.py -vv -d ami -p energy-2gauss -e mfcc-60 -a gmm -s ubm_gmm
+
+Here is the performance of the system:
+
+* ``The HTER of the development set of 'UBM-GMM' is 1.877%``
+* ``The HTER of the evaluation set of 'UBM-GMM' is 8.202%``
+
+**JFA** toolchain::
+
+  $  bin/verify.py  -d ami -p energy-2gauss -e mfcc-60 -a jfa -s jfa --groups {dev,eval} -g grid
+
+* ``The HTER of the development set of 'JFA' is 1.652%``
+* ``The HTER of the evaluation set of 'JFA' is 11.561%``
+
+**ISV** toolchain::
+
+  $  bin/verify.py  -d ami -p energy-2gauss -e mfcc-60 -a isv -s isv --groups {dev,eval} -g grid
+
+* ``The HTER of the development set of 'ISV' is 1.426%``
+* ``The HTER of the evaluation set of 'ISV' is 3.360%``
+
+**I-Vector** toolchain with cosine distance scoring::
+
+  $  bin/verify.py  -d ami -p energy-2gauss -e mfcc-60 -a ivector-cosine -s ivec_cosine --groups {dev,eval} -g grid
+
+* ``The HTER of the development set of 'TV-cosine' is 10.586%``
+* ``The HTER of the evaluation set of 'TV-cosine' is 17.194%``
+
+**I-Vector** toolchain with PLDA scoring::
+
+  $  bin/verify.py  -d ami -p energy-2gauss -e mfcc-60 -a ivector-plda -s ivec_plda --groups {dev,eval} -g grid
+
+* ``The HTER of the development set of 'TV-PLDA' is 2.252%``
+* ``The HTER of the evaluation set of 'TV-PLDA' is 4.545%``
+
+
+6. NIST SRE 2012
 ~~~~~~~~~~~~~~~~~~
 We first invite you to read the paper describing our system submitted to the NIST SRE 2012 Evaluation. The protocols on the development set are the results of a joint work by the I4U group. To reproduce the results, please check this dedicated package::
 

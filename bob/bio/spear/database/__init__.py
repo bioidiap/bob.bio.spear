@@ -25,6 +25,7 @@ from .asvspoof import ASVspoofBioDatabase
 from .avspoof import AVspoofBioDatabase
 from .voicepa import VoicePABioDatabase
 from .asvspoof2017 import ASVspoof2017BioDatabase
+from .ami import AmiBioDatabase
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
