@@ -23,7 +23,7 @@ class AmiBioDatabase(BioDatabase):
             original_extension=original_extension, **kwargs)
 
         from bob.db.ami.query import Database as LowLevelDatabase
-        self.__db = LowLevelDatabase(original_directory=original_directory, original_extension=original_extension)
+        self._db = LowLevelDatabase(original_directory=original_directory, original_extension=original_extension)
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
         """Returns a set of models ids for the specific query by the user.
@@ -38,7 +38,7 @@ class AmiBioDatabase(BioDatabase):
 
         Returns: A list containing the ids of all models belonging to the given groups.
         """
-        return [client.id for client in self.__db.clients(groups=groups, protocol=protocol)]
+        return [client.id for client in self._db.clients(groups=groups, protocol=protocol)]
 
     def objects(self, protocol=None, purposes=None, model_ids=None,
                 groups=None, gender=None):
@@ -71,7 +71,7 @@ class AmiBioDatabase(BioDatabase):
         """
 
         # now, query the actual Ami database
-        objects = self.__db.objects(groups=groups,
+        objects = self._db.objects(groups=groups,
                                     model_ids=model_ids, purposes=purposes)
 
         # make sure to return BioFile representation of a file, not the database one

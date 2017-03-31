@@ -92,6 +92,8 @@ Experiments on different databases
 
 To make you more familiar with the tool, we provide you examples of different toolchains applied on different databases: Voxforge, BANCA, TIMIT, MOBIO, and NIST SRE 2012.
 
+1. Voxforge dataset
+~~~~~~~~~~~~~~~~~~~
 `Voxforge`_ is a free database used in free speech recognition engines. We randomly selected a small part of the english corpus (< 1GB).  It is used as a toy example for our speaker recognition tool since experiment can be easily run on a local machine, and the results can be obtained in a reasonnable amount of time (< 2h).
 
 Unlike TIMIT and BANCA, this dataset is completely free of charge.
@@ -202,7 +204,7 @@ Note that the MOBIO dataset has different protocols, and that are all implemente
 
 5. AMIcorpus dataset
 ~~~~~~~~~~~~~~~~~~~~
-AMI is one of the most difficult databases for verification, mainly because of the length of the audio files, the noise and to the fact that there's no single-speaker files. So to use AMI for veification, we assumed that the headset recordings belong to only one speaker, although other people's could be heared clearly in some of these files. In the following example to evaluate speaker recognition systems, we used MFCC features, comined with energy2gauss preprocessor:
+`AMI`_ is one of the most difficult databases for verification, mainly because of the length of the audio files, the noise and to the fact that there's no single-speaker files. So to use AMI for veification, we assumed that the headset recordings belong to only one speaker, although other people's could be heared clearly in some of these files. In the following example to evaluate speaker recognition systems, we used MFCC features, comined with energy2gauss preprocessor:
 
   $ bin/verify.py -vv -d ami -p energy-2gauss -e mfcc-60 -a gmm -s ubm_gmm
 
