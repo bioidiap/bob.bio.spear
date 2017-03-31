@@ -47,6 +47,7 @@ class AmiBioDatabase(BioDatabase):
         Keyword Parameters:
 
         protocol
+            ignored
 
 
         purposes
