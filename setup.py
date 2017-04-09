@@ -100,7 +100,6 @@ setup(
     entry_points = {
 
       'bob.bio.database': [
-        'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
         'timit            = bob.bio.spear.config.database.timit:database',
         'mobio-audio-male       = bob.bio.spear.config.database.mobio_audio_male:database',
         'mobio-audio-female       = bob.bio.spear.config.database.mobio_audio_female:database',
@@ -117,7 +116,7 @@ setup(
       'bob.bio.preprocessor': [
         'cqcc20p            = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Empty preprocessor for CQCC features
         'energy-2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor', # two Gauss energy
-        'energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy        
+        'energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy
         'mod-4hz           = bob.bio.spear.config.preprocessor.mod_4hz:preprocessor', # mod_4hz
         'external            = bob.bio.spear.config.preprocessor.external:preprocessor', # external VAD
       ],
@@ -162,7 +161,7 @@ setup(
         # the same as above but with smaller thresholds
         'gmm-tomi-scfc  = bob.bio.spear.config.algorithm.gmm_tomi_scfc:algorithm',
       ],
-      
+
       'bob.bio.grid':[
         'demanding      = bob.bio.spear.config.grid.demanding:grid',
         'modest         = bob.bio.spear.config.grid.modest:grid',
