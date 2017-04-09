@@ -103,12 +103,3 @@ def test_timit():
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
-
-
-def test_banca():
-    database = bob.bio.base.load_resource('banca-audio', 'database', preferred_package='bob.bio.spear')
-    try:
-        check_database(database, groups=('dev', 'eval'))
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)

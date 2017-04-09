@@ -90,11 +90,13 @@ Particularly, here we can enable ROC curves, DET plots, CMC curves and the compu
 Experiments on different databases
 --------------------------------------------------------
 
-To make you more familiar with the tool, we provide you examples of different toolchains applied on different databases: Voxforge, BANCA, TIMIT, MOBIO, and NIST SRE 2012.
+To make you more familiar with the tool, we provide you examples of different toolchains applied on different databases: Voxforge, TIMIT, MOBIO, and NIST SRE 2012.
 
+1. Voxforge dataset
+~~~~~~~~~~~~~~~~~~~
 `Voxforge`_ is a free database used in free speech recognition engines. We randomly selected a small part of the english corpus (< 1GB).  It is used as a toy example for our speaker recognition tool since experiment can be easily run on a local machine, and the results can be obtained in a reasonnable amount of time (< 2h).
 
-Unlike TIMIT and BANCA, this dataset is completely free of charge.
+Unlike TIMIT, this dataset is completely free of charge.
 
 More details about how to download the audio files used in our experiments, and how the data is split into Training, Development and Evaluation set can be found here::
 
@@ -161,21 +163,7 @@ The scoring computation can also be done using **PLDA**::
 
 Note that in the previous examples, our goal is not to optimize the parameters on the DEV set but to provide examples of use.
 
-2. BANCA dataset
-~~~~~~~~~~~~~~~~
-`BANCA`_ is a simple bimodal database with relatively clean data. The results are already very good with a simple baseline UBM-GMM system. An example of use can be::
-
-  $ bin/verify.py -vv -d banca-audio -p energy-2gauss -e mfcc-60 -a gmm-banca -s banca_G --groups {dev,eval}
-
-The configuration in this example is similar to the previous one with the only difference of using the regular LLR instead of its linear approximation.
-
-Here is the performance of this system:
-
-* ``DEV: EER = 0.91%``
-* ``EVAL: EER = 0.75%``
-
-
-3. TIMIT dataset
+2. TIMIT dataset
 ~~~~~~~~~~~~~~~~
 `TIMIT`_ is one of the oldest databases (year 1993) used to evaluate speaker recognition systems. In the following example, the processing is done on the development set, and LFCC features are used::
 
@@ -186,7 +174,7 @@ Here is the performance of the system on the Development set:
 * ``DEV: EER = 2.68%``
 
 
-4. MOBIO dataset
+3. MOBIO dataset
 ~~~~~~~~~~~~~~~~
 This is a more challenging database. The noise and the short duration of the segments make the task of speaker recognition relatively difficult. The following experiment on male group (Mobile-0) uses the 4Hz modulation energy based VAD, and the ISV (with dimU=50) modelling technique::
 
@@ -200,7 +188,7 @@ Here is the performance of this system:
 To generate the results presented in the ICASSP 2014 paper, please check the script included in the `icassp` folder of the toolbox.
 Note that the MOBIO dataset has different protocols, and that are all implemented in `bob.db.mobio`_. But in this toolbox, we provide separately mobile-0 protocol (into filelist format) for simplicity.
 
-5. NIST SRE 2012
+4. NIST SRE 2012
 ~~~~~~~~~~~~~~~~~~
 We first invite you to read the paper describing our system submitted to the NIST SRE 2012 Evaluation. The protocols on the development set are the results of a joint work by the I4U group. To reproduce the results, please check this dedicated package::
 
