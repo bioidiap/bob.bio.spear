@@ -23,14 +23,14 @@ How this is done is explained in more detail in the :ref:`bob.bio.base.installat
 Running Baseline Experiments
 ------------------------------------------------
 
-To run the baseline experiments, you can use the ``./bin/verify.py`` script by just going to the console and typing:
+To run the baseline experiments, you can use the ``verify.py`` script by just going to the console and typing:
 
 .. code-block:: sh
 
-   $ ./bin/verify.py
+   $ verify.py
 
 This script is explained in more detail in :ref:`bob.bio.base.experiments`.
-The ``./bin/verify.py --help`` option shows you, which other options you have.
+The ``verify.py --help`` option shows you, which other options you have.
 Here is an almost complete extract:
 
 * ``--database``: The database and protocol you want to use.
@@ -44,13 +44,13 @@ Here is an almost complete extract:
   By default, only the commands that are executed are printed, and the rest of the calculation runs quietly.
   You can increase the verbosity by adding the ``--verbose`` parameter repeatedly (up to three times).
 
-Usually it is a good idea to have at least verbose level 2 (i.e., calling ``./bin/verify.py --verbose --verbose``, or the short version ``./bin/verify.py -vv``).
+Usually it is a good idea to have at least verbose level 2 (i.e., calling ``verify.py --verbose --verbose``, or the short version ``verify.py -vv``).
 
 Running in Parallel
 ~~~~~~~~~~~~~~~~~~~
 
 To run the experiments in parallel, as usual you can define an SGE grid configuration, or run with parallel threads on the local machine.
-For the ``./bin/verify.py`` script, the grid configuration is adapted to each of the algorithms.
+For the ``verify.py`` script, the grid configuration is adapted to each of the algorithms.
 Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option, without parameters.
 Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
 
@@ -82,7 +82,7 @@ The algorithms present a set of state-of-the-art speaker recognition algorithms.
 Evaluation Results
 ------------------------------
 
-To evaluate the results,  one can use ``./bin/evaluate.py`` command.
+To evaluate the results,  one can use ``evaluate.py`` command.
 Several types of evaluation can be achieved, see :ref:`bob.bio.base.evaluate` for details.
 Particularly, here we can enable ROC curves, DET plots, CMC curves and the computation of EER/HTER or minDCF.
 
@@ -104,7 +104,7 @@ More details about how to download the audio files used in our experiments, and 
 
 One example of command line is::
 
-  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}
+  $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}
 
 
 In this example, we used the following configuration:
@@ -120,42 +120,42 @@ The performance of the system on DEV and EVAL are:
 
 If you want to run the same experiment on SGE::
 
-  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}  -g grid
+  $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}  -g grid
 
 
 If you want to run the parallel implementation of the UBM on the SGE::
 
-  $ bin/verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_sge --groups {dev,eval} -g grid
+  $ verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_sge --groups {dev,eval} -g grid
 
 
 If you want to run the parallel implementation of the UBM on your local machine::
 
-  $ bin/verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_local --groups {dev,eval} -g local
+  $ verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_local --groups {dev,eval} -g local
 
 Another example is to use **ISV** toolchain instead of UBM-GMM::
 
-  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a isv-voxforge -s isv --groups {dev,eval} -g grid
+  $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a isv-voxforge -s isv --groups {dev,eval} -g grid
 
 * ``DEV: EER = 1.41%``
 * ``EVAL: HTER = 1.52%``
 
 One can also try **JFA** toolchain::
 
-  $  bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a jfa-voxforge -s jfa --groups {dev,eval} -g grid
+  $  verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a jfa-voxforge -s jfa --groups {dev,eval} -g grid
 
 * ``DEV: EER = 4.04%``
 * ``EVAL: HTER = 5.11%``
 
 or also **IVector** toolchain where **Whitening, L-Norm, LDA, WCCN** are used like in this example where the score computation is done using **Cosine distance**::
 
-  $  bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a ivec-cosine-voxforge -s ivec-cosine --groups {dev,eval} -g grid
+  $  verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a ivec-cosine-voxforge -s ivec-cosine --groups {dev,eval} -g grid
 
 * ``DEV: EER = 7.33%``
 * ``EVAL: HTER = 13.80%``
 
 The scoring computation can also be done using **PLDA**::
 
-  $ bin/verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a ivec-plda-voxforge -s ivec-plda --groups {dev,eval} -g grid
+  $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a ivec-plda-voxforge -s ivec-plda --groups {dev,eval} -g grid
 
 * ``DEV: EER = 11.33%``
 * ``EVAL: HTER = 13.15%``
@@ -167,7 +167,7 @@ Note that in the previous examples, our goal is not to optimize the parameters o
 ~~~~~~~~~~~~~~~~
 `TIMIT`_ is one of the oldest databases (year 1993) used to evaluate speaker recognition systems. In the following example, the processing is done on the development set, and LFCC features are used::
 
-  $ bin/verify.py -vv -d timit -p energy-2gauss -e lfcc-60 -a gmm-timit -s timit
+  $ verify.py -vv -d timit -p energy-2gauss -e lfcc-60 -a gmm-timit -s timit
 
 Here is the performance of the system on the Development set:
 
@@ -178,7 +178,7 @@ Here is the performance of the system on the Development set:
 ~~~~~~~~~~~~~~~~
 This is a more challenging database. The noise and the short duration of the segments make the task of speaker recognition relatively difficult. The following experiment on male group (Mobile-0) uses the 4Hz modulation energy based VAD, and the ISV (with dimU=50) modelling technique::
 
-  $ bin/verify_isv.py -vv -d mobio-audio-male -p mod-4hz -e mfcc-60 -a isv-mobio -s isv --groups {dev,eval} -g demanding
+  $ verify_isv.py -vv -d mobio-audio-male -p mod-4hz -e mfcc-60 -a isv-mobio -s isv --groups {dev,eval} -g demanding
 
 Here is the performance of this system:
 

@@ -50,7 +50,7 @@ def command_line_arguments(command_line_parameters):
   # - the database to choose
   parser.add_argument('-b', '--baseline-directory', default = 'baselines', help = 'The sub-directory, where the baseline results are stored.')
   # - the directory to write
-  parser.add_argument('-f', '--directory', help = 'The directory to write the data of the experiment into. If not specified, the default directories of the verify.py script are used (see ./bin/verify.py --help).')
+  parser.add_argument('-f', '--directory', help = 'The directory to write the data of the experiment into. If not specified, the default directories of the verify.py script are used (see verify.py --help).')
 
   # - use the Idiap grid -- option is only useful if you are at Idiap
   parser.add_argument('-g', '--grid', action = 'store_true', help = 'Execute the algorithm in the SGE grid.')
@@ -66,7 +66,7 @@ def command_line_arguments(command_line_parameters):
   parser.add_argument('-e', '--evaluate', nargs='+', choices = ('EER', 'HTER', 'ROC', 'DET', 'CMC', 'RR'), help = 'Evaluate the results of the algorithms (instead of running them) using the given evaluation techniques.')
   # TODO: add MIN-DCT measure
   # - other parameters that are passed to the underlying script
-  parser.add_argument('parameters', nargs = argparse.REMAINDER, help = 'Parameters directly passed to the ./bin/verify.py script.')
+  parser.add_argument('parameters', nargs = argparse.REMAINDER, help = 'Parameters directly passed to the verify.py script.')
 
   bob.core.log.add_command_line_option(parser)
   args = parser.parse_args(command_line_parameters)
