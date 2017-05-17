@@ -122,6 +122,7 @@ setup(
       ],
 
       'bob.bio.extractor': [
+        'mfcc-kaldi = bob.bio.spear.config.extractor.mfcc_kaldi:extractor', # Kaldi     
         'cqcc20e = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Extractor (reads Matlab files) for CQCC features
         'mfcc-60    = bob.bio.spear.config.extractor.mfcc_60:extractor', # 60-dim MFCC features
         'lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
