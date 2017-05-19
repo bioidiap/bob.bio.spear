@@ -5,8 +5,8 @@
    :target: http://pythonhosted.org/bob.bio.spear/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.bio.spear/master/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/build.svg
-   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/v3.0.5/build.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/v3.0.5
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear
 .. image:: http://img.shields.io/pypi/v/bob.bio.spear.svg
