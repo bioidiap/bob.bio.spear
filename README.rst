@@ -7,6 +7,8 @@
    :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.bio.spear/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/coverage.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear
 .. image:: http://img.shields.io/pypi/v/bob.bio.spear.svg
@@ -38,11 +40,10 @@ For further information about ``bob.bio``, please read `its Documentation <http:
 Installation
 ------------
 
-Follow our `installation`_ instructions. Then, using the Python interpreter
-provided by the distribution, bootstrap and buildout this package::
+Complete Bob's `installation`_ instructions. Then, to install this pacakge,
+run::
 
-  $ python bootstrap-buildout.py
-  $ ./bin/buildout
+  $ conda install bob.bio.spear
 
 
 Contact
