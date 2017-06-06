@@ -40,7 +40,7 @@ For further information about ``bob.bio``, please read `its Documentation <http:
 Installation
 ------------
 
-Complete Bob's `installation`_ instructions. Then, to install this pacakge,
+Complete Bob's `installation`_ instructions. Then, to install this package,
 run::
 
   $ conda install bob.bio.spear
