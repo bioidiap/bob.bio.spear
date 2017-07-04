@@ -13,8 +13,6 @@
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear
 .. image:: http://img.shields.io/pypi/v/bob.bio.spear.svg
    :target: https://pypi.python.org/pypi/bob.bio.spear
-.. image:: http://img.shields.io/pypi/dm/bob.bio.spear.svg
-   :target: https://pypi.python.org/pypi/bob.bio.spear
 
 
 ===================================
