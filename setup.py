@@ -52,7 +52,7 @@ setup(
     url = 'https://gitlab.idiap.ch/bob/bob.bio.spear',
     license = 'GPLv3',
     author = 'Andre Anjos',
-    author_email = '<andre.anjos@idiap.ch>',
+    author_email = 'andre.anjos@idiap.ch',
     keywords = 'bob, biometric recognition, evaluation',
 
     # If you have a better, long description of your package, place it on the
