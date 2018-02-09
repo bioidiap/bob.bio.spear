@@ -43,8 +43,8 @@ def _compare(data, reference, write_function = bob.bio.base.save, read_function 
   assert numpy.allclose(data[2], reference[2], atol=1e-5)
 
 
-def _wav():
-  path = pkg_resources.resource_filename('bob.bio.spear.test', 'data/sample.wav')
+def _wav(filename='data/sample.wav'):
+  path = pkg_resources.resource_filename('bob.bio.spear.test', filename)
   path, ext = os.path.splitext(path)
   directory, path = os.path.split(path)
   base_audiobiofile = bob.bio.spear.database.AudioBioFile('client_id', path, 'file_id')
@@ -82,3 +82,16 @@ def test_mod_4hz():
   # test the Mod-4hz based VAD preprocessor
   preprocessor = bob.bio.spear.preprocessor.Mod_4Hz()
   _compare(preprocessor(wav), pkg_resources.resource_filename('bob.bio.spear.test', 'data/vad_mod_4hz.hdf5'), preprocessor.write_data, preprocessor.read_data)
+
+
+def test_mute_audio():
+  # read input
+  wav = _wav('data/silence.wav')
+  for preprocessor in [
+      bob.bio.spear.preprocessor.Mod_4Hz(),
+      bob.bio.spear.preprocessor.Energy_Thr(),
+      bob.bio.spear.preprocessor.Energy_2Gauss(),
+  ]:
+    # test VAD returns None
+    data = preprocessor(wav)
+    assert data is None, (preprocessor, data)
