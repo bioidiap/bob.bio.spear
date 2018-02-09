@@ -1,6 +1,7 @@
 from . import preprocessor
 from . import extractor
 from . import algorithm
+from . import database
 from . import script
 
 from . import test
