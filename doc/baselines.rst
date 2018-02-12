@@ -63,15 +63,15 @@ The Algorithms
 
 The algorithms present a set of state-of-the-art speaker recognition algorithms. Here is the list of short-cuts:
 
-* ``gmm``: *Gaussian Mixture Models* (GMM) `[Rey00]`.
+* ``gmm``: *Gaussian Mixture Models* (GMM) [Rey00]_.
 
   - algorithm : :py:class:`bob.bio.gmm.algorithm.GMM`
 
-* ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling `[Vogt08]` is used to learn what variations in samples are introduced by identity changes and which not.
+* ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [Vogt08]_ is used to learn what variations in samples are introduced by identity changes and which not.
 
   - algorithm : :py:class:`bob.bio.gmm.algorithm.ISV`
 
-* ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling `[Dehak11]` (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
+* ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling [Dehak11]_ (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
 
   - algorithm : :py:class:`bob.bio.gmm.algorithm.IVector`
 
