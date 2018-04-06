@@ -163,7 +163,6 @@ setup(
       ],
 
       'bob.bio.grid':[
-        'demanding      = bob.bio.spear.config.grid.demanding:grid',
         'modest         = bob.bio.spear.config.grid.modest:grid',
       ],
    },
