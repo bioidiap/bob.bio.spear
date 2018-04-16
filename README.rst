@@ -1,17 +1,17 @@
 .. vim: set fileencoding=utf-8 :
 .. Sun Aug 21 09:26:51 CEST 2016
 
-.. image:: http://img.shields.io/badge/docs-stable-yellow.png
-   :target: http://pythonhosted.org/bob.bio.spear/index.html
-.. image:: http://img.shields.io/badge/docs-latest-orange.png
-   :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.bio.spear/master/index.html
+.. image:: http://img.shields.io/badge/docs-stable-yellow.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/stable/index.html
+.. image:: http://img.shields.io/badge/docs-latest-orange.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/build.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/coverage.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear
-.. image:: http://img.shields.io/pypi/v/bob.bio.spear.png
-   :target: https://pypi.python.org/pypi/bob.bio.spear
-.. image:: http://img.shields.io/pypi/dm/bob.bio.spear.png
+.. image:: http://img.shields.io/pypi/v/bob.bio.spear.svg
    :target: https://pypi.python.org/pypi/bob.bio.spear
 
 
@@ -32,17 +32,16 @@ In this package, utilities that are specific for speaker recognition are contain
 * Acoustic feature extractors
 * Recognition algorithms based on acoustic features
 
-For further information about ``bob.bio``, please read `its Documentation <http://pythonhosted.org/bob.bio.base/index.html>`_.
+For further information about ``bob.bio``, please read `its Documentation <https://www.idiap.ch/software/bob/docs/bob/bob.bio.base/stable/index.html>`_.
 
 
 Installation
 ------------
 
-Follow our `installation`_ instructions. Then, using the Python interpreter
-provided by the distribution, bootstrap and buildout this package::
+Complete Bob's `installation`_ instructions. Then, to install this package,
+run::
 
-  $ python bootstrap-buildout.py
-  $ ./bin/buildout
+  $ conda install bob.bio.spear
 
 
 Contact
@@ -54,5 +53,5 @@ development `mailing list`_.
 
 .. Place your references here:
 .. _bob: https://www.idiap.ch/software/bob
-.. _installation: https://gitlab.idiap.ch/bob/bob/wikis/Installation
-.. _mailing list: https://groups.google.com/forum/?fromgroups#!forum/bob-devel
+.. _installation: https://www.idiap.ch/software/bob/install
+.. _mailing list: https://www.idiap.ch/software/bob/discuss

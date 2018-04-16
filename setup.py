@@ -49,10 +49,10 @@ setup(
     version = open("version.txt").read().rstrip(),
     description = 'Tools for running speaker recognition experiments',
 
-    url = 'https://www.gitlab.idiap.ch/bob/bob.bio.spear',
+    url = 'https://gitlab.idiap.ch/bob/bob.bio.spear',
     license = 'GPLv3',
     author = 'Andre Anjos',
-    author_email = '<andre.anjos@idiap.ch>',
+    author_email = 'andre.anjos@idiap.ch',
     keywords = 'bob, biometric recognition, evaluation',
 
     # If you have a better, long description of your package, place it on the
@@ -80,7 +80,7 @@ setup(
     #
     # Our database packages are good examples of namespace implementations
     # using several layers. You can check them out here:
-    # https://github.com/idiap/bob/wiki/Satellite-Packages
+    # https://www.idiap.ch/software/bob/packages
 
 
     # This entry defines which scripts you will have inside the 'bin' directory
@@ -100,8 +100,6 @@ setup(
     entry_points = {
 
       'bob.bio.database': [
-        'voxforge         = bob.bio.spear.config.database.voxforge:database',
-        'banca-audio      = bob.bio.spear.config.database.banca_audio_G:database',
         'timit            = bob.bio.spear.config.database.timit:database',
         'mobio-audio-male       = bob.bio.spear.config.database.mobio_audio_male:database',
         'mobio-audio-female       = bob.bio.spear.config.database.mobio_audio_female:database',
@@ -111,21 +109,25 @@ setup(
         'asvspoof-spoof             = bob.bio.spear.config.database.asvspoof:database_spoof',
         'voicepa-licit             = bob.bio.spear.config.database.voicepa:database_licit',
         'voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof',
-        'nist-sre12       = bob.bio.spear.config.database.nist_sre12:database', 
-        'nist-sre10       = bob.bio.spear.config.database.nist_sre10:database', 
+        'nist-sre12       = bob.bio.spear.config.database.nist_sre12:database',
+        'nist-sre10       = bob.bio.spear.config.database.nist_sre10:database',
         'nist-sre08       = bob.bio.spear.config.database.nist_sre08:database'
         'nist-sre06       = bob.bio.spear.config.database.nist_sre06:database'
         'nist-sre05       = bob.bio.spear.config.database.nist_sre05:database'
+        'asvspoof2017-licit             = bob.bio.spear.config.database.asvspoof2017:database_licit',
+        'asvspoof2017-spoof             = bob.bio.spear.config.database.asvspoof2017:database_spoof',
       ],
 
       'bob.bio.preprocessor': [
+        'cqcc20p            = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Empty preprocessor for CQCC features
         'energy-2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor', # two Gauss energy
-        'energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy        
+        'energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor', # thresholded energy
         'mod-4hz           = bob.bio.spear.config.preprocessor.mod_4hz:preprocessor', # mod_4hz
         'external            = bob.bio.spear.config.preprocessor.external:preprocessor', # external VAD
       ],
 
       'bob.bio.extractor': [
+        'cqcc20e = bob.bio.spear.config.extractor.cqcc20:cqcc20',  # Extractor (reads Matlab files) for CQCC features
         'mfcc-60    = bob.bio.spear.config.extractor.mfcc_60:extractor', # 60-dim MFCC features
         'lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor', # 60-dim LFCC features
         'htk            = bob.bio.spear.config.extractor.htk:extractor', # HTK features
@@ -164,9 +166,8 @@ setup(
         # the same as above but with smaller thresholds
         'gmm-tomi-scfc  = bob.bio.spear.config.algorithm.gmm_tomi_scfc:algorithm',
       ],
-      
+
       'bob.bio.grid':[
-        'demanding      = bob.bio.spear.config.grid.demanding:grid',
         'modest         = bob.bio.spear.config.grid.modest:grid',
       ],
    },

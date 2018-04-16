@@ -4,7 +4,7 @@
 # Tue 17 May 15:43:22 CEST 2016
 
 """
-  ASVspoof database implementation of bob.bio.db.BioDatabase interface.
+  ASVspoof database implementation of bob.bio.base.BioDatabase interface.
   It is an extension of an SQL-based database interface, which directly talks to ASVspoof database, for
   verification experiments (good to use in bob.bio.base framework).
 """
@@ -35,7 +35,7 @@ class ASVspoofBioDatabase(BioDatabase):
         super(ASVspoofBioDatabase, self).__init__(name='asvspoof', **kwargs)
 
         from bob.db.asvspoof.query import Database as LowLevelDatabase
-        self.__db = LowLevelDatabase()
+        self._db = LowLevelDatabase()
 
         self.low_level_group_names = ('train', 'dev', 'eval')
         self.high_level_group_names = ('world', 'dev', 'eval')
@@ -43,11 +43,13 @@ class ASVspoofBioDatabase(BioDatabase):
     def model_ids_with_protocol(self, groups=None, protocol=None, gender=None):
         groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
-        return [client.id for client in self.__db.clients(groups=groups, gender=gender)]
+        return [client.id for client in self._db.clients(groups=groups, gender=gender)]
 
     def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, **kwargs):
 
         # convert group names from the conventional in verification experiments to the internal database names
+        if groups is None:  # all groups are assumed
+            groups = self.high_level_group_names
         matched_groups = self.convert_names_to_lowlevel(groups, self.low_level_group_names, self.high_level_group_names)
 
         # this conversion of the protocol with appended '-licit' or '-spoof' is a hack for verification experiments.
@@ -95,9 +97,10 @@ class ASVspoofBioDatabase(BioDatabase):
         # for any other protocol use real data and spoofed data (probe)
         # so, probe set is the same as attack set
         else:
-            # by default we return all data (enroll:realdata + probe:attackdata)
+            # by default we return attacks only for 'world' group
+            # and (real:realdata + probe:attackdata) for dev and eval
             if purposes is None:
-                correct_purposes = ('real', 'attack')
+                correct_purposes = ('attack',) if 'train' in matched_groups else ('real', 'attack')
             # otherwise replace 'probe' with 'attack'
             elif isinstance(purposes, (tuple, list)):
                 correct_purposes = []
@@ -110,7 +113,10 @@ class ASVspoofBioDatabase(BioDatabase):
                 correct_purposes = ('attack',)
 
         # now, query the actual ASVspoof database
-        objects = self.__db.objects(protocol=protocol, groups=matched_groups, purposes=correct_purposes,
+        objects = self._db.objects(protocol=protocol, groups=matched_groups, purposes=correct_purposes,
                                     clients=model_ids, **kwargs)
         # make sure to return AudioBioFile representation of a file, not the database one
         return [ASVspoofBioFile(f) for f in objects]
+
+    def annotations(self, file):
+        return None

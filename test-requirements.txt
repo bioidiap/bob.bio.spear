@@ -1,7 +1,5 @@
 gridtk
-bob.db.voxforge
 bob.db.mobio
-bob.db.bio_filelist
 bob.db.avspoof
 bob.db.asvspoof
 bob.db.voicepa

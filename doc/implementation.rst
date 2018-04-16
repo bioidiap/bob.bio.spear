@@ -66,13 +66,13 @@ The fusion of scores from different systems is done using `logistic regression`_
 
 9. Evaluation
 ~~~~~~~~~~~~~
-One way to compute the final result is to use the *bin/evaluate.py* e.g., by calling::
+One way to compute the final result is to use the *evaluate.py* e.g., by calling::
 
-  $ bin/evaluate.py -d PATH/TO/USER/DIRECTORY/scores-dev -e PATH/TO/USER/DIRECTORY/scores-eval -c EER -D DET.pdf -x
+  $ evaluate.py -d PATH/TO/USER/DIRECTORY/scores-dev -e PATH/TO/USER/DIRECTORY/scores-eval -c EER -D DET.pdf -x
 
 This will compute the EER, the minCLLR, CLLR, and draw the DET curve. To better compare different systems using DET curves, a separate script can be used like in this example::
 
-  $ ./bin/det.py -s gmm-scores isv-scores ivector-scores -n GMM ISV i-vectors
+  $ det.py -s gmm-scores isv-scores ivector-scores -n GMM ISV i-vectors
 
 
 .. include:: links.rst

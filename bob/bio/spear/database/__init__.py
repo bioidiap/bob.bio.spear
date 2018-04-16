@@ -21,9 +21,9 @@
 
 from .database import AudioBioFile
 from .mobio import MobioBioDatabase
-from .voxforge import VoxforgeBioDatabase
 from .asvspoof import ASVspoofBioDatabase
 from .avspoof import AVspoofBioDatabase
+from .asvspoof2017 import ASVspoof2017BioDatabase
 from .voicepa import VoicePABioDatabase
 from .nist_sre12 import NistSre12BioDatabase
 from .nist_sre10 import NistSre10BioDatabase
@@ -31,5 +31,27 @@ from .nist_sre08 import NistSre08BioDatabase
 from .nist_sre06 import NistSre06BioDatabase
 from .nist_sre05 import NistSre05BioDatabase
 
+
 # gets sphinx autodoc done right - don't remove it
+def __appropriate__(*args):
+  """Says object was actually declared here, and not in the import module.
+  Fixing sphinx warnings of not being able to find classes, when path is shortened.
+  Parameters:
+
+    *args: An iterable of objects to modify
+
+  Resolves `Sphinx referencing issues
+  <https://github.com/sphinx-doc/sphinx/issues/3048>`
+  """
+
+  for obj in args: obj.__module__ = __name__
+
+__appropriate__(
+    AudioBioFile,
+    MobioBioDatabase,
+    ASVspoofBioDatabase,
+    AVspoofBioDatabase,
+    VoicePABioDatabase,
+    ASVspoof2017BioDatabase,
+    )
 __all__ = [_ for _ in dir() if not _.startswith('_')]
