@@ -83,6 +83,9 @@ class Mod_4Hz(Base):
     n_samples = len(energy)
     threshold = numpy.max(energy) - numpy.log((1./self.ratio_threshold) * (1./self.ratio_threshold))
     labels = numpy.array(numpy.zeros(n_samples), dtype=numpy.int16)
+    # if energy does not change a lot, it's not audio maybe?
+    if numpy.std(energy) < 10e-5:
+      return labels * 0
 
     for i in range(n_samples):
       if ( energy[i] > threshold and mod_4hz[i] > 0.9 ):
@@ -199,4 +202,8 @@ class Mod_4Hz(Base):
     [labels, energy_array, mod_4hz] = self.mod_4hz(input_signal)
     rate    =  input_signal[0]
     data = input_signal[1]
+    if (labels == 0).all():
+      logger.warn("No Audio was detected in the sample!")
+      return None
+
     return rate, data, labels

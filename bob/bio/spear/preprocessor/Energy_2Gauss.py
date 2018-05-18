@@ -68,6 +68,11 @@ class Energy_2Gauss(Base):
     #########################
 
     n_samples = len(energy_array)
+    label = numpy.array(numpy.ones(n_samples), dtype=numpy.int16)
+    # if energy does not change a lot, it's not audio maybe?
+    if numpy.std(energy_array) < 10e-5:
+      return label * 0
+
     # Add an epsilon small Gaussian noise to avoid numerical issues (mainly due to artificial silence).
     energy_array = numpy.array(math.pow(10,-6) * numpy.random.randn(len(energy_array))) + energy_array
     # Normalize the energy array
@@ -103,7 +108,6 @@ class Energy_2Gauss(Base):
       higher = 0
       lower = 1
 
-    label = numpy.array(numpy.ones(n_samples), dtype=numpy.int16)
     higher_mean_gauss = m_ubm.get_gaussian(higher)
     lower_mean_gauss = m_ubm.get_gaussian(lower)
 
@@ -138,4 +142,7 @@ class Energy_2Gauss(Base):
     labels = self._compute_energy(input_signal)
     rate    =  input_signal[0]
     data = input_signal[1]
+    if (labels == 0).all():
+      logger.warn("No Audio was detected in the sample!")
+      return None
     return rate, data, labels

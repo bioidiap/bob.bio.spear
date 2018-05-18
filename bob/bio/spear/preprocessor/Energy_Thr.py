@@ -61,6 +61,10 @@ class Energy_Thr(Base):
     threshold = numpy.max(energy) - numpy.log((1./self.ratio_threshold) * (1./self.ratio_threshold))
     label = numpy.array(numpy.ones(n_samples), dtype=numpy.int16)
 
+    # if energy does not change a lot, it's not audio maybe?
+    if numpy.std(energy) < 10e-5:
+      return label * 0
+
     k=0
     for i in range(n_samples):
       if energy[i] > threshold:
@@ -93,4 +97,8 @@ class Energy_Thr(Base):
     labels = self._compute_energy(input_signal)
     rate    =  input_signal[0]
     data = input_signal[1]
+    if (labels == 0).all():
+      logger.warn("No Audio was detected in the sample!")
+      return None
+
     return rate, data, labels
