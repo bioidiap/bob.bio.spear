@@ -51,7 +51,7 @@ Running in Parallel
 
 To run the experiments in parallel, as usual you can define an SGE grid configuration, or run with parallel threads on the local machine.
 For the ``verify.py`` script, the grid configuration is adapted to each of the algorithms.
-Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option, without parameters.
+Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option.
 Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
 
 When running the algorithms from the `bob.bio.gmm`_ package in parallel, the specialized scripts are executed.
