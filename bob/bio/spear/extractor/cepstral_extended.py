@@ -21,7 +21,7 @@
 from __future__ import print_function
 
 import numpy
-import bob
+import bob.ap
 import bob.core
 
 import logging
