@@ -33,6 +33,7 @@ requirements:
     - bob.measure
     - bob.db.base
     - bob.bio.base
+    - bob.pipelines
     - matplotlib {{ matplotlib }}
   run:
     - python

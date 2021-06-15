@@ -1,15 +1,18 @@
 setuptools
 bob.extension
-bob.blitz 
-bob.core 
-bob.io.base 
-bob.learn.activation
-bob.math 
-bob.sp 
+bob.blitz
+bob.core
+bob.io.base
+bob.io.audio
+bob.math
+bob.sp
 bob.ap
-bob.learn.linear 
-bob.learn.em 
-bob.measure 
+bob.learn.linear
+bob.learn.em
+bob.measure
 bob.db.base
 bob.bio.base
+bob.pipelines
 matplotlib   # for plotting
+six
+scikit-learn # for pipelines Tranformers
