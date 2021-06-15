@@ -22,84 +22,124 @@
 from nose.plugins.skip import SkipTest
 
 import bob.bio.base
+
+from bob.bio.base.test.test_database_implementations import check_database
+from bob.bio.base.test.test_database_implementations import check_database_zt
 from bob.bio.base.test.utils import db_available
-from bob.bio.base.test.test_database_implementations import check_database, check_database_zt
 
 
-@db_available('mobio')
+@db_available("mobio")
 def test_mobio():
-    database = bob.bio.base.load_resource('mobio-audio-male', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "mobio-audio-male", "database", preferred_package="bob.bio.spear"
+    )
     try:
         check_database_zt(database, models_depend=True)
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )
 
 
-@db_available('avspoof')
+@db_available("avspoof")
 def test_avspoof_licit():
-    database = bob.bio.base.load_resource('avspoof-licit', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "avspoof-licit", "database", preferred_package="bob.bio.spear"
+    )
     try:
-        check_database(database, groups=('dev', 'eval'), training_depends=True)
+        check_database(database, groups=("dev", "eval"), training_depends=True)
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )
 
 
-@db_available('asvspoof')
+@db_available("asvspoof")
 def test_asvspoof_licit():
-    database = bob.bio.base.load_resource('asvspoof-licit', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "asvspoof-licit", "database", preferred_package="bob.bio.spear"
+    )
     try:
-        check_database(database, groups=('dev', 'eval'), training_depends=True, skip_train=True)
+        check_database(
+            database, groups=("dev", "eval"), training_depends=True, skip_train=True
+        )
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )
 
 
-@db_available('voicepa')
+@db_available("voicepa")
 def test_voicepa_licit():
-    database = bob.bio.base.load_resource('voicepa-licit', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "voicepa-licit", "database", preferred_package="bob.bio.spear"
+    )
     try:
-        check_database(database, groups=('dev', 'eval'), training_depends=True)
+        check_database(database, groups=("dev", "eval"), training_depends=True)
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )
 
 
-@db_available('avspoof')
+@db_available("avspoof")
 def test_avspoof_spoof():
-    database = bob.bio.base.load_resource('avspoof-spoof', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "avspoof-spoof", "database", preferred_package="bob.bio.spear"
+    )
     try:
-        check_database(database, groups=('dev', 'eval'), training_depends=True)
+        check_database(database, groups=("dev", "eval"), training_depends=True)
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )
 
 
-@db_available('asvspoof')
+@db_available("asvspoof")
 def test_asvspoof_spoof():
-    database = bob.bio.base.load_resource('asvspoof-spoof', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "asvspoof-spoof", "database", preferred_package="bob.bio.spear"
+    )
     try:
-        check_database(database, groups=('dev', 'eval'), training_depends=True, skip_train=True)
+        check_database(
+            database, groups=("dev", "eval"), training_depends=True, skip_train=True
+        )
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )
 
 
-@db_available('voicepa')
+@db_available("voicepa")
 def test_voicepa_spoof():
-    database = bob.bio.base.load_resource('voicepa-spoof', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "voicepa-spoof", "database", preferred_package="bob.bio.spear"
+    )
     try:
-        check_database(database, groups=('dev', 'eval'), training_depends=True, skip_train=True)
+        check_database(
+            database, groups=("dev", "eval"), training_depends=True, skip_train=True
+        )
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )
 
 
 def test_timit():
-    database = bob.bio.base.load_resource('timit', 'database', preferred_package='bob.bio.spear')
+    database = bob.bio.base.load_resource(
+        "timit", "database", preferred_package="bob.bio.spear"
+    )
     try:
-        check_database(database, groups=('dev',))
+        check_database(database, groups=("dev",))
     except IOError as e:
         raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+            % e
+        )

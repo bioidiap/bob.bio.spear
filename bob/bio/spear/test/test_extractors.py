@@ -29,41 +29,53 @@ from .test_preprocessors import _wav
 regenerate_refs = False
 
 
-def _compare(data, reference, write_function = bob.bio.base.save, read_function = bob.bio.base.load):
-  # write reference?
-  if regenerate_refs:
-    write_function(data, reference)
+def _compare(
+    data, reference, write_function=bob.bio.base.save, read_function=bob.bio.base.load
+):
+    # write reference?
+    if regenerate_refs:
+        write_function(data, reference)
 
-  # compare reference
-  reference = read_function(reference)
-  assert numpy.allclose(data, reference, atol=1e-5)
+    # compare reference
+    reference = read_function(reference)
+    assert numpy.allclose(data, reference, atol=1e-5)
 
 
 def test_mfcc():
-  # read input wave file
-  wav = _wav()
+    # read input wave file
+    wav = _wav()
 
-  extractor = bob.bio.base.load_resource('mfcc-60', 'extractor')
-  assert isinstance(extractor, bob.bio.spear.extractor.Cepstral)
+    extractor = bob.bio.base.load_resource("mfcc-60", "extractor")
+    assert isinstance(extractor, bob.bio.spear.extractor.Cepstral)
 
-  # test the Cepstral extractor
-  extractor = bob.bio.spear.extractor.Cepstral()
-  # but we need to apply VAD first
-  preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()
-  preprocessed_data = preprocessor(wav)
-  _compare(extractor(preprocessed_data), pkg_resources.resource_filename('bob.bio.spear.test', 'data/mfcc_60.hdf5'), extractor.write_feature, extractor.read_feature)
+    # test the Cepstral extractor
+    extractor = bob.bio.spear.extractor.Cepstral()
+    # but we need to apply VAD first
+    preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()
+    preprocessed_data = preprocessor(wav)
+    _compare(
+        extractor(preprocessed_data),
+        pkg_resources.resource_filename("bob.bio.spear.test", "data/mfcc_60.hdf5"),
+        extractor.write_feature,
+        extractor.read_feature,
+    )
 
 
 def test_lfcc():
-  # read input wave file
-  wav = _wav()
+    # read input wave file
+    wav = _wav()
 
-  extractor = bob.bio.base.load_resource('lfcc-60', 'extractor')
-  assert isinstance(extractor, bob.bio.spear.extractor.Cepstral)
+    extractor = bob.bio.base.load_resource("lfcc-60", "extractor")
+    assert isinstance(extractor, bob.bio.spear.extractor.Cepstral)
 
-  # test the Cepstral extractor
-  extractor = bob.bio.spear.extractor.Cepstral(mel_scale=False)
-  # but we need to apply VAD first
-  preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()
-  preprocessed_data = preprocessor(wav)
-  _compare(extractor(preprocessed_data), pkg_resources.resource_filename('bob.bio.spear.test', 'data/lfcc_60.hdf5'), extractor.write_feature, extractor.read_feature)
+    # test the Cepstral extractor
+    extractor = bob.bio.spear.extractor.Cepstral(mel_scale=False)
+    # but we need to apply VAD first
+    preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()
+    preprocessed_data = preprocessor(wav)
+    _compare(
+        extractor(preprocessed_data),
+        pkg_resources.resource_filename("bob.bio.spear.test", "data/lfcc_60.hdf5"),
+        extractor.write_feature,
+        extractor.read_feature,
+    )

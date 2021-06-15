@@ -19,69 +19,67 @@
 
 
 import numpy
+
 import bob
-from .. import utils
+
 from bob.bio.base.preprocessor import Preprocessor
+
 from .Base import Base
 
+
 class External(Base):
-  """Uses external VAD and converts it to fit the format used by Spear"""
-  def __init__(
-      self,
-      win_length_ms = 20.,        # 20 ms
-      win_shift_ms = 10.,           # 10 ms 
-      **kwargs
-  ):
-      # call base class constructor with its set of parameters
-    Preprocessor.__init__(
-        self,
-        win_length_ms = win_length_ms,
-        win_shift_ms = win_shift_ms, 
-    )
-    # copy parameters
-    self.win_length_ms = win_length_ms
-    self.win_shift_ms = win_shift_ms
-  
-  def use_existing_vad(self, inArr, vad_file):
-    f=open(vad_file)
-    n_samples = len(inArr)
-    labels = numpy.array(numpy.zeros(n_samples), dtype=numpy.int16)
-    ns=0
-    for line in f:
-      line = line.strip()
-      st_frame = float(line.split(' ')[2])
-      en_frame = float(line.split(' ')[4])
-      st_frame = min(int(st_frame * 100), n_samples)
-      st_frame = max(st_frame, 0)
-      en_frame = min(int(en_frame * 100), n_samples)
-      en_frame = max(en_frame, 0)
-      for i in range(st_frame, en_frame):
-        labels[i]=1
-    
-    return labels
+    """Uses external VAD and converts it to fit the format used by Spear"""
 
+    def __init__(
+        self, win_length_ms=20.0, win_shift_ms=10.0, **kwargs  # 20 ms  # 10 ms
+    ):
+        # call base class constructor with its set of parameters
+        Preprocessor.__init__(
+            self,
+            win_length_ms=win_length_ms,
+            win_shift_ms=win_shift_ms,
+        )
+        # copy parameters
+        self.win_length_ms = win_length_ms
+        self.win_shift_ms = win_shift_ms
 
-  
-  def _conversion(self, input_signal, vad_file):
-    """
-      Converts an external VAD to follow the Spear convention.
-      Energy is used in order to avoind out-of-bound array indexes.
-    """
-    
-    e = bob.ap.Energy(rate_wavsample[0], self.win_length_ms, self.win_shift_ms)
-    energy_array = e(rate_wavsample[1])
-    labels = self.use_existing_vad(energy_array, vad_file)
-    
-    return labels
-    
-  def __call__(self, input_signal, annotations=None):
-    """labels speech (1) and non-speech (0) parts using an external VAD segmentation
+    def use_existing_vad(self, inArr, vad_file):
+        f = open(vad_file)
+        n_samples = len(inArr)
+        labels = numpy.array(numpy.zeros(n_samples), dtype=numpy.int16)
+        for line in f:
+            line = line.strip()
+            st_frame = float(line.split(" ")[2])
+            en_frame = float(line.split(" ")[4])
+            st_frame = min(int(st_frame * 100), n_samples)
+            st_frame = max(st_frame, 0)
+            en_frame = min(int(en_frame * 100), n_samples)
+            en_frame = max(en_frame, 0)
+            for i in range(st_frame, en_frame):
+                labels[i] = 1
+
+        return labels
+
+    def _conversion(self, input_signal, vad_file):
+        """
+        Converts an external VAD to follow the Spear convention.
+        Energy is used in order to avoind out-of-bound array indexes.
+        """
+
+        e = bob.ap.Energy(input_signal[0], self.win_length_ms, self.win_shift_ms)
+        energy_array = e(input_signal[1])
+        labels = self.use_existing_vad(energy_array, vad_file)
+
+        return labels
+
+    def __call__(self, input_signal, annotations=None):
+        """labels speech (1) and non-speech (0) parts using an external VAD segmentation
         Input parameter:
            * input_signal[0] --> rate
-           * input_signal[1] --> signal 
+           * input_signal[1] --> signal
            * annotations --> the external VAD annotations
         """
-    labels = self._conversion(input_signal, annotations)
-    rate    =  input_signal[0]
-    data = input_signal[1]
-    return rate, data, labels
+        labels = self._conversion(input_signal, annotations)
+        rate = input_signal[0]
+        data = input_signal[1]
+        return rate, data, labels
