@@ -19,10 +19,11 @@
 
 """Feature extraction tools"""
 
+from bob.bio.spear.database.database import AudioBioFile
+
 from .asvspoof import ASVspoofBioDatabase
 from .asvspoof2017 import ASVspoof2017BioDatabase
 from .avspoof import AVspoofBioDatabase
-from .database import AudioBioFile
 from .mobio import MobioBioDatabase
 from .voicepa import VoicePABioDatabase
 
