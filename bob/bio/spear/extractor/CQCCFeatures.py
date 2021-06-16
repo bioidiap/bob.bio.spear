@@ -7,15 +7,15 @@
 
 from __future__ import print_function
 
-import bob.io.base
-import numpy
-
 import logging
-logger = logging.getLogger("bob.bio.spear")
-logger.setLevel(logging.DEBUG)
+
+import numpy
 
 from bob.bio.base.extractor import Extractor
 from bob.bio.base.preprocessor import Preprocessor
+
+logger = logging.getLogger("bob.bio.spear")
+logger.setLevel(logging.DEBUG)
 
 
 class CQCCFeatures(Preprocessor, Extractor):
@@ -31,15 +31,19 @@ class CQCCFeatures(Preprocessor, Extractor):
     """
 
     def __init__(
-            self,
-            split_training_data_by_client=False,
-            features_mask=numpy.zeros(90),  # mask of which features to read
-            **kwargs
+        self,
+        split_training_data_by_client=False,
+        features_mask=numpy.zeros(90),  # mask of which features to read
+        **kwargs
     ):
         # call base class constructor with its set of parameters
         Preprocessor.__init__(self, read_original_data=self.read_matlab_files, **kwargs)
-        Extractor.__init__(self, requires_training=False, split_training_data_by_client=split_training_data_by_client,
-                           **kwargs)
+        Extractor.__init__(
+            self,
+            requires_training=False,
+            split_training_data_by_client=split_training_data_by_client,
+            **kwargs
+        )
         self.features_mask = features_mask
 
     def read_matlab_files(self, biofile, directory, extension):
@@ -47,6 +51,7 @@ class CQCCFeatures(Preprocessor, Extractor):
         Read pre-computed CQCC Matlab features here
         """
         import bob.io.matlab
+
         # return the numpy array read from the data_file
         data_path = biofile.make_path(directory, extension)
         return bob.io.base.load(data_path)
@@ -60,7 +65,7 @@ class CQCCFeatures(Preprocessor, Extractor):
 
         features = input_data
         # features mask cannot be large the the features themselves
-        assert(self.features_mask.shape[0] < input_data.shape[0])
+        assert self.features_mask.shape[0] < input_data.shape[0]
         if self.features_mask.shape[0] < input_data.shape[0]:  # apply the mask
             features = input_data[self.features_mask]
 

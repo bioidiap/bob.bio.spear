@@ -18,8 +18,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-import numpy
 import logging
+import math
+
+import numpy
 
 logger = logging.getLogger("bob.bio.spear")
 
@@ -32,7 +34,7 @@ def zeromean_unitvar_norm(data, mean, std):
 def calc_mean(c0, c1=[]):
     """ Calculates the mean of the data."""
     if c1 != []:
-        return (numpy.mean(c0, 0) + numpy.mean(c1, 0)) / 2.
+        return (numpy.mean(c0, 0) + numpy.mean(c1, 0)) / 2.0
     else:
         return numpy.mean(c0, 0)
 
@@ -56,26 +58,30 @@ def calc_std(c0, c1=[]):
 @param c1
 @param nonStdZero if the std was zero, convert to one. This will avoid a zero division
 """
+
+
 def calc_mean_std(c0, c1=[], nonStdZero=False):
     """ Calculates both the mean of the data. """
     mi = calc_mean(c0, c1)
     std = calc_std(c0, c1)
-    if (nonStdZero):
+    if nonStdZero:
         std[std == 0] = 1
 
     return mi, std
 
 
 def vad_filter_features(vad_labels, features, filter_frames="trim_silence"):
-    """ Trim the spectrogram to remove silent head/tails from the speech sample.
+    """Trim the spectrogram to remove silent head/tails from the speech sample.
     Keep all remaining frames or either speech or non-speech only
     @param: filter_frames: the value is either 'silence_only' (keep the speech, remove everything else),
     'speech_only' (only keep the silent parts), 'trim_silence' (trim silent heads and tails),
     or 'no_filter' (no filter is applied)
-     """
+    """
 
     if not features.size:
-        raise ValueError("vad_filter_features(): data sample is empty, no features extraction is possible")
+        raise ValueError(
+            "vad_filter_features(): data sample is empty, no features extraction is possible"
+        )
 
     vad_labels = numpy.asarray(vad_labels, dtype=numpy.int8)
     features = numpy.asarray(features, dtype=numpy.float64)
@@ -93,11 +99,11 @@ def vad_filter_features(vad_labels, features, filter_frames="trim_silence"):
         if len(vad_labels) == len(features):
 
             # take only speech frames, as in VAD speech frames are 1 and silence are 0
-            speech, = numpy.nonzero(vad_labels)
+            (speech,) = numpy.nonzero(vad_labels)
             silences = None
             if filter_frames == "silence_only":
                 # take only silent frames - those for which VAD gave zeros
-                silences, = numpy.nonzero(vad_labels == 0)
+                (silences,) = numpy.nonzero(vad_labels == 0)
 
             if len(speech):
                 nzstart = speech[0]  # index of the first non-zero
@@ -111,10 +117,17 @@ def vad_filter_features(vad_labels, features, filter_frames="trim_silence"):
                 elif filter_frames == "speech_only":
                     filtered_features = features[speech, :]
                 else:  # when we take all
-                    filtered_features = features[nzstart:nzend + 1, :]  # numpy slicing is a non-closed interval [)
+                    filtered_features = features[
+                        nzstart : nzend + 1, :
+                    ]  # numpy slicing is a non-closed interval [)
         else:
-            logger.error("vad_filter_features(): VAD labels should be the same length as energy bands")
+            logger.error(
+                "vad_filter_features(): VAD labels should be the same length as energy bands"
+            )
 
-        logger.info("vad_filter_features(): filtered_features shape: %s", str(filtered_features.shape))
+        logger.info(
+            "vad_filter_features(): filtered_features shape: %s",
+            str(filtered_features.shape),
+        )
 
     return filtered_features

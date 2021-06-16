@@ -20,54 +20,55 @@
 
 from __future__ import print_function
 
+import logging
+
 import numpy
+
 import bob.ap
 import bob.core
 
-import logging
+from bob.bio.base.extractor import Extractor
+
+from .. import utils
+
 logger = logging.getLogger("bob.bio.spear")
 logger.setLevel(logging.DEBUG)
-
-from bob.bio.base.extractor import Extractor
-from .. import utils
 
 
 class CepstralExtended(Extractor):
     """Extract energy bands from spectrogram and VAD labels based on the modulation of the energy around 4 Hz"""
 
     def __init__(
-            self,
-            win_length_ms=20.,  # 20 ms
-            win_shift_ms=10.,  # 10 ms
-            n_filters=40,
-            f_min=0.0,  # 0 Hz
-            f_max=8000,  # 8 KHz - this is an important value. Normally it should be half of the sampling frequency
-            pre_emphasis_coef=1.0,
-            mel_scale=True,
-            rect_filter=False,
-            inverse_filter=False,
-            delta_win=2,
-            n_ceps=19,  # 0-->18,
-            dct_norm=False,
-            ssfc_features=False,
-            scfc_features=False,
-            scmc_features=False,
-            with_delta=True,
-            with_delta_delta=True,
-            with_energy=False,
-            normalize_spectrum=False,
-            keep_only_deltas=True,
-            log_filter=True,
-            energy_filter=False,
-            vad_filter="no_filter",  # we do apply any trim filter by default
-            normalize_feature_vector = False,
-            **kwargs
+        self,
+        win_length_ms=20.0,  # 20 ms
+        win_shift_ms=10.0,  # 10 ms
+        n_filters=40,
+        f_min=0.0,  # 0 Hz
+        f_max=8000,  # 8 KHz - this is an important value. Normally it should be half of the sampling frequency
+        pre_emphasis_coef=1.0,
+        mel_scale=True,
+        rect_filter=False,
+        inverse_filter=False,
+        delta_win=2,
+        n_ceps=19,  # 0-->18,
+        dct_norm=False,
+        ssfc_features=False,
+        scfc_features=False,
+        scmc_features=False,
+        with_delta=True,
+        with_delta_delta=True,
+        with_energy=False,
+        normalize_spectrum=False,
+        keep_only_deltas=True,
+        log_filter=True,
+        energy_filter=False,
+        vad_filter="no_filter",  # we do apply any trim filter by default
+        normalize_feature_vector=False,
+        **kwargs
     ):
         # call base class constructor with its set of parameters
         Extractor.__init__(
-            self,
-            requires_training=False, split_training_data_by_client=False,
-            **kwargs
+            self, requires_training=False, split_training_data_by_client=False, **kwargs
         )
         # copy parameters
         self.win_length_ms = win_length_ms
@@ -102,17 +103,24 @@ class CepstralExtended(Extractor):
         if self.with_delta_delta:
             self.features_len += self.n_ceps
 
-
     def normalize_features(self, features):
         mean = numpy.mean(features, axis=0)
         std = numpy.std(features, axis=0)
-        return numpy.divide(features-mean, std)
-
+        return numpy.divide(features - mean, std)
 
     def compute_ceps(self, rate, data):
 
-        ceps = bob.ap.Ceps(rate, self.win_length_ms, self.win_shift_ms, self.n_filters, self.n_ceps, self.f_min,
-                           self.f_max, self.delta_win, self.pre_emphasis_coef)
+        ceps = bob.ap.Ceps(
+            rate,
+            self.win_length_ms,
+            self.win_shift_ms,
+            self.n_filters,
+            self.n_ceps,
+            self.f_min,
+            self.f_max,
+            self.delta_win,
+            self.pre_emphasis_coef,
+        )
         ceps.dct_norm = self.dct_norm
         ceps.mel_scale = self.mel_scale
         # ceps.mel_scale = False
@@ -130,19 +138,21 @@ class CepstralExtended(Extractor):
 
         cepstral_features = ceps(data)
 
-        if self.keep_only_deltas: # do not take the actual coefficients, only delta with delta-delta
-            cepstral_features = cepstral_features[:, self.n_ceps:]
+        if (
+            self.keep_only_deltas
+        ):  # do not take the actual coefficients, only delta with delta-delta
+            cepstral_features = cepstral_features[:, self.n_ceps :]
         return cepstral_features
 
     def __call__(self, input_data, annotations=None):
         """labels speech (1) and non-speech (0) parts of the given input wave file using 4Hz modulation energy and energy, as well as, compute energy of the signal and split it in bands using on linear or mel-filters
-            Input parameter:
-               * input_signal[0] --> rate
-               * input_signal[1] --> signal
+        Input parameter:
+           * input_signal[0] --> rate
+           * input_signal[1] --> signal
         """
         rate = input_data[0]
         wav_sample = input_data[1]
-        labels = input_data[2] # results of the VAD preprocessor
+        labels = input_data[2]  # results of the VAD preprocessor
 
         # remove trailing zeros the wav_sample
         # wav_sample = numpy.trim_zeros(wav_sample)  # comment it out to align with VAD output
@@ -154,13 +164,22 @@ class CepstralExtended(Extractor):
             # since they are computed using the difference between neighboring frames
             if self.ssfc_features:
                 labels = labels[1:]
-            logger.info("- Extraction: size of cepstral features %s", str(cepstral_coeff.shape))
+            logger.info(
+                "- Extraction: size of cepstral features %s", str(cepstral_coeff.shape)
+            )
 
-            filtered_features = utils.vad_filter_features(labels, cepstral_coeff, self.vad_filter)
-            logger.info("- Extraction: size of filtered cepstral features %s", str(filtered_features.shape))
+            filtered_features = utils.vad_filter_features(
+                labels, cepstral_coeff, self.vad_filter
+            )
+            logger.info(
+                "- Extraction: size of filtered cepstral features %s",
+                str(filtered_features.shape),
+            )
 
             if numpy.isnan(numpy.sum(filtered_features)):
-                logger.error("- Extraction: cepstral coefficients have NaN values, returning zero-vector...")
+                logger.error(
+                    "- Extraction: cepstral coefficients have NaN values, returning zero-vector..."
+                )
                 return numpy.array([numpy.zeros(self.features_len)])
 
             if self.normalize_feature_vector:

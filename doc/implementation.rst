@@ -37,7 +37,7 @@ This step aims at computing the universal background model referenced as `Projec
 
 4. Subspace Training
 ~~~~~~~~~~~~~~~~~~~~~~
-This steps aims at estimating the subspaces needed by ISV, JFA and I-Vector. The I-Vector can also be parallelized similarly to the UBM. For design convenience, the `Projector` and `Enroller` are put together in one HDF5 file. 
+This steps aims at estimating the subspaces needed by ISV, JFA and I-Vector. The I-Vector can also be parallelized similarly to the UBM. For design convenience, the `Projector` and `Enroller` are put together in one HDF5 file.
 
 
 5. Conditioning and Compensation

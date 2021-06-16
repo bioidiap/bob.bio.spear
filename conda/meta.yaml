@@ -24,6 +24,7 @@ requirements:
     - bob.blitz
     - bob.core
     - bob.io.base
+    - bob.io.audio
     - bob.learn.activation
     - bob.math
     - bob.sp
@@ -33,6 +34,7 @@ requirements:
     - bob.measure
     - bob.db.base
     - bob.bio.base
+    - bob.pipelines
     - matplotlib {{ matplotlib }}
   run:
     - python
@@ -59,6 +61,7 @@ test:
     - bob.db.avspoof
     - bob.db.asvspoof
     - bob.db.voicepa
+    - bob.db.atnt
 
 about:
   home: https://www.idiap.ch/software/bob/

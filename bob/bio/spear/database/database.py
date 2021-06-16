@@ -3,9 +3,11 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 # Wed 20 July 14:43:22 CEST 2016
 
-from bob.bio.base.database.file import BioFile
-import scipy
 import numpy
+
+from scipy.io import wavfile
+
+from bob.bio.base.database.file import BioFile
 
 
 class AudioBioFile(BioFile):
@@ -15,11 +17,11 @@ class AudioBioFile(BioFile):
         VoxForge database.
         """
         super(AudioBioFile, self).__init__(
-            client_id=client_id, path=path, file_id=file_id, **kwargs)
+            client_id=client_id, path=path, file_id=file_id, **kwargs
+        )
 
-    def load(self, directory=None, extension='.wav'):
-        rate, audio = scipy.io.wavfile.read(
-            self.make_path(directory, extension))
+    def load(self, directory=None, extension=".wav"):
+        rate, audio = wavfile.read(self.make_path(directory, extension))
         # We consider there is only 1 channel in the audio file => data[0]
-        data = numpy.cast['float'](audio)
+        data = numpy.cast["float"](audio)
         return rate, data
