@@ -8,6 +8,7 @@
 .. _idiap: http://www.idiap.ch
 .. _gitlab: http://gitlab.idiap.ch/bob
 .. _bob: http://www.idiap.ch/software/bob
+.. _installation: https://www.idiap.ch/software/bob/install
 .. _idiap at gitlab: http://gitlab.idiap.ch/bob
 .. _at&t database: http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html
 .. _bob's gitlab page: http://gitlab.idiap.ch/bob
@@ -29,5 +30,3 @@
 .. _bob.db.mobio: https://pypi.python.org/pypi/bob.db.mobio
 .. _NIST: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _bob.bio.gmm: https://pypi.python.org/pypi/bob.bio.gmm
-
-

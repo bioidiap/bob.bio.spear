@@ -37,7 +37,7 @@ If you use this package and/or its results, please cite the following paper publ
     }
 
 For more detailed information about the structure of the ``bob.bio`` packages, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.
-Particularly, the installation of this and other ``bob.bio`` packages, please read the :ref:`bob.bio.base.installation`.
+Particularly, the installation of this and other ``bob.bio`` packages, please read the installation_.
 
 In the following, we provide more detailed information about the particularities of this package only.
 
@@ -66,4 +66,3 @@ Reference Manual
 .. include:: links.rst
 
 .. todolist::
-

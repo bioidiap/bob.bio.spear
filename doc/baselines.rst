@@ -17,7 +17,7 @@ For example, you can easily download the audio samples of the `Voxforge`_ databa
 
 By default, ``bob.bio`` does not know, where the wav files are located.
 Hence, before running experiments you have to specify the voice database directories.
-How this is done is explained in more detail in the :ref:`bob.bio.base.installation`.
+How this is done is explained in more detail at installation_.
 
 
 Running Baseline Experiments
@@ -29,7 +29,7 @@ To run the baseline experiments, you can use the ``verify.py`` script by just go
 
    $ verify.py
 
-This script is explained in more detail in :ref:`bob.bio.base.experiments`.
+This script is explained in more detail in :ref:`bob.bio.base.vanilla_biometrics_intro`.
 The ``verify.py --help`` option shows you, which other options you have.
 Here is an almost complete extract:
 
@@ -83,7 +83,7 @@ Evaluation Results
 ------------------------------
 
 To evaluate the results,  one can use ``evaluate.py`` command.
-Several types of evaluation can be achieved, see :ref:`bob.bio.base.evaluate` for details.
+Several types of evaluation can be achieved, see :ref:`bob.bio.base.vanilla_biometrics_advanced_features` for details.
 Particularly, here we can enable ROC curves, DET plots, CMC curves and the computation of EER/HTER or minDCF.
 
 
@@ -199,5 +199,3 @@ We first invite you to read the paper describing our system submitted to the NIS
   https://groups.google.com/forum/#!forum/bob-devel
 
 .. include:: links.rst
-
-
