@@ -4,7 +4,8 @@
 # Wed 20 July 14:43:22 CEST 2016
 
 import numpy
-import scipy
+
+from scipy.io import wavfile
 
 from bob.bio.base.database.file import BioFile
 
@@ -20,7 +21,7 @@ class AudioBioFile(BioFile):
         )
 
     def load(self, directory=None, extension=".wav"):
-        rate, audio = scipy.io.wavfile.read(self.make_path(directory, extension))
+        rate, audio = wavfile.read(self.make_path(directory, extension))
         # We consider there is only 1 channel in the audio file => data[0]
         data = numpy.cast["float"](audio)
         return rate, data
