@@ -95,17 +95,18 @@ setup(
     # the version of bob.
     entry_points={
         "bob.bio.database": [
-            "timit            = bob.bio.spear.config.database.timit:database",
-            "mobio-audio-male       = bob.bio.spear.config.database.mobio_audio_male:database",
-            "mobio-audio-female       = bob.bio.spear.config.database.mobio_audio_female:database",
-            "avspoof-licit             = bob.bio.spear.config.database.avspoof:database_licit",
-            "avspoof-spoof             = bob.bio.spear.config.database.avspoof:database_spoof",
-            "asvspoof-licit             = bob.bio.spear.config.database.asvspoof:database_licit",
-            "asvspoof-spoof             = bob.bio.spear.config.database.asvspoof:database_spoof",
-            "voicepa-licit             = bob.bio.spear.config.database.voicepa:database_licit",
-            "voicepa-spoof             = bob.bio.spear.config.database.voicepa:database_spoof",
-            "asvspoof2017-licit             = bob.bio.spear.config.database.asvspoof2017:database_licit",
-            "asvspoof2017-spoof             = bob.bio.spear.config.database.asvspoof2017:database_spoof",
+            "timit              = bob.bio.spear.config.database.timit:database",
+            "mobio-audio-male   = bob.bio.spear.config.database.mobio_audio_male:database",
+            "mobio-audio-female = bob.bio.spear.config.database.mobio_audio_female:database",
+            "avspoof-licit      = bob.bio.spear.config.database.avspoof:database_licit",
+            "avspoof-spoof      = bob.bio.spear.config.database.avspoof:database_spoof",
+            "asvspoof-licit     = bob.bio.spear.config.database.asvspoof:database_licit",
+            "asvspoof-spoof     = bob.bio.spear.config.database.asvspoof:database_spoof",
+            "voicepa-licit      = bob.bio.spear.config.database.voicepa:database_licit",
+            "voicepa-spoof      = bob.bio.spear.config.database.voicepa:database_spoof",
+            "asvspoof2017-licit = bob.bio.spear.config.database.asvspoof2017:database_licit",
+            "asvspoof2017-spoof = bob.bio.spear.config.database.asvspoof2017:database_spoof",
+            "voxforge           = bob.bio.spear.config.database.voxforge:database",
         ],
         "bob.bio.preprocessor": [
             "cqcc20p            = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Empty preprocessor for CQCC features
