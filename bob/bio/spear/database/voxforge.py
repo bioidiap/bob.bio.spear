@@ -3,22 +3,60 @@
 # Wed 16 Jun 2021 17:21:47 UTC+02
 
 import logging
-import os.path
+import os
+
+from tqdm import tqdm
 
 from bob.bio.base.database import CSVDataset
 from bob.extension import rc
 from bob.extension.download import get_file
+from bob.extension.download import search_file
 
 logger = logging.getLogger(__name__)
 
 
-def download_voxforge_data(list_file):
-    raise NotImplementedError(
-        "VoxForge data download not yet available. Please, download manually."
-    )
-    logger.info("Downloading data files from VoxForge...")
+def download_voxforge_data(list_file: str):
+    """Downloads a series of VoxForge data files from their repository and untar them.
 
-    logger.info("Download completed.")
+    The files will be retrieved by :py:func:`bob.extension.download.get_file` and saved
+    in the ``data/voxforge`` subdirectory of `bob_data_folder`.
+
+    Parameters
+    ----------
+
+    list_file: str
+        A path to a text file with one line per file to download.
+    """
+    if ":" in list_file:
+        tar_base, in_file = list_file.split(":", maxsplit=1)
+        list_file = search_file(tar_base, [in_file])  # Returns an open file
+    else:
+        list_file = open(list_file, "r")
+
+    voxforge_repo = "http://www.repository.voxforge1.org"
+    base_url = f"{voxforge_repo}/downloads/SpeechCorpus/Trunk/Audio/Main/16kHz_16bit"
+    num_files = sum(1 for _ in list_file)
+    list_file.seek(0, 0)
+    if num_files > 20:
+        logger.warning(f"Downloading {num_files} will take some time.")
+    logger.info(
+        f"{num_files} files are listed in {list_file}. Downloading from {base_url}..."
+    )
+    for line in tqdm(list_file, total=num_files):
+        tar_file = line.strip()
+        file_name = os.path.basename(tar_file)
+        data_file_url = f"{base_url}/{tar_file}"
+        logger.debug(f"Downloading {file_name} from {data_file_url}")
+        final_file = get_file(
+            filename=file_name,
+            urls=[data_file_url],
+            cache_subdir=os.path.join("data", "voxforge"),
+            extract=True,
+            force=False,
+        )
+        logger.debug(f"Downloaded to {final_file}")
+    logger.info(f"Download of {num_files} completed.")
+    list_file.close()
 
 
 class VoxforgeBioDatabase(CSVDataset):
@@ -85,11 +123,11 @@ class VoxforgeBioDatabase(CSVDataset):
             )
             data_path = os.path.join(bob_data_path, "data")
             download_voxforge_data(
-                os.path.join(dataset_protocol_path, protocol, "list_of_data_files.lst")
+                f"{dataset_protocol_path}:{protocol}/list_of_data_files.lst"
             )
 
         logger.info(
-            f"Database: Will read CSV protocol definitions in '{dataset_protocol_path}'."
+            f"Database: Will read the CSV protocol definitions in '{dataset_protocol_path}'."
         )
         logger.info(f"Database: Will read raw data files in '{data_path}'.")
         super().__init__(
