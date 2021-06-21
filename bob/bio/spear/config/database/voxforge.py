@@ -19,7 +19,7 @@ configuration:
 
 from bob.bio.spear.database import VoxforgeBioDatabase
 
-default_protocol = "1"
+default_protocol = "Default"
 
 if "protocol" not in locals():
     protocol = default_protocol
