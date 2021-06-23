@@ -36,11 +36,11 @@ requirements:
     - bob.bio.base
     - bob.pipelines
     - matplotlib {{ matplotlib }}
-    - tqdm
   run:
     - python
     - setuptools
     - matplotlib
+    - tqdm
 
 test:
   imports:
