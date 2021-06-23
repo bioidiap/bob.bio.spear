@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # @author: Yannick Dayer <yannick.dayer@idiap.ch>
-# Tue 22 Jun 2021 14:53:03 UTC+02
+# @date: Tue 22 Jun 2021 14:53:03 UTC+02
 
 import csv
 import logging
@@ -100,5 +100,5 @@ def download_voxforge(list_file, destination, force_download, verbose, **kwargs)
             download_and_unzip(urls=[row["url"]], filename=full_filename)
             logger.debug(f"Downloaded to {full_filename}")
 
-    logger.info(f"Download of {num_files} completed.")
+    logger.info(f"Download of {num_files} files completed.")
     open_list_file.close()

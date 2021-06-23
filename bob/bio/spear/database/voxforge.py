@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# Yannick Dayer <yannick.dayer@idiap.ch>
-# Wed 16 Jun 2021 17:21:47 UTC+02
+# @author: Yannick Dayer <yannick.dayer@idiap.ch>
+# @date: Wed 16 Jun 2021 17:21:47 UTC+02
 
 import logging
 import os
