@@ -157,6 +157,9 @@ setup(
         "bob.bio.grid": [
             "modest         = bob.bio.spear.config.grid.modest:grid",
         ],
+        "bob.db.cli": [
+            "download-voxforge = bob.bio.spear.script.db_download:download_voxforge",
+        ],
     },
     # Classifiers are important if you plan to distribute this package through
     # PyPI. You can find the complete list of classifiers that are valid and
