@@ -23,69 +23,55 @@ logger = logging.getLogger(__name__)
     epilog="""Examples:
 
 \b
-    $ bob db download-voxforge --list-file my_urls.csv --destination my_datasets/data/
-
-The file list can be in a tar archive:
+    $ bob db download-voxforge ./data/
 
 \b
-    $ bob db download-voxforge --list-file voxforge.tar.gz:Default/data_files_urls.csv
+    $ bob db download-voxforge --protocol-definition bio-spear-voxforge.tar ./data/
+
 """,
 )
 @click.option(
-    "--list-file",
-    "-l",
+    "--protocol-definition",
+    "-p",
     default=None,
     help=(
-        "A path to a text file with one line per file to download. "
-        "Can be in a tar file: use a ``:`` to point inside the archive. "
-        "If ``--list-file`` is omitted, will look for the protocol definition file in "
-        "``bob_data_folder``, and download the file from "
-        "`https://www.idiap.ch/software/bob/data/bob/bob.bio.spear` if needed."
+        "A path to a the protocol definition file of VoxForge. "
+        "If omitted, will use the default protocol definition file at "
+        "`https://www.idiap.ch/software/bob/data/bob/bob.bio.spear`."
     ),
 )
-@click.option(
-    "--destination",
-    "-d",
-    default=None,
-    help=(
-        "Where to store the downloaded data files. "
-        "If omitted, will download to the bob_data/data folder."
-    ),
-)
+@click.argument("destination")
 @click.option(
     "--force-download",
     "-f",
     is_flag=True,
-    help=("Download a file even if it already exists locally."),
+    help="Download a file even if it already exists locally.",
 )
 @verbosity_option()
-def download_voxforge(list_file, destination, force_download, verbose, **kwargs):
+def download_voxforge(
+    protocol_definition, destination, force_download, verbose, **kwargs
+):
     """Downloads a series of VoxForge data files from their repository and untar them.
 
     The files will be downloaded and saved in the `destination` folder then extracted.
 
-    A list of files is required in the form of a csv file with a ``url`` column as well
-    as a ``filename`` column that specifies the local name of the file. If the csv file
-    is not specified as ``--list-file`` option, it will be looked up in
-    ``bob_data_folder`` (see
-    :py:func:`bob.bio.spear.database.voxforge.get_voxforge_protocol_file`).
+    The list of URLs is provided in the protocol definition file of Voxforge.
     """
-    # logger.setLevel(["ERROR", "WARNING", "INFO", "DEBUG"][verbose])
 
     destination = Path(destination)
     destination.mkdir(exist_ok=True)
 
-    # Defaults to list in protocol definition
-    if list_file is None:
-        protocol_file = get_voxforge_protocol_file()
-        list_file = f"{protocol_file}:Default/data_files_urls.csv"
+    if protocol_definition is None:
+        protocol_definition = get_voxforge_protocol_file()
+
+    # Use the `Default` protocol
+    protocol = "Default"
 
     # Open the list file
-    if ":" in list_file:
-        tar_base, in_file = list_file.split(":", maxsplit=1)
-        open_list_file = search_file(tar_base, [in_file])  # Returns an open file
-    else:
-        open_list_file = open(list_file, "r")
+    list_file = f"{protocol}/data_files_urls.csv"
+    open_list_file = search_file(
+        protocol_definition, [list_file]
+    )  # Returns an open file
 
     num_files = sum(1 for _ in open_list_file) - 1
     open_list_file.seek(0, 0)
