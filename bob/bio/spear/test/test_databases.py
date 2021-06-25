@@ -26,6 +26,8 @@ import bob.bio.base
 from bob.bio.base.test.test_database_implementations import check_database
 from bob.bio.base.test.test_database_implementations import check_database_zt
 from bob.bio.base.test.utils import db_available
+from bob.pipelines import DelayedSample
+from bob.pipelines import SampleSet
 
 
 @db_available("mobio")
@@ -143,3 +145,29 @@ def test_timit():
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
+
+
+def test_voxforge():
+    database = bob.bio.base.load_resource(
+        "voxforge", "database", preferred_package="bob.bio.spear"
+    )
+
+    dev_ref = database.references(group="dev")
+    eval_ref = database.references(group="eval")
+    dev_pro = database.probes(group="dev")
+    eval_pro = database.probes(group="eval")
+    train = database.background_model_samples()
+
+    assert len(dev_ref) == 10, len(dev_ref)
+    assert all(isinstance(s, SampleSet) for s in dev_ref)
+    assert all(isinstance(s, DelayedSample) for s in dev_ref[0])
+    assert len(dev_pro) == 300, len(dev_pro)
+    assert all(len(s) == 1 for s in dev_pro)
+    assert all(isinstance(s[0], DelayedSample) for s in dev_pro)
+    assert len(dev_ref) == 10, len(eval_ref)
+    assert all(isinstance(s, SampleSet) for s in eval_ref)
+    assert all(isinstance(s, DelayedSample) for s in eval_ref[0])
+    assert len(eval_pro) == 300, len(eval_pro)
+    assert all(len(s) == 1 for s in eval_pro)
+    assert all(isinstance(s[0], DelayedSample) for s in eval_pro)
+    assert len(train) == 3148, len(train)
