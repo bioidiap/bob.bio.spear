@@ -158,7 +158,7 @@ setup(
             "modest         = bob.bio.spear.config.grid.modest:grid",
         ],
         "bob.db.cli": [
-            "download-voxforge = bob.bio.spear.script.download_voxforge:download_voxforge",
+            "download-voxforge = bob.bio.spear.database.voxforge:download_voxforge",
         ],
     },
     # Classifiers are important if you plan to distribute this package through
