@@ -19,8 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import pkg_resources
-
 from nose.plugins.skip import SkipTest
 
 import bob.bio.base
@@ -28,8 +26,6 @@ import bob.bio.base
 from bob.bio.base.test.test_database_implementations import check_database
 from bob.bio.base.test.test_database_implementations import check_database_zt
 from bob.bio.base.test.utils import db_available
-from bob.pipelines import DelayedSample
-from bob.pipelines import SampleSet
 
 
 @db_available("mobio")
@@ -147,37 +143,3 @@ def test_timit():
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
-
-
-def test_voxforge():
-    from bob.bio.spear.database import VoxforgeBioDatabase
-
-    dataset_protocol = pkg_resources.resource_filename(
-        "bob.bio.spear.test", "data/dummy_dataset.tar.gz"
-    )
-
-    database = VoxforgeBioDatabase(
-        protocol="dummy", dataset_protocol_path=dataset_protocol
-    )
-
-    dev_ref = database.references(group="dev")
-    eval_ref = database.references(group="eval")
-    dev_pro = database.probes(group="dev")
-    eval_pro = database.probes(group="eval")
-
-    assert len(dev_ref) == 2
-    assert all(isinstance(s, SampleSet) for s in dev_ref)
-    assert all(len(s) == 10 for s in dev_ref)
-    assert all(isinstance(s, DelayedSample) for s in dev_ref[0])
-    assert all(isinstance(s, DelayedSample) for s in dev_ref[1])
-    assert len(dev_pro) == 20
-    assert all(len(s) == 1 for s in dev_pro)
-    assert all(isinstance(s[0], DelayedSample) for s in dev_pro)
-    assert all(isinstance(s, SampleSet) for s in eval_ref)
-    assert all(len(s) == 10 for s in eval_ref)
-    assert all(isinstance(s, DelayedSample) for s in eval_ref[0])
-    assert all(isinstance(s, DelayedSample) for s in eval_ref[1])
-    assert len(eval_pro) == 20
-    assert all(len(s) == 1 for s in eval_pro)
-    assert all(isinstance(s[0], DelayedSample) for s in eval_pro)
-    assert len(database.background_model_samples()) == 20
