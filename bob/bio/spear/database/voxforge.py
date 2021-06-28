@@ -11,7 +11,10 @@ import click
 
 from tqdm import tqdm
 
+import bob.io.base
+
 from bob.bio.base.database import CSVDataset
+from bob.bio.base.database import CSVToSampleLoaderBiometrics
 from bob.extension import rc
 from bob.extension.download import download_and_unzip
 from bob.extension.download import get_file
@@ -105,6 +108,11 @@ def VoxforgeBioDatabase(
         name="VoxForge",
         protocol=protocol,
         dataset_protocol_path=dataset_protocol_path,
+        csv_to_sample_loader=CSVToSampleLoaderBiometrics(
+            data_loader=bob.io.base.load,
+            dataset_original_directory=data_path,
+            extension=".wav",
+        ),
         allow_scoring_with_all_biometric_references=True,
         **kwargs,
     )
