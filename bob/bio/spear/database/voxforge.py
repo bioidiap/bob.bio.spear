@@ -11,6 +11,7 @@ import click
 
 from tqdm import tqdm
 
+import bob.io.audio
 import bob.io.base
 
 from bob.bio.base.database import CSVDataset
