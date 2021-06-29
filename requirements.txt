@@ -14,5 +14,6 @@ bob.db.base
 bob.bio.base
 bob.pipelines
 matplotlib   # for plotting
+tqdm
 six
 scikit-learn # for pipelines Tranformers
