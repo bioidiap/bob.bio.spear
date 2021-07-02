@@ -23,16 +23,20 @@ import logging
 
 import numpy
 
+from sklearn.base import BaseEstimator
+from sklearn.base import TransformerMixin
+
 import bob.ap
 
 from bob.bio.base.extractor import Extractor
+from bob.pipelines import Sample
 
 from .. import utils
 
 logger = logging.getLogger("bob.bio.spear")
 
 
-class Cepstral(Extractor):
+class Cepstral(BaseEstimator, TransformerMixin):
     """ Extracts the Cepstral features """
 
     def __init__(
@@ -109,16 +113,12 @@ class Cepstral(Extractor):
         data = numpy.array(normalized_vector)
         return data
 
-    def __call__(self, input_data):
-        """Computes and returns normalized cepstral features for the given input data
-        input_data[0] --> sampling rate
-        input_data[1] -->  sample data
-        input_data[2] --> VAD array (either 0 or 1)
-        """
+    def __call__(self, sample: Sample):
+        """Computes and returns normalized cepstral features for the given input data"""
 
-        rate = input_data[0]
-        wavsample = input_data[1]
-        vad_labels = input_data[2]
+        rate = getattr(sample, "sample_rate")
+        wavsample = getattr(sample, "data")
+        vad_labels = getattr(sample, "annotations")
 
         # Set parameters
         wl = self.win_length_ms
@@ -171,3 +171,20 @@ class Cepstral(Extractor):
             # But do not keep it empty!!! This avoids errors in next steps
             normalized_features = numpy.array([numpy.zeros(len(features_mask))])
         return normalized_features
+
+    def transform(self, samples):
+        output = []
+        for sample in samples:
+            output.append(self(sample))
+        return output
+
+    def fit(self, X, y=None, **fit_params):
+        return self
+
+    def _more_tags(self):
+        tags = super()._more_tags()
+        update = {
+            "stateless": True,
+            "requires_fit": False,
+        }
+        return {**tags, **update}
