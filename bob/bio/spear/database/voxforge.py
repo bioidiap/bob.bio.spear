@@ -9,18 +9,19 @@ from pathlib import Path
 
 import click
 
+from sklearn.pipeline import Pipeline
 from tqdm import tqdm
-
-import bob.io.audio
-import bob.io.base
 
 from bob.bio.base.database import CSVDataset
 from bob.bio.base.database import CSVToSampleLoaderBiometrics
+from bob.bio.spear.transformer import AudioReaderToSample
 from bob.extension import rc
 from bob.extension.download import download_and_unzip
 from bob.extension.download import get_file
 from bob.extension.download import search_file
 from bob.extension.scripts.click_helper import verbosity_option
+from bob.io.audio import reader as AudioReader
+from bob.pipelines.sample_loaders import AnnotationsLoader
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,11 @@ def get_voxforge_protocol_file():
 
 
 def VoxforgeBioDatabase(
-    protocol="Default", dataset_protocol_path=None, data_path=None, **kwargs
+    protocol="Default",
+    dataset_protocol_path=None,
+    data_path=None,
+    annotations_path=None,
+    **kwargs,
 ):
     """Database interface for the VoxForge dataset subset for speaker recognition.
 
@@ -87,6 +92,10 @@ def VoxforgeBioDatabase(
     data_path: str or None
         Path to the data files of VoxForge.
         If None: will use the path in the ``bob.db.voxforge.directory`` config.
+
+    annotations_path: str or None
+        Path to the annotations of VoxForge if available.
+        If None: will not load any annotations.
     """
 
     if dataset_protocol_path is None:
@@ -105,15 +114,43 @@ def VoxforgeBioDatabase(
         f"Database: Will read the CSV protocol definitions in '{dataset_protocol_path}'."
     )
     logger.info(f"Database: Will read raw data files in '{data_path}'.")
+
+    # Define the data loading transformers
+
+    # Loads an AudioReader object from a wav file
+    reader_loader = CSVToSampleLoaderBiometrics(
+        data_loader=AudioReader,
+        dataset_original_directory=data_path,
+        extension=".wav",
+    )
+
+    # Reads the AudioReader and set the data and metadata of a sample
+    reader_to_sample = AudioReaderToSample()
+
+    # Loads an annotation file into the `annotations` field
+    annotations_loader = (
+        AnnotationsLoader(
+            annotation_directory=annotations_path,
+            annotation_extension=".json",
+        )
+        if annotations_path
+        else "passthrough"
+    )
+
+    # Build the data loading pipeline
+    sample_loader = Pipeline(
+        [
+            ("db:reader_loader", reader_loader),
+            ("db:reader_to_sample", reader_to_sample),
+            ("db:annotations_loader", annotations_loader),
+        ]
+    )
+
     return CSVDataset(
         name="VoxForge",
         protocol=protocol,
         dataset_protocol_path=dataset_protocol_path,
-        csv_to_sample_loader=CSVToSampleLoaderBiometrics(
-            data_loader=bob.io.base.load,
-            dataset_original_directory=data_path,
-            extension=".wav",
-        ),
+        csv_to_sample_loader=sample_loader,
         allow_scoring_with_all_biometric_references=True,
         **kwargs,
     )
