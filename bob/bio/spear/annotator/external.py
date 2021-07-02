@@ -22,23 +22,15 @@ import numpy
 
 import bob
 
-from bob.bio.base.preprocessor import Preprocessor
-
-from .Base import Base
+from bob.bio.base.annotator import Annotator
 
 
-class External(Base):
+class External(Annotator):
     """Uses external VAD and converts it to fit the format used by Spear"""
 
     def __init__(
         self, win_length_ms=20.0, win_shift_ms=10.0, **kwargs  # 20 ms  # 10 ms
     ):
-        # call base class constructor with its set of parameters
-        Preprocessor.__init__(
-            self,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-        )
         # copy parameters
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms

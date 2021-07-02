@@ -26,15 +26,14 @@ import scipy.signal
 
 import bob.ap
 
-from bob.bio.base.preprocessor import Preprocessor
+from bob.bio.base.annotator import Annotator
 
 from .. import utils
-from .Base import Base
 
-logger = logging.getLogger("bob.bio.spear")
+logger = logging.getLogger(__name__)
 
 
-class Mod_4Hz(Base):
+class Mod_4Hz(Annotator):
     """VAD based on the modulation of the energy around 4 Hz and the energy """
 
     def __init__(
@@ -52,21 +51,6 @@ class Mod_4Hz(Base):
         ratio_threshold=0.1,  # 0.1 of the maximum energy
         **kwargs
     ):
-        # call base class constructor with its set of parameters
-        Preprocessor.__init__(
-            self,
-            max_iterations=max_iterations,
-            convergence_threshold=convergence_threshold,
-            variance_threshold=variance_threshold,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-            smoothing_window=smoothing_window,
-            n_filters=n_filters,
-            f_min=f_min,
-            f_max=f_max,
-            pre_emphasis_coef=pre_emphasis_coef,
-            ratio_threshold=ratio_threshold,
-        )
         # copy parameters
         self.max_iterations = max_iterations
         self.convergence_threshold = convergence_threshold

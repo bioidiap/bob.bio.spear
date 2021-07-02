@@ -25,38 +25,29 @@ import math
 import numpy
 
 import bob.ap
+import bob.learn.em
 
-from bob.bio.base.preprocessor import Preprocessor
+from bob.bio.base.annotator import Annotator
+from bob.pipelines import Sample
 
 from .. import utils
-from .Base import Base
 
-logger = logging.getLogger("bob.bio.spear")
+logger = logging.getLogger(__name__)
 
 
-class Energy_2Gauss(Base):
-    """Extracts the Energy"""
+class Energy_2Gauss(Annotator):
+    """Detects the Voice Activity using the Energy of the signal and 2 Gaussian GMM."""
 
     def __init__(
         self,
-        max_iterations=10,  # 10 iterations for the
+        max_iterations=10,  # 10 iterations for the GMM trainer
         convergence_threshold=0.0005,
         variance_threshold=0.0005,
         win_length_ms=20.0,  # 20 ms
         win_shift_ms=10.0,  # 10 ms
         smoothing_window=10,  # 10 frames (i.e. 100 ms)
-        **kwargs
+        **kwargs,
     ):
-        # call base class constructor with its set of parameters
-        Preprocessor.__init__(
-            self,
-            max_iterations=max_iterations,
-            convergence_threshold=convergence_threshold,
-            variance_threshold=variance_threshold,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-            smoothing_window=smoothing_window,
-        )
         # copy parameters
         self.max_iterations = max_iterations
         self.convergence_threshold = convergence_threshold
@@ -66,9 +57,6 @@ class Energy_2Gauss(Base):
         self.smoothing_window = smoothing_window
 
     def _voice_activity_detection(self, energy_array):
-        #########################
-        #  Initialisation part  #
-        #########################
 
         n_samples = len(energy_array)
         label = numpy.array(numpy.ones(n_samples), dtype=numpy.int16)
@@ -140,11 +128,11 @@ class Energy_2Gauss(Base):
                 label[i] = label[i] * 1
         return label
 
-    def _compute_energy(self, rate_wavsample):
-        """retreive the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
+    def _compute_energy(self, audio_signal, sample_rate):
+        """Retrieves the speech / non speech labels for the speech sample in ``audio_signal``"""
 
-        e = bob.ap.Energy(rate_wavsample[0], self.win_length_ms, self.win_shift_ms)
-        energy_array = e(rate_wavsample[1])
+        e = bob.ap.Energy(sample_rate, self.win_length_ms, self.win_shift_ms)
+        energy_array = e(audio_signal)
         labels = self._voice_activity_detection(energy_array)
         # discard isolated speech a number of frames defined in smoothing_window
         labels = utils.smoothing(labels, self.smoothing_window)
@@ -156,17 +144,62 @@ class Energy_2Gauss(Base):
         )
         return labels
 
-    def __call__(self, input_signal, annotations=None):
+    def annotate(self, audio_signal, sample_rate):
         """labels speech (1) and non-speech (0) parts of the given input wave file using 2 Gaussian-modeled Energy
-        Input parameter:
-           * input_signal[0] --> rate
-           * input_signal[1] --> signal
+        Parameters
+        ----------
+           audio_signal: array
+                Audio signal to annotate
+           sample_rate: int
+               The sample rate in Hertz
         """
-
-        labels = self._compute_energy(input_signal)
-        rate = input_signal[0]
-        data = input_signal[1]
+        labels = self._compute_energy(
+            audio_signal=audio_signal, sample_rate=sample_rate
+        )
         if (labels == 0).all():
             logger.warn("No Audio was detected in the sample!")
             return None
-        return rate, data, labels
+        return labels.tolist()
+
+    def transform(self, samples):
+        """Annotates each sample in ``samples``
+
+        Parameters
+        ----------
+        samples: list[Sample]
+            Array of audio signals.
+
+        Returns
+        -------
+        list[Sample]
+            The samples with their ``annotations`` field populated.
+        """
+        results = []
+        for sample in samples:
+            data = sample.data
+            if data.ndim > 1:
+                if data.shape[0] > 1:
+                    logger.info(
+                        f"Sample {sample} has {data.shape[0]} channels. Annotating channel 0."
+                    )
+                data = sample.data[0]
+            annotations = {
+                "voice_activity_mask": self.annotate(
+                    audio_signal=data, sample_rate=sample.sample_rate
+                ),
+            }
+            results.append(
+                Sample(data=sample.data, parent=sample, annotations=annotations)
+            )
+        return results
+
+    def fit(self, X, y=None, **fit_params):
+        return self
+
+    def _more_tags(self):
+        tags = super()._more_tags()
+        update = {
+            "stateless": True,
+            "requires_fit": False,
+        }
+        return {**tags, **update}

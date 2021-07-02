@@ -25,16 +25,15 @@ import numpy
 
 import bob
 
-from bob.bio.base.preprocessor import Preprocessor
+from bob.bio.base.annotator import Annotator
 
 from .. import utils
-from .Base import Base
 
-logger = logging.getLogger("bob.bio.spear")
+logger = logging.getLogger(__name__)
 
 
-class Energy_Thr(Base):
-    """VAD based on the thresholded energy """
+class Energy_Thr(Annotator):
+    """VAD based on an energy threshold"""
 
     def __init__(
         self,
@@ -44,14 +43,6 @@ class Energy_Thr(Base):
         ratio_threshold=0.15,  # 0.1 of the maximum energy
         **kwargs
     ):
-        # call base class constructor with its set of parameters
-        Preprocessor.__init__(
-            self,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-            smoothing_window=smoothing_window,
-            ratio_threshold=ratio_threshold,
-        )
         # copy parameters
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
