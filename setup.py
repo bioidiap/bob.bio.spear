@@ -115,11 +115,7 @@ setup(
             "external      = bob.bio.spear.config.annotator.external:annotator",  # external VAD
         ],
         "bob.bio.preprocessor": [
-            "cqcc20p            = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Empty preprocessor for CQCC features
-            "energy-2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor",  # two Gauss energy
-            "energy-thr        = bob.bio.spear.config.preprocessor.energy_thr:preprocessor",  # thresholded energy
-            "mod-4hz           = bob.bio.spear.config.preprocessor.mod_4hz:preprocessor",  # mod_4hz
-            "external            = bob.bio.spear.config.preprocessor.external:preprocessor",  # external VAD
+            "cqcc20p = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Empty preprocessor for CQCC features
         ],
         "bob.bio.extractor": [
             "cqcc20e = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Extractor (reads Matlab files) for CQCC features
