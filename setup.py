@@ -108,6 +108,12 @@ setup(
             "asvspoof2017-spoof = bob.bio.spear.config.database.asvspoof2017:database_spoof",
             "voxforge           = bob.bio.spear.config.database.voxforge:database",
         ],
+        "bob.bio.annotator": [
+            "energy-2gauss = bob.bio.spear.config.annotator.energy_2gauss:annotator",  # Two Gaussian GMM energy VAD
+            "energy-thr    = bob.bio.spear.config.annotator.energy_thr:annotator",  # Energy threshold VAD
+            "mod-4hz       = bob.bio.spear.config.annotator.mod_4hz:annotator",  # mod_4hz VAD
+            "external      = bob.bio.spear.config.annotator.external:annotator",  # external VAD
+        ],
         "bob.bio.preprocessor": [
             "cqcc20p            = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Empty preprocessor for CQCC features
             "energy-2gauss = bob.bio.spear.config.preprocessor.energy_2gauss:preprocessor",  # two Gauss energy
