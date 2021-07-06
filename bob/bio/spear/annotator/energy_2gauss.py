@@ -197,9 +197,7 @@ class Energy_2Gauss(Annotator):
         return self
 
     def _more_tags(self):
-        tags = super()._more_tags()
-        update = {
+        return {
             "stateless": True,
             "requires_fit": False,
         }
-        return {**tags, **update}
