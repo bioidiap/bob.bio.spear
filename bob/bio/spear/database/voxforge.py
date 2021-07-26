@@ -20,7 +20,6 @@ from bob.extension.download import download_and_unzip
 from bob.extension.download import get_file
 from bob.extension.download import search_file
 from bob.extension.scripts.click_helper import verbosity_option
-from bob.io.audio import reader as AudioReader
 from bob.pipelines.sample_loaders import AnnotationsLoader
 
 logger = logging.getLogger(__name__)
@@ -46,6 +45,11 @@ def get_voxforge_protocol_file():
         file_hash=proto_def_hash,
         cache_subdir="datasets",
     )
+
+
+def path_loader(path):
+    logger.debug(f"Reading CSV row for {path}")
+    return path
 
 
 def VoxforgeBioDatabase(
@@ -118,8 +122,8 @@ def VoxforgeBioDatabase(
     # Define the data loading transformers
 
     # Loads an AudioReader object from a wav file
-    reader_loader = CSVToSampleLoaderBiometrics(
-        data_loader=AudioReader,
+    path_to_data_loader = CSVToSampleLoaderBiometrics(
+        data_loader=path_loader,
         dataset_original_directory=data_path,
         extension=".wav",
     )
@@ -140,7 +144,7 @@ def VoxforgeBioDatabase(
     # Build the data loading pipeline
     sample_loader = Pipeline(
         [
-            ("db:reader_loader", reader_loader),
+            ("db:reader_loader", path_to_data_loader),
             ("db:reader_to_sample", reader_to_sample),
             ("db:annotations_loader", annotations_loader),
         ]

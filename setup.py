@@ -119,10 +119,10 @@ setup(
         ],
         "bob.bio.extractor": [
             "cqcc20e = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Extractor (reads Matlab files) for CQCC features
-            "mfcc-60    = bob.bio.spear.config.extractor.mfcc_60:extractor",  # 60-dim MFCC features
-            "lfcc-60      = bob.bio.spear.config.extractor.lfcc_60:extractor",  # 60-dim LFCC features
-            "htk            = bob.bio.spear.config.extractor.htk:extractor",  # HTK features
-            "spro          = bob.bio.spear.config.extractor.spro:extractor",  # SPRO features
+            "mfcc-60 = bob.bio.spear.config.extractor.mfcc_60:extractor",  # 60-dim MFCC features
+            "lfcc-60 = bob.bio.spear.config.extractor.lfcc_60:extractor",  # 60-dim LFCC features
+            "htk     = bob.bio.spear.config.extractor.htk:extractor",  # HTK features
+            "spro    = bob.bio.spear.config.extractor.spro:extractor",  # SPRO features
             # 20 SSFCs with delta and delta-delta
             "ssfc20  = bob.bio.spear.config.extractor.ssfc20:extractor",
             # 20 SCFCs with delta and delta-delta
@@ -134,30 +134,37 @@ setup(
             # 20 MFCC with delta and delta-delta
             "mfcc20  = bob.bio.spear.config.extractor.mfcc20:extractor",
             # 20 IMFCC with delta and delta-delta
-            "imfcc20  = bob.bio.spear.config.extractor.imfcc20:extractor",
+            "imfcc20 = bob.bio.spear.config.extractor.imfcc20:extractor",
             # 20 LFCCs with delta and delta-delta
             "lfcc20  = bob.bio.spear.config.extractor.lfcc20:extractor",
         ],
         "bob.bio.algorithm": [
-            "gmm-voxforge      = bob.bio.spear.config.algorithm.gmm_voxforge:algorithm",  # GMM config used for voxforge
-            "ivec-cosine-voxforge  = bob.bio.spear.config.algorithm.ivec_cosine_voxforge:algorithm",  # IVec Cosine config used for voxforge
-            "ivec-plda-voxforge     = bob.bio.spear.config.algorithm.ivec_plda_voxforge:algorithm",  # IVec PLDA used for voxforge
-            "isv-voxforge               = bob.bio.spear.config.algorithm.isv_voxforge:algorithm",  # ISV config used for voxforge
-            "jfa-voxforge               = bob.bio.spear.config.algorithm.jfa_voxforge:algorithm",  # JFA config used for voxforge
-            "gmm-timit                  = bob.bio.spear.config.algorithm.gmm_timit:algorithm",  # GMM config used for TIMIT
-            "gmm-banca                = bob.bio.spear.config.algorithm.gmm_regular_banca:algorithm",  # GMM config used for BANCA
-            "ivec-plda-mobio         = bob.bio.spear.config.algorithm.ivec_plda_mobio:algorithm",  # IVec PLDA used for MOBIO
-            "isv-mobio         = bob.bio.spear.config.algorithm.isv_mobio:algorithm",  # ISV used for MOBIO
-            "ivec-avspoof  = bob.bio.spear.config.algorithm.ivec_avspoof:algorithm",  # IVec PLDA used for AVspoof
+            "gmm-voxforge         = bob.bio.spear.config.algorithm.gmm_voxforge:algorithm",  # GMM config used for voxforge
+            "ivec-cosine-voxforge = bob.bio.spear.config.algorithm.ivec_cosine_voxforge:algorithm",  # IVec Cosine config used for voxforge
+            "ivec-plda-voxforge   = bob.bio.spear.config.algorithm.ivec_plda_voxforge:algorithm",  # IVec PLDA used for voxforge
+            "isv-voxforge         = bob.bio.spear.config.algorithm.isv_voxforge:algorithm",  # ISV config used for voxforge
+            "jfa-voxforge         = bob.bio.spear.config.algorithm.jfa_voxforge:algorithm",  # JFA config used for voxforge
+            "gmm-timit            = bob.bio.spear.config.algorithm.gmm_timit:algorithm",  # GMM config used for TIMIT
+            "gmm-banca            = bob.bio.spear.config.algorithm.gmm_regular_banca:algorithm",  # GMM config used for BANCA
+            "ivec-plda-mobio      = bob.bio.spear.config.algorithm.ivec_plda_mobio:algorithm",  # IVec PLDA used for MOBIO
+            "isv-mobio            = bob.bio.spear.config.algorithm.isv_mobio:algorithm",  # ISV used for MOBIO
+            "ivec-avspoof         = bob.bio.spear.config.algorithm.ivec_avspoof:algorithm",  # IVec PLDA used for AVspoof
             # I-Vector config used for AVspoof
-            "isv-avspoof  = bob.bio.spear.config.algorithm.isv_avspoof:algorithm",  # ISV config used for AVspoof
+            "isv-avspoof          = bob.bio.spear.config.algorithm.isv_avspoof:algorithm",  # ISV config used for AVspoof
             # GMM training algorithm as per the paper "A Comparison of Features for Synthetic Speech Detection"
-            "gmm-tomi  = bob.bio.spear.config.algorithm.gmm_tomi:algorithm",
+            "gmm-tomi             = bob.bio.spear.config.algorithm.gmm_tomi:algorithm",
             # the same as above but with smaller thresholds
-            "gmm-tomi-scfc  = bob.bio.spear.config.algorithm.gmm_tomi_scfc:algorithm",
+            "gmm-tomi-scfc        = bob.bio.spear.config.algorithm.gmm_tomi_scfc:algorithm",
+        ],
+        "bob.bio.pipeline": [
+            "test_pipeline = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline"
+        ],
+        "bob.bio.config": [
+            "voxforge      = bob.bio.spear.config.database.voxforge:database"
+            "test_pipeline = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline"
         ],
         "bob.bio.grid": [
-            "modest         = bob.bio.spear.config.grid.modest:grid",
+            "modest = bob.bio.spear.config.grid.modest:grid",
         ],
         "bob.db.cli": [
             "download-voxforge = bob.bio.spear.database.voxforge:download_voxforge",

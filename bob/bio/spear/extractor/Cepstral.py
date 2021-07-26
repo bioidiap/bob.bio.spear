@@ -28,12 +28,11 @@ from sklearn.base import TransformerMixin
 
 import bob.ap
 
-from bob.bio.base.extractor import Extractor
-from bob.pipelines import Sample
+from bob.pipelines import SampleSet
 
 from .. import utils
 
-logger = logging.getLogger("bob.bio.spear")
+logger = logging.getLogger(__name__)
 
 
 class Cepstral(BaseEstimator, TransformerMixin):
@@ -54,30 +53,12 @@ class Cepstral(BaseEstimator, TransformerMixin):
         with_delta_delta=True,
         n_ceps=19,  # 0-->18
         pre_emphasis_coef=0.95,
-        features_mask=numpy.arange(0, 60),
+        features_mask=None,
         # Normalization
         normalize_flag=True,
-        **kwargs
+        **kwargs,
     ):
-        # call base class constructor with its set of parameters
-        Extractor.__init__(
-            self,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-            n_filters=n_filters,
-            dct_norm=dct_norm,
-            f_min=f_min,
-            f_max=f_max,
-            delta_win=delta_win,
-            mel_scale=mel_scale,
-            with_energy=with_energy,
-            with_delta=with_delta,
-            with_delta_delta=with_delta_delta,
-            n_ceps=n_ceps,
-            pre_emphasis_coef=pre_emphasis_coef,
-            features_mask=features_mask,
-            normalize_flag=normalize_flag,
-        )
+        super().__init__(**kwargs)
         # copy parameters
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
@@ -96,10 +77,6 @@ class Cepstral(BaseEstimator, TransformerMixin):
         self.normalize_flag = normalize_flag
 
     def normalize_features(self, params):
-        #########################
-        #  Initialisation part  #
-        #########################
-
         normalized_vector = [
             [0 for i in range(params.shape[1])] for j in range(params.shape[0])
         ]
@@ -113,12 +90,12 @@ class Cepstral(BaseEstimator, TransformerMixin):
         data = numpy.array(normalized_vector)
         return data
 
-    def __call__(self, sample: Sample):
+    def transform_one(self, sample, **kwargs):
         """Computes and returns normalized cepstral features for the given input data"""
-
-        rate = getattr(sample, "sample_rate")
-        wavsample = getattr(sample, "data")
-        vad_labels = getattr(sample, "annotations")
+        logger.debug(f"Cepstral transform of {sample}")
+        rate = getattr(sample, "rate")
+        wavsample = getattr(sample, "data")[0]
+        vad_labels = numpy.array(getattr(sample, "annotations"))
 
         # Set parameters
         wl = self.win_length_ms
@@ -138,7 +115,10 @@ class Cepstral(BaseEstimator, TransformerMixin):
         ceps.with_delta_delta = self.with_delta_delta
 
         cepstral_features = ceps(wavsample)
-        features_mask = self.features_mask
+        if self.features_mask is None:
+            features_mask = numpy.arange(0, 60)
+        else:
+            features_mask = self.features_mask
         if vad_labels is not None:  # don't apply VAD
             filtered_features = numpy.ndarray(
                 shape=((vad_labels == 1).sum(), len(features_mask)), dtype=numpy.float64
@@ -167,16 +147,21 @@ class Cepstral(BaseEstimator, TransformerMixin):
         else:
             normalized_features = filtered_features
         if normalized_features.shape[0] == 0:
-            logger.warn("No speech found for this utterance")
+            logger.warning("No speech found for this utterance")
             # But do not keep it empty!!! This avoids errors in next steps
             normalized_features = numpy.array([numpy.zeros(len(features_mask))])
         return normalized_features
 
     def transform(self, samples):
-        output = []
+        result = []
         for sample in samples:
-            output.append(self(sample))
-        return output
+            if isinstance(sample, SampleSet):
+                result.append(SampleSet(samples=[], parent=sample))
+                for s in sample:
+                    result[-1].insert(-1, self.transform_one(s))
+            else:
+                result.append(self.transform_one(sample))
+        return result
 
     def fit(self, X, y=None, **fit_params):
         return self

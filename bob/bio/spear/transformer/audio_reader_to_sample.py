@@ -2,49 +2,72 @@
 # @author: Yannick Dayer <yannick.dayer@idiap.ch>
 # @date: Thu 01 Jul 2021 10:41:55 UTC+02
 
+import logging
+
+from functools import lru_cache
+from functools import partial
+
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
 
 from bob.io.audio import reader as AudioReader
-from bob.pipelines import Sample
-from bob.pipelines.sample import SampleBatch
+from bob.pipelines import DelayedSample
+
+logger = logging.getLogger(__name__)
+
+
+audio_reader_keys = [
+    "rate",
+    "number_of_samples",
+    "number_of_channels",
+    "bits_per_sample",
+    "duration",
+    "encoding",
+    "type",
+    "compression_factor",
+]
+
+
+@lru_cache()
+def load_metadata_from_file(filename: str):
+    """Extracts data and a set of metadata from a reader object."""
+    logger.debug(f"Reading metadata from audio file {filename}")
+
+    reader = AudioReader(filename)
+    return {key: getattr(reader, key) for key in audio_reader_keys}
+
+
+def load_data_from_file(filename: str):
+    logger.debug(f"Reading data from audio file {filename}")
+    reader = AudioReader(filename)
+    return reader.load()
+
+
+def get_audio_attribute(sample, key):
+    if key == "data":
+        return load_data_from_file(sample.data)
+    return load_metadata_from_file(sample.data)[key]
 
 
 class AudioReaderToSample(BaseEstimator, TransformerMixin):
-    """Transforms a Sample's data containing an audio reader to an audio signal.
+    """Transforms a Sample's data containing a path to an audio signal.
 
     The Sample's metadata are updated.
     """
 
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-        # dict[Sample attribute name, AudioReader field name]
-        self.metadata_keys = {
-            "sample_rate": "rate",
-            "number_of_samples": "number_of_samples",
-            "number_of_channels": "number_of_channels",
-            "bits_per_sample": "bits_per_sample",
-            "audio_duration": "duration",
-            "audio_encoding": "encoding",
-            "audio_sample_type": "type",
-            "audio_compression_factor": "compression_factor",
+    def populate_from_reader(self, sample: DelayedSample) -> DelayedSample:
+        """Assigns the Sample's data and metadata."""
+        delayed_attr = {
+            key: partial(get_audio_attribute, sample, key) for key in audio_reader_keys
         }
-
-    def extract_from_reader(self, reader: AudioReader) -> dict:
-        """Extracts a set of metadata from a reader object"""
-        results = {"data": reader.load()}
-        for metadata, reader_key in self.metadata_keys.items():
-            results[metadata] = getattr(reader, reader_key)
-        return results
-
-    def populate_from_reader(self, sample: Sample) -> Sample:
-        """Loads from the AudioReader of the Sample and set its fields accordingly."""
-        extracted = self.extract_from_reader(sample.data)
-        kwargs = {e: extracted[e] for e in extracted if e != "data"}
-        new_sample = Sample(data=extracted["data"], parent=sample, **kwargs)
+        new_sample = DelayedSample(
+            load=partial(get_audio_attribute, sample, "data"),
+            parent=sample,
+            delayed_attributes=delayed_attr,
+        )
         return new_sample
 
-    def transform(self, samples: SampleBatch):
+    def transform(self, samples: list):
         output = []
         for sample in samples:
             output.append(self.populate_from_reader(sample))
