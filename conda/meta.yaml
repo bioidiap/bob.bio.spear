@@ -36,11 +36,12 @@ requirements:
     - bob.bio.base
     - bob.pipelines
     - matplotlib {{ matplotlib }}
+    - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
-    - matplotlib
-    - tqdm
+    - {{ pin_cpmpatible('matplotlib') }}
+    - {{ pin_cpmpatible('tqdm') }}
 
 test:
   imports:
@@ -52,11 +53,10 @@ test:
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - bob-devel {{ bob_devel }}.*
-    - nose
-    - coverage
-    - sphinx
-    - sphinx_rtd_theme
+    - nose {{ nose }}
+    - coverage {{ coverage }}
+    - sphinx {{ sphinx }}
+    - sphinx_rtd_theme {{ sphinx_rtd_theme }}
     - gridtk
     - bob.db.mobio
     - bob.db.avspoof
