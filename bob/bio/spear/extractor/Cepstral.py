@@ -86,18 +86,25 @@ class Cepstral(BaseEstimator, TransformerMixin):
         self.normalize_flag = normalize_flag
 
     def normalize_features(self, params):
-        normalized_vector = [
-            [0 for i in range(params.shape[1])] for j in range(params.shape[0])
-        ]
-        for index in range(params.shape[1]):
-            vector = numpy.array([row[index] for row in params])
-            n_samples = len(vector)
-            norm_vector = utils.normalize_std_array(vector)
+        if len(params) == 1:
+            # if there is only 1 frame, we cannot normalize it
+            return params
+        # normalized_vector is mean std normalized version of params per feature dimension
+        normalized_vector = (params - params.mean(axis=0)) / params.std(axis=0)
+        return normalized_vector
 
-            for i in range(n_samples):
-                normalized_vector[i][index] = numpy.asscalar(norm_vector[i])
-        data = numpy.array(normalized_vector)
-        return data
+        # normalized_vector = [
+        #     [0 for i in range(params.shape[1])] for j in range(params.shape[0])
+        # ]
+        # for index in range(params.shape[1]):
+        #     vector = numpy.array([row[index] for row in params])
+        #     n_samples = len(vector)
+        #     norm_vector = utils.normalize_std_array(vector)
+
+        #     for i in range(n_samples):
+        #         normalized_vector[i][index] = numpy.asscalar(norm_vector[i])
+        # data = numpy.array(normalized_vector)
+        # return data
 
     def transform_one(
         self, wav_data: numpy.ndarray, sample_rate: float, vad_labels: numpy.ndarray
@@ -136,26 +143,27 @@ class Cepstral(BaseEstimator, TransformerMixin):
         else:
             features_mask = self.features_mask
         if vad_labels is not None:  # don't apply VAD
-            filtered_features = numpy.ndarray(
-                shape=(sum([1 for val in vad_labels if val == 1]), len(features_mask)),
-                dtype=numpy.float64,
-            )
-            i = 0
-            cur_i = 0
-            for row in cepstral_features:
-                if i < len(vad_labels):
-                    if vad_labels[i] == 1:
-                        for k, mask in enumerate(features_mask):
-                            filtered_features[cur_i, k] = row[mask]
-                        cur_i = cur_i + 1
-                    i = i + 1
-                else:
-                    if vad_labels[-1] == 1:
-                        if cur_i == cepstral_features.shape[0]:
-                            for k, mask in enumerate(features_mask):
-                                filtered_features[cur_i, k] = row[mask]
-                            cur_i = cur_i + 1
-                    i = i + 1
+            filtered_features = cepstral_features[vad_labels == 1]
+            # filtered_features = numpy.ndarray(
+            #     shape=(sum(vad_labels), len(features_mask)),
+            #     dtype=numpy.float64,
+            # )
+            # i = 0
+            # cur_i = 0
+            # for row in cepstral_features:
+            #     if i < len(vad_labels):
+            #         if vad_labels[i] == 1:
+            #             for k, mask in enumerate(features_mask):
+            #                 filtered_features[cur_i, k] = row[mask]
+            #             cur_i = cur_i + 1
+            #         i = i + 1
+            #     else:
+            #         if vad_labels[-1] == 1:
+            #             if cur_i == cepstral_features.shape[0]:
+            #                 for k, mask in enumerate(features_mask):
+            #                     filtered_features[cur_i, k] = row[mask]
+            #                 cur_i = cur_i + 1
+            #         i = i + 1
         else:
             filtered_features = cepstral_features
 

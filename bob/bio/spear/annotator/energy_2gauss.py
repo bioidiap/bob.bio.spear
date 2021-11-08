@@ -144,7 +144,7 @@ class Energy_2Gauss(Annotator):
         )
         return labels
 
-    def annotate(self, audio_signal, sample_rate):
+    def transform_one(self, audio_signal, sample_rate):
         """labels speech (1) and non-speech (0) parts of the given input wave file using 2 Gaussian-modeled Energy
         Parameters
         ----------
@@ -153,6 +153,12 @@ class Energy_2Gauss(Annotator):
            sample_rate: int
                The sample rate in Hertz
         """
+        if audio_signal.ndim > 1:
+            if audio_signal.shape[0] > 1:
+                logger.info(
+                    f"audio_signal has {audio_signal.shape[0]} channels. Annotating channel 0."
+                )
+            audio_signal = audio_signal[0]
         labels = self._compute_energy(
             audio_signal=audio_signal, sample_rate=sample_rate
         )
@@ -161,37 +167,34 @@ class Energy_2Gauss(Annotator):
             return None
         return labels
 
-    def transform(self, samples):
-        """Annotates each sample in ``samples``
-
-        Parameters
-        ----------
-        samples: list[Sample]
-            Array of audio signals.
-
-        Returns
-        -------
-        list[Sample]
-            The samples with their ``annotations`` field populated.
-        """
+    def transform(self, audio_signals, sample_rates):
         results = []
-        for sample in samples:
-            data = sample.data
-            if data.ndim > 1:
-                if data.shape[0] > 1:
-                    logger.info(
-                        f"Sample {sample} has {data.shape[0]} channels. Annotating channel 0."
-                    )
-                data = sample.data[0]
-            annotations = {
-                "voice_activity_mask": self.annotate(
-                    audio_signal=data, sample_rate=sample.sample_rate
-                ),
-            }
-            results.append(
-                Sample(data=sample.data, parent=sample, annotations=annotations)
-            )
+        for audio_signal, sample_rate in zip(audio_signals, sample_rates):
+            results.append(self.transform_one(audio_signal, sample_rate))
         return results
+
+    # def transform(self, samples):
+    #     """Annotates each sample in ``samples``
+
+    #     Parameters
+    #     ----------
+    #     samples: list[Sample]
+    #         Array of audio signals.
+
+    #     Returns
+    #     -------
+    #     list[Sample]
+    #         The samples with their ``annotations`` field populated.
+    #     """
+    #     results = []
+    #     for sample in samples:
+    #         data = sample.data
+    #         annotations = self.annotate(audio_signal=data, sample_rate=sample.rate)
+
+    #         results.append(
+    #             Sample(data=sample.data, parent=sample, annotations=annotations)
+    #         )
+    #     return results
 
     def fit(self, X, y=None, **fit_params):
         return self

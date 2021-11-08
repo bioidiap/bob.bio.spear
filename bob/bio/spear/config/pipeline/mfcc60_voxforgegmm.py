@@ -9,6 +9,7 @@ from bob.bio.gmm.bioalgorithm import GMM
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
 from bob.pipelines.sample_loaders import AnnotationsLoader
+from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
 
 annotations_loader = AnnotationsLoader(
     annotation_directory="results~/annotations",
@@ -23,7 +24,7 @@ wrapped_extractor_transformer = wrap(
 )
 
 bioalgorithm = GMM(
-    number_of_gaussians=256,
+    number_of_gaussians=16,
     ubm_training_iterations=5,
     gmm_enroll_iterations=1,
     training_threshold=0.0,  # Maximum number of iterations as stopping criterion
@@ -31,6 +32,17 @@ bioalgorithm = GMM(
 
 transformer = Pipeline(
     [
+        (
+            "annotator",
+            wrap(
+                ["sample"],
+                Energy_2Gauss(),
+                transform_extra_arguments=[
+                    ("sample_rates", "rate"),
+                ],
+                output_attribute="annotations",
+            ),
+        ),
         ("extractor", wrapped_extractor_transformer),
         ("algorithm", wrap(["sample"], bioalgorithm)),
     ]
