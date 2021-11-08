@@ -159,7 +159,7 @@ class Energy_2Gauss(Annotator):
         if (labels == 0).all():
             logger.warn("No Audio was detected in the sample!")
             return None
-        return labels.tolist()
+        return labels
 
     def transform(self, samples):
         """Annotates each sample in ``samples``

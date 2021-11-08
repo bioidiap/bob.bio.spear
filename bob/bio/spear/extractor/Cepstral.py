@@ -28,15 +28,24 @@ from sklearn.base import TransformerMixin
 
 import bob.ap
 
-from bob.pipelines import SampleSet
-
 from .. import utils
 
 logger = logging.getLogger(__name__)
 
 
 class Cepstral(BaseEstimator, TransformerMixin):
-    """ Extracts the Cepstral features """
+    """Extracts the Cepstral features of audio wav data.
+
+    Use a SampleWrapper to use with bob pipelines to pass the `rate` and `annotations`
+    attributes to the arguments of `transform`:
+    >>> wrap(
+    ...     ["sample"],
+    ...     Cepstral(),
+    ...     transform_extra_arguments=[
+    ...         ("sample_rate", "rate"), ("vad_labels", "annotations")
+    ...     ]
+    ... )
+    """
 
     def __init__(
         self,
@@ -90,12 +99,19 @@ class Cepstral(BaseEstimator, TransformerMixin):
         data = numpy.array(normalized_vector)
         return data
 
-    def transform_one(self, sample, **kwargs):
+    def transform_one(
+        self, wav_data: numpy.ndarray, sample_rate: float, vad_labels: numpy.ndarray
+    ):
         """Computes and returns normalized cepstral features for the given input data"""
-        logger.debug(f"Cepstral transform of {sample}")
-        rate = getattr(sample, "rate")
-        wavsample = getattr(sample, "data")[0]
-        vad_labels = numpy.array(getattr(sample, "annotations"))
+        logger.debug("Cepstral transform.")
+
+        if wav_data.ndim > 1:
+            if wav_data.shape[0] > 1:
+                logger.warning(
+                    "Cepstral Transformer only supports 1 channel data and a sample "
+                    f"contains {wav_data.shape[0]}. Will only consider one channel."
+                )
+            wav_data = wav_data[0]
 
         # Set parameters
         wl = self.win_length_ms
@@ -107,36 +123,37 @@ class Cepstral(BaseEstimator, TransformerMixin):
         dw = self.delta_win
         pre = self.pre_emphasis_coef
 
-        ceps = bob.ap.Ceps(rate, wl, ws, nf, nc, f_min, f_max, dw, pre)
+        ceps = bob.ap.Ceps(sample_rate, wl, ws, nf, nc, f_min, f_max, dw, pre)
         ceps.dct_norm = self.dct_norm
         ceps.mel_scale = self.mel_scale
         ceps.with_energy = self.with_energy
         ceps.with_delta = self.with_delta
         ceps.with_delta_delta = self.with_delta_delta
 
-        cepstral_features = ceps(wavsample)
+        cepstral_features = ceps(wav_data)
         if self.features_mask is None:
             features_mask = numpy.arange(0, 60)
         else:
             features_mask = self.features_mask
         if vad_labels is not None:  # don't apply VAD
             filtered_features = numpy.ndarray(
-                shape=((vad_labels == 1).sum(), len(features_mask)), dtype=numpy.float64
+                shape=(sum([1 for val in vad_labels if val == 1]), len(features_mask)),
+                dtype=numpy.float64,
             )
             i = 0
             cur_i = 0
             for row in cepstral_features:
                 if i < len(vad_labels):
                     if vad_labels[i] == 1:
-                        for k in range(len(features_mask)):
-                            filtered_features[cur_i, k] = row[features_mask[k]]
+                        for k, mask in enumerate(features_mask):
+                            filtered_features[cur_i, k] = row[mask]
                         cur_i = cur_i + 1
                     i = i + 1
                 else:
                     if vad_labels[-1] == 1:
                         if cur_i == cepstral_features.shape[0]:
-                            for k in range(len(features_mask)):
-                                filtered_features[cur_i, k] = row[features_mask[k]]
+                            for k, mask in enumerate(features_mask):
+                                filtered_features[cur_i, k] = row[mask]
                             cur_i = cur_i + 1
                     i = i + 1
         else:
@@ -152,16 +169,16 @@ class Cepstral(BaseEstimator, TransformerMixin):
             normalized_features = numpy.array([numpy.zeros(len(features_mask))])
         return normalized_features
 
-    def transform(self, samples):
-        result = []
-        for sample in samples:
-            if isinstance(sample, SampleSet):
-                result.append(SampleSet(samples=[], parent=sample))
-                for s in sample:
-                    result[-1].insert(-1, self.transform_one(s))
-            else:
-                result.append(self.transform_one(sample))
-        return result
+    def transform(
+        self,
+        wav_data_set: "list[numpy.ndarray]",
+        sample_rate: "list[float]",
+        vad_labels: "list[numpy.ndarray]",
+    ):
+        results = []
+        for wav_data, rate, annotations in zip(wav_data_set, sample_rate, vad_labels):
+            results.append(self.transform_one(wav_data, rate, annotations))
+        return results
 
     def fit(self, X, y=None, **fit_params):
         return self
