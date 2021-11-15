@@ -33,9 +33,4 @@ default_protocol = "Default"
 if "protocol" not in locals():
     protocol = default_protocol
 
-database = VoxforgeBioDatabase(
-    protocol=protocol,
-    # dataset_protocol_path="/idiap/temp/ydayer/bob_data/datasets/database-protocols-voxforge-dc84ac65.tar.gz",
-    dataset_protocol_path="/idiap/temp/ydayer/bob_data/datasets/database-protocols-voxforge-short.tar.gz",  # TODO remove debug
-    # annotations_path="/idiap/temp/ydayer/bob.nightlies/src/bob.bio.spear/results~/annotations",  # TODO remove (and add annotations to server?)
-)
+database = VoxforgeBioDatabase(protocol=protocol)

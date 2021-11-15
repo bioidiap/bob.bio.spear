@@ -108,10 +108,10 @@ def VoxforgeBioDatabase(
     if data_path is None:
         data_path = rc.get("bob.db.voxforge.directory")
     if data_path is None:
-        logger.warning(
-            "No data path was provided! Either set "
-            "'bob.db.voxforge.directory' with the 'bob config set' command, or "
-            "provide a 'data_path' to VoxforgeBioDatabase."
+        raise RuntimeError(
+            "No data path was provided! Either set 'bob.db.voxforge.directory' with "
+            "the 'bob config set' command, or provide a 'data_path' to "
+            "'VoxforgeBioDatabase'."
         )
 
     logger.info(

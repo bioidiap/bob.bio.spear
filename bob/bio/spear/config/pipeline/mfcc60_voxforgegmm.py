@@ -6,14 +6,9 @@ from sklearn.pipeline import Pipeline
 
 from bob.bio.base.pipelines.vanilla_biometrics import VanillaBiometricsPipeline
 from bob.bio.gmm.bioalgorithm import GMM
+from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
-from bob.pipelines.sample_loaders import AnnotationsLoader
-from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
-
-annotations_loader = AnnotationsLoader(
-    annotation_directory="results~/annotations",
-)
 
 # Map the Sample input attributes to the parameters of the tranform method.
 # (`data` of Sample already mapped to the first positional arg by default)
