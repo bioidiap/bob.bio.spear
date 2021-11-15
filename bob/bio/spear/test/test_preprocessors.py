@@ -56,24 +56,6 @@ def _wav(filename="data/sample.wav"):
     return base_audiobiofile.load(directory, ext)
 
 
-def test_energy_2gauss():
-    # read input
-    wav = _wav()
-    preprocessor = bob.bio.base.load_resource("energy-2gauss", "preprocessor")
-    assert isinstance(preprocessor, bob.bio.spear.preprocessor.Energy_2Gauss)
-
-    # test the energy-based VAD preprocessor
-    preprocessor = bob.bio.spear.preprocessor.Energy_2Gauss()
-    _compare(
-        preprocessor(wav),
-        pkg_resources.resource_filename(
-            "bob.bio.spear.test", "data/vad_energy_2gauss.hdf5"
-        ),
-        preprocessor.write_data,
-        preprocessor.read_data,
-    )
-
-
 def test_energy_thr():
     # read input
     wav = _wav()

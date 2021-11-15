@@ -20,15 +20,14 @@
 """Energy-based voice activity detection for speaker recognition"""
 
 import logging
-import math
 
-import numpy
+import numpy as np
 
 import bob.ap
-import bob.learn.em
 
 from bob.bio.base.annotator import Annotator
-from bob.pipelines import Sample
+from bob.learn.em.cluster import KMeansTrainer
+from bob.learn.em.mixture import GMMMachine
 
 from .. import utils
 
@@ -57,76 +56,50 @@ class Energy_2Gauss(Annotator):
         self.smoothing_window = smoothing_window
 
     def _voice_activity_detection(self, energy_array):
-
+        """Fits a 2 Gaussian GMM on the energy that splits between voice and silence."""
         n_samples = len(energy_array)
-        label = numpy.array(numpy.ones(n_samples), dtype=numpy.int16)
-        # if energy does not change a lot, it's not audio maybe?
-        if numpy.std(energy_array) < 10e-5:
-            return label * 0
+        # if energy does not change a lot, it may not be audio?
+        if np.std(energy_array) < 10e-5:
+            return np.zeros(shape=n_samples)
 
         # Add an epsilon small Gaussian noise to avoid numerical issues (mainly due to artificial silence).
-        energy_array = (
-            numpy.array(math.pow(10, -6) * numpy.random.randn(len(energy_array)))
-            + energy_array
+        energy_array = (1e-6 * np.random.randn(n_samples)) + energy_array
+
+        # Normalize the energy array, make it an array of 1D samples
+        normalized_energy = utils.normalize_std_array(energy_array).reshape((-1, 1))
+
+        # Note: self.max_iterations and self.convergence_threshold are used for both
+        # k-means and GMM training.
+        kmeans_trainer = KMeansTrainer(
+            init_max_iter=self.max_iterations, max_iter=self.max_iterations
         )
-        # Normalize the energy array
-        normalized_energy = utils.normalize_std_array(energy_array)
-
-        # Apply k-means
-        kmeans = bob.learn.em.KMeansMachine(2, 1)
-        m_ubm = bob.learn.em.GMMMachine(2, 1)
-        kmeans_trainer = bob.learn.em.KMeansTrainer()
-        bob.learn.em.train(
-            kmeans_trainer,
-            kmeans,
-            normalized_energy,
-            self.max_iterations,
-            self.convergence_threshold,
+        ubm_gmm = GMMMachine(
+            n_gaussians=2,
+            trainer="ml",
+            update_means=True,
+            update_variances=True,
+            update_weights=True,
+            convergence_threshold=self.convergence_threshold,
+            max_fitting_steps=self.max_iterations,
+            k_means_trainer=kmeans_trainer,
         )
-        [variances, weights] = kmeans.get_variances_and_weights_for_each_cluster(
-            normalized_energy
-        )
-        means = kmeans.means
 
-        if numpy.isnan(means[0]) or numpy.isnan(means[1]):
-            logger.warn("Skip this file since it contains NaN's")
-            return numpy.array(numpy.zeros(n_samples), dtype=numpy.int16)
-        # Initializes the GMM
-        m_ubm.means = means
+        ubm_gmm.fit(normalized_energy)
 
-        m_ubm.variances = variances
-        m_ubm.weights = weights
-        m_ubm.set_variance_thresholds(self.variance_threshold)
+        ubm_gmm.variance_thresholds = self.variance_threshold
 
-        trainer = bob.learn.em.ML_GMMTrainer(True, True, True)
-        bob.learn.em.train(
-            trainer,
-            m_ubm,
-            normalized_energy,
-            self.max_iterations,
-            self.convergence_threshold,
-        )
-        means = m_ubm.means
-        weights = m_ubm.weights
+        if np.isnan(ubm_gmm.means).any():
+            logger.warn("Annotation aborted: File contains NaN's")
+            return np.zeros(shape=n_samples, dtype=int)
 
-        if means[0] < means[1]:
-            higher = 1
-            lower = 0
-        else:
-            higher = 0
-            lower = 1
+        # Classify
 
-        higher_mean_gauss = m_ubm.get_gaussian(higher)
-        lower_mean_gauss = m_ubm.get_gaussian(lower)
-
-        for i in range(n_samples):
-            if higher_mean_gauss.log_likelihood(
-                normalized_energy[i]
-            ) < lower_mean_gauss.log_likelihood(normalized_energy[i]):
-                label[i] = 0
-            else:
-                label[i] = label[i] * 1
-        return label
+        # Different behavior dep on which mean represents high energy (higher value)
+        if ubm_gmm.means.argmax() == 0:  # High energy in means[0]
+            labels = ubm_gmm.log_weighted_likelihood(normalized_energy).argmin(axis=0)
+        else:  # High energy in means[1]
+            labels = ubm_gmm.log_weighted_likelihood(normalized_energy).argmax(axis=0)
+        return labels
 
     def _compute_energy(self, audio_signal, sample_rate):
         """Retrieves the speech / non speech labels for the speech sample in ``audio_signal``"""
@@ -136,10 +109,9 @@ class Energy_2Gauss(Annotator):
         labels = self._voice_activity_detection(energy_array)
         # discard isolated speech a number of frames defined in smoothing_window
         labels = utils.smoothing(labels, self.smoothing_window)
-
-        logger.info(
+        logger.debug(
             "After 2 Gaussian Energy-based VAD there are %d frames remaining over %d",
-            numpy.sum(labels),
+            np.sum(labels),
             len(labels),
         )
         return labels
@@ -155,46 +127,24 @@ class Energy_2Gauss(Annotator):
         """
         if audio_signal.ndim > 1:
             if audio_signal.shape[0] > 1:
-                logger.info(
-                    f"audio_signal has {audio_signal.shape[0]} channels. Annotating channel 0."
+                logger.warning(
+                    f"audio_signal has {audio_signal.shape[0]} channels. Annotating "
+                    "only channel 0."
                 )
             audio_signal = audio_signal[0]
         labels = self._compute_energy(
             audio_signal=audio_signal, sample_rate=sample_rate
         )
         if (labels == 0).all():
-            logger.warn("No Audio was detected in the sample!")
+            logger.warning("Could not annotate: No audio was detected in the sample!")
             return None
         return labels
 
-    def transform(self, audio_signals, sample_rates):
+    def transform(self, audio_signals: "list[np.ndarray]", sample_rates: "list[int]"):
         results = []
         for audio_signal, sample_rate in zip(audio_signals, sample_rates):
             results.append(self.transform_one(audio_signal, sample_rate))
         return results
-
-    # def transform(self, samples):
-    #     """Annotates each sample in ``samples``
-
-    #     Parameters
-    #     ----------
-    #     samples: list[Sample]
-    #         Array of audio signals.
-
-    #     Returns
-    #     -------
-    #     list[Sample]
-    #         The samples with their ``annotations`` field populated.
-    #     """
-    #     results = []
-    #     for sample in samples:
-    #         data = sample.data
-    #         annotations = self.annotate(audio_signal=data, sample_rate=sample.rate)
-
-    #         results.append(
-    #             Sample(data=sample.data, parent=sample, annotations=annotations)
-    #         )
-    #     return results
 
     def fit(self, X, y=None, **fit_params):
         return self
