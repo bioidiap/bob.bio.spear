@@ -32,7 +32,6 @@ from bob.bio.base.extractor import Extractor
 from .. import utils
 
 logger = logging.getLogger("bob.bio.spear")
-logger.setLevel(logging.DEBUG)
 
 
 class CepstralExtended(Extractor):

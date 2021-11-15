@@ -15,7 +15,6 @@ from bob.bio.base.extractor import Extractor
 from bob.bio.base.preprocessor import Preprocessor
 
 logger = logging.getLogger("bob.bio.spear")
-logger.setLevel(logging.DEBUG)
 
 
 class CQCCFeatures(Preprocessor, Extractor):
