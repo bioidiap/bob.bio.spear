@@ -8,7 +8,7 @@ bob.math
 bob.sp
 bob.ap
 bob.learn.linear
-bob.learn.em
+bob.bio.gmm
 bob.measure
 bob.db.base
 bob.bio.base
