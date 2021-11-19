@@ -28,8 +28,6 @@ from sklearn.base import TransformerMixin
 
 import bob.ap
 
-from .. import utils
-
 logger = logging.getLogger(__name__)
 
 
@@ -63,10 +61,19 @@ class Cepstral(BaseEstimator, TransformerMixin):
         n_ceps=19,  # 0-->18
         pre_emphasis_coef=0.95,
         features_mask=None,
-        # Normalization
         normalize_flag=True,
         **kwargs,
     ):
+        """Most parameters are passed to `bob.ap.Ceps`.
+
+        Parameters
+        ----------
+        features_mask: numpy slice
+            Indices of features to keep (only applied if VAD annotations are present).
+        normalize_flag: bool
+            Controls the normalization of the feature vectors after Cepstral.
+        """
+
         super().__init__(**kwargs)
         # copy parameters
         self.win_length_ms = win_length_ms
@@ -85,38 +92,33 @@ class Cepstral(BaseEstimator, TransformerMixin):
         self.features_mask = features_mask
         self.normalize_flag = normalize_flag
 
-    def normalize_features(self, params):
-        if len(params) == 1:
-            # if there is only 1 frame, we cannot normalize it
+    def normalize_features(self, params: numpy.ndarray):
+        """Returns the features normalized along the columns.
+
+        Parameters
+        ----------
+        params:
+            2D array of feature vectors.
+        """
+
+        # if there is only 1 frame, we cannot normalize it
+        if len(params) == 1 or params.std(axis=0) == 0:
             return params
         # normalized_vector is mean std normalized version of params per feature dimension
         normalized_vector = (params - params.mean(axis=0)) / params.std(axis=0)
         return normalized_vector
 
-        # normalized_vector = [
-        #     [0 for i in range(params.shape[1])] for j in range(params.shape[0])
-        # ]
-        # for index in range(params.shape[1]):
-        #     vector = numpy.array([row[index] for row in params])
-        #     n_samples = len(vector)
-        #     norm_vector = utils.normalize_std_array(vector)
-
-        #     for i in range(n_samples):
-        #         normalized_vector[i][index] = numpy.asscalar(norm_vector[i])
-        # data = numpy.array(normalized_vector)
-        # return data
-
     def transform_one(
         self, wav_data: numpy.ndarray, sample_rate: float, vad_labels: numpy.ndarray
     ):
-        """Computes and returns normalized cepstral features for the given input data"""
+        """Computes and returns cepstral features for one given audio signal."""
         logger.debug("Cepstral transform.")
 
         if wav_data.ndim > 1:
             if wav_data.shape[0] > 1:
                 logger.warning(
-                    "Cepstral Transformer only supports 1 channel data and a sample "
-                    f"contains {wav_data.shape[0]}. Will only consider one channel."
+                    "Cepstral Transformer only supports 1 channel data and a signal "
+                    f"contains {wav_data.shape[0]}. Will only consider channel 0."
                 )
             wav_data = wav_data[0]
 
@@ -138,32 +140,13 @@ class Cepstral(BaseEstimator, TransformerMixin):
         ceps.with_delta_delta = self.with_delta_delta
 
         cepstral_features = ceps(wav_data)
-        if self.features_mask is None:
-            features_mask = numpy.arange(0, 60)
-        else:
-            features_mask = self.features_mask
-        if vad_labels is not None:  # don't apply VAD
+
+        if vad_labels is not None:  # Don't apply VAD if labels are not present
+            vad_labels = numpy.array(
+                vad_labels
+            )  # Ensure array, as `list == 1` is `False`
             filtered_features = cepstral_features[vad_labels == 1]
-            # filtered_features = numpy.ndarray(
-            #     shape=(sum(vad_labels), len(features_mask)),
-            #     dtype=numpy.float64,
-            # )
-            # i = 0
-            # cur_i = 0
-            # for row in cepstral_features:
-            #     if i < len(vad_labels):
-            #         if vad_labels[i] == 1:
-            #             for k, mask in enumerate(features_mask):
-            #                 filtered_features[cur_i, k] = row[mask]
-            #             cur_i = cur_i + 1
-            #         i = i + 1
-            #     else:
-            #         if vad_labels[-1] == 1:
-            #             if cur_i == cepstral_features.shape[0]:
-            #                 for k, mask in enumerate(features_mask):
-            #                     filtered_features[cur_i, k] = row[mask]
-            #                 cur_i = cur_i + 1
-            #         i = i + 1
+            filtered_features = filtered_features[:, self.features_mask]
         else:
             filtered_features = cepstral_features
 
@@ -171,10 +154,12 @@ class Cepstral(BaseEstimator, TransformerMixin):
             normalized_features = self.normalize_features(filtered_features)
         else:
             normalized_features = filtered_features
+
         if normalized_features.shape[0] == 0:
             logger.warning("No speech found for this utterance")
             # But do not keep it empty!!! This avoids errors in next steps
-            normalized_features = numpy.array([numpy.zeros(len(features_mask))])
+            feature_length = len(self.features_mask) if self.features_mask else 60
+            normalized_features = numpy.zeros((1, feature_length))
         return normalized_features
 
     def transform(

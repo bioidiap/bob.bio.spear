@@ -132,8 +132,6 @@ def smoothing(labels, smoothing_window):
     if np.sum(labels) < smoothing_window:
         return labels
 
-    labels = labels.compute() if isinstance(labels, da.Array) else labels
-
     segments = []
     for k in range(1, len(labels) - 1):
         if labels[k] == 0 and labels[k - 1] == 1 and labels[k + 1] == 1:

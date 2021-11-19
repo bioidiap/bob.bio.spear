@@ -21,6 +21,7 @@
 
 import logging
 
+import dask.array as da
 import numpy as np
 
 import bob.ap
@@ -86,9 +87,9 @@ class Energy_2Gauss(Annotator):
 
         ubm_gmm.fit(normalized_energy)
 
-        ubm_gmm.variance_thresholds = self.variance_threshold
+        ubm_gmm.variance_thresholds = self.variance_threshold  # is a da.Array
 
-        if np.isnan(ubm_gmm.means).any():
+        if da.isnan(ubm_gmm.means).any():
             logger.warn("Annotation aborted: File contains NaN's")
             return np.zeros(shape=n_samples, dtype=int)
 
@@ -99,7 +100,9 @@ class Energy_2Gauss(Annotator):
             labels = ubm_gmm.log_weighted_likelihood(normalized_energy).argmin(axis=0)
         else:  # High energy in means[1]
             labels = ubm_gmm.log_weighted_likelihood(normalized_energy).argmax(axis=0)
-        return labels
+
+        # Returns a numpy array
+        return labels.compute()
 
     def _compute_energy(self, audio_signal, sample_rate):
         """Retrieves the speech / non speech labels for the speech sample in ``audio_signal``"""
@@ -107,6 +110,7 @@ class Energy_2Gauss(Annotator):
         e = bob.ap.Energy(sample_rate, self.win_length_ms, self.win_shift_ms)
         energy_array = e(audio_signal)
         labels = self._voice_activity_detection(energy_array)
+
         # discard isolated speech a number of frames defined in smoothing_window
         labels = utils.smoothing(labels, self.smoothing_window)
         logger.debug(
