@@ -23,6 +23,7 @@ import logging
 
 import dask.array as da
 import numpy as np
+import dask
 
 import bob.ap
 
@@ -145,10 +146,11 @@ class Energy_2Gauss(Annotator):
         return labels.tolist()
 
     def transform(self, audio_signals: "list[np.ndarray]", sample_rates: "list[int]"):
-        results = []
-        for audio_signal, sample_rate in zip(audio_signals, sample_rates):
-            results.append(self.transform_one(audio_signal, sample_rate))
-        return results
+        with dask.config.set(scheduler='threads'):
+            results = []
+            for audio_signal, sample_rate in zip(audio_signals, sample_rates):
+                results.append(self.transform_one(audio_signal, sample_rate))
+            return results
 
     def fit(self, X, y=None, **fit_params):
         return self

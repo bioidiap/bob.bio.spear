@@ -160,7 +160,7 @@ setup(
             "test_pipeline = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline"
         ],
         "bob.bio.config": [
-            "voxforge      = bob.bio.spear.config.database.voxforge:database"
+            "voxforge      = bob.bio.spear.config.database.voxforge:database",
             "test_pipeline = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline"
         ],
         "bob.bio.grid": [

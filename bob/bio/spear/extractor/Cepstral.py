@@ -102,7 +102,7 @@ class Cepstral(BaseEstimator, TransformerMixin):
         """
 
         # if there is only 1 frame, we cannot normalize it
-        if len(params) == 1 or params.std(axis=0) == 0:
+        if len(params) == 1 or (params.std(axis=0) == 0).any():
             return params
         # normalized_vector is mean std normalized version of params per feature dimension
         normalized_vector = (params - params.mean(axis=0)) / params.std(axis=0)
@@ -146,7 +146,7 @@ class Cepstral(BaseEstimator, TransformerMixin):
                 vad_labels
             )  # Ensure array, as `list == 1` is `False`
             filtered_features = cepstral_features[vad_labels == 1]
-            filtered_features = filtered_features[:, self.features_mask]
+            # filtered_features = filtered_features[:, self.features_mask]
         else:
             filtered_features = cepstral_features
 
