@@ -56,7 +56,7 @@ class Energy_2Gauss(Annotator):
         self.win_shift_ms = win_shift_ms
         self.smoothing_window = smoothing_window
 
-    def _voice_activity_detection(self, energy_array):
+    def _voice_activity_detection(self, energy_array: np.ndarray) -> np.ndarray:
         """Fits a 2 Gaussian GMM on the energy that splits between voice and silence."""
         n_samples = len(energy_array)
         # if energy does not change a lot, it may not be audio?
@@ -101,10 +101,10 @@ class Energy_2Gauss(Annotator):
         else:  # High energy in means[1]
             labels = ubm_gmm.log_weighted_likelihood(normalized_energy).argmax(axis=0)
 
-        # Returns a numpy array
-        return labels.compute()
+        # Returns a numpy array (computes the dask array)
+        return np.array(labels)
 
-    def _compute_energy(self, audio_signal, sample_rate):
+    def _compute_energy(self, audio_signal: np.ndarray, sample_rate: int) -> np.ndarray:
         """Retrieves the speech / non speech labels for the speech sample in ``audio_signal``"""
 
         e = bob.ap.Energy(sample_rate, self.win_length_ms, self.win_shift_ms)
@@ -120,7 +120,7 @@ class Energy_2Gauss(Annotator):
         )
         return labels
 
-    def transform_one(self, audio_signal, sample_rate):
+    def transform_one(self, audio_signal: np.ndarray, sample_rate: int) -> list:
         """labels speech (1) and non-speech (0) parts of the given input wave file using 2 Gaussian-modeled Energy
         Parameters
         ----------
@@ -142,7 +142,7 @@ class Energy_2Gauss(Annotator):
         if (labels == 0).all():
             logger.warning("Could not annotate: No audio was detected in the sample!")
             return None
-        return labels
+        return labels.tolist()
 
     def transform(self, audio_signals: "list[np.ndarray]", sample_rates: "list[int]"):
         results = []
