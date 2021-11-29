@@ -146,7 +146,8 @@ class Cepstral(BaseEstimator, TransformerMixin):
                 vad_labels
             )  # Ensure array, as `list == 1` is `False`
             filtered_features = cepstral_features[vad_labels == 1]
-            # filtered_features = filtered_features[:, self.features_mask]
+            if self.features_mask is not None:
+                filtered_features = filtered_features[:, self.features_mask]
         else:
             filtered_features = cepstral_features
 
