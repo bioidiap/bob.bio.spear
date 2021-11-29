@@ -21,7 +21,6 @@
 
 import logging
 
-import dask.array as da
 import numpy as np
 import dask
 
@@ -90,7 +89,7 @@ class Energy_2Gauss(Annotator):
 
         ubm_gmm.variance_thresholds = self.variance_threshold  # is a da.Array
 
-        if da.isnan(ubm_gmm.means).any():
+        if np.isnan(ubm_gmm.means).any():
             logger.warn("Annotation aborted: File contains NaN's")
             return np.zeros(shape=n_samples, dtype=int)
 
