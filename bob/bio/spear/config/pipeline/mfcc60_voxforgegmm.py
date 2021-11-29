@@ -9,6 +9,22 @@ from bob.bio.gmm.bioalgorithm import GMM
 from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
+from bob.pipelines.sample_loaders import AnnotationsLoader
+
+# Loads an annotation file into the `annotations` field
+annotations_loader = AnnotationsLoader(
+    annotation_directory="./results~/annotations/",
+    annotation_extension=".json",
+)
+
+wrapped_annotator = wrap(
+    ["sample"],
+    Energy_2Gauss(),
+    transform_extra_arguments=[
+        ("sample_rates", "rate"),
+    ],
+    output_attribute="annotations",
+)
 
 # Map the Sample input attributes to the parameters of the tranform method.
 # (`data` of Sample already mapped to the first positional arg by default)
@@ -27,17 +43,8 @@ bioalgorithm = GMM(
 
 transformer = Pipeline(
     [
-        (
-            "annotator",
-            wrap(
-                ["sample"],
-                Energy_2Gauss(),
-                transform_extra_arguments=[
-                    ("sample_rates", "rate"),
-                ],
-                output_attribute="annotations",
-            ),
-        ),
+        ("annotations_loader", annotations_loader),
+        # ("annotator", wrapped_annotator),
         ("extractor", wrapped_extractor_transformer),
         ("algorithm", wrap(["sample"], bioalgorithm)),
     ]

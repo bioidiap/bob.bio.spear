@@ -20,7 +20,6 @@ from bob.extension.download import download_and_unzip
 from bob.extension.download import get_file
 from bob.extension.download import search_file
 from bob.extension.scripts.click_helper import verbosity_option
-from bob.pipelines.sample_loaders import AnnotationsLoader
 
 logger = logging.getLogger(__name__)
 
@@ -131,22 +130,11 @@ def VoxforgeBioDatabase(
     # Reads the AudioReader and set the data and metadata of a sample
     reader_to_sample = AudioReaderToSample()
 
-    # Loads an annotation file into the `annotations` field
-    annotations_loader = (
-        AnnotationsLoader(
-            annotation_directory=annotations_path,
-            annotation_extension=".json",
-        )
-        if annotations_path
-        else "passthrough"
-    )
-
     # Build the data loading pipeline
     sample_loader = Pipeline(
         [
             ("db:reader_loader", path_to_data_loader),
             ("db:reader_to_sample", reader_to_sample),
-            ("db:annotations_loader", annotations_loader),
         ]
     )
 
