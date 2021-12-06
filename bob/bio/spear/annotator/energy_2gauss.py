@@ -27,7 +27,7 @@ import dask
 import bob.ap
 
 from bob.bio.base.annotator import Annotator
-from bob.learn.em.cluster import KMeansTrainer
+from bob.learn.em.cluster import KMeansMachine
 from bob.learn.em.mixture import GMMMachine
 
 from .. import utils
@@ -71,8 +71,11 @@ class Energy_2Gauss(Annotator):
 
         # Note: self.max_iterations and self.convergence_threshold are used for both
         # k-means and GMM training.
-        kmeans_trainer = KMeansTrainer(
-            init_max_iter=self.max_iterations, max_iter=self.max_iterations
+        kmeans_trainer = KMeansMachine(
+            n_clusters=2,
+            convergence_threshold=self.convergence_threshold,
+            max_iter=self.max_iterations,
+            init_max_iter=self.max_iterations,
         )
         ubm_gmm = GMMMachine(
             n_gaussians=2,
@@ -158,4 +161,6 @@ class Energy_2Gauss(Annotator):
         return {
             "stateless": True,
             "requires_fit": False,
+            "bob_transform_input": ("data", ("sample_rates", "rate")),
+            "bob_output": "annotations",
         }

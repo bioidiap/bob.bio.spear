@@ -17,25 +17,8 @@ annotations_loader = AnnotationsLoader(
     annotation_extension=".json",
 )
 
-wrapped_annotator = wrap(
-    ["sample"],
-    Energy_2Gauss(),
-    transform_extra_arguments=[
-        ("sample_rates", "rate"),
-    ],
-    output_attribute="annotations",
-)
-
-# Map the Sample input attributes to the parameters of the tranform method.
-# (`data` of Sample already mapped to the first positional arg by default)
-wrapped_extractor_transformer = wrap(
-    ["sample"],
-    Cepstral(),
-    transform_extra_arguments=[("sample_rate", "rate"), ("vad_labels", "annotations")],
-)
-
 bioalgorithm = GMM(
-    number_of_gaussians=16,
+    number_of_gaussians=4, # TODO Set to 256 for full db
     ubm_training_iterations=5,
     gmm_enroll_iterations=1,
     training_threshold=0.0,  # Maximum number of iterations as stopping criterion
@@ -44,8 +27,8 @@ bioalgorithm = GMM(
 transformer = Pipeline(
     [
         ("annotations_loader", annotations_loader),
-        # ("annotator", wrapped_annotator),
-        ("extractor", wrapped_extractor_transformer),
+        ("annotator", wrap(["sample"], Energy_2Gauss())),
+        ("extractor", wrap(["sample"], Cepstral())),
         ("algorithm", wrap(["sample"], bioalgorithm)),
     ]
 )

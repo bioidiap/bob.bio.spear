@@ -181,4 +181,9 @@ class Cepstral(BaseEstimator, TransformerMixin):
         return {
             "stateless": True,
             "requires_fit": False,
+            "bob_transform_input": (
+                "data",
+                ("sample_rate", "rate"),
+                ("vad_labels", "annotations")
+            )
         }
