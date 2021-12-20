@@ -246,7 +246,6 @@ def main(command_line_parameters=None):
                 "Executing command:\n%s", bob.bio.base.tools.command_line(command)
             )
 
-            #      import ipdb; ipdb.set_trace()
             # run the command
             if not args.dry_run:
                 subprocess.call(command)
