@@ -18,8 +18,8 @@ annotations_loader = AnnotationsLoader(
 )
 
 bioalgorithm = GMM(
-    number_of_gaussians=4, # TODO Set to 256 for full db
-    ubm_training_iterations=5,
+    number_of_gaussians=256,
+    ubm_training_iterations=25,
     gmm_enroll_iterations=1,
     training_threshold=0.0,  # Maximum number of iterations as stopping criterion
 )

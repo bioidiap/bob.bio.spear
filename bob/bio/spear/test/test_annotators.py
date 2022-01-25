@@ -57,24 +57,6 @@ def _wav(filename="data/sample.wav"):
     return base_audiobiofile.load(directory, ext)
 
 
-# def test_smoothing():
-#     for labels in [
-#         np.array([0,0,0,0,1,0,1,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0]),
-#         np.array([0,0,0,0,1,0,0,0,0]),
-#         np.array([1,1,1,1,0,1,1,1,1]),
-#         np.array([0,0,0,0,1,0,0,0,0,1,1,1,1,0,0]),
-#         np.array([1,0,0,0,1,0,0,0,0,1,1,1,0,0]),
-#         np.array([0,1,1,1,0,1,1,1,1,0,0,0,1]),
-#         np.array([0,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1]),
-#     ]:
-#         ref = old_smoothing(labels.copy(), 3)
-#         smooth = smoothing(da.array(labels), 3).compute()
-#         print("l,n,r")
-#         for l,s,r in zip(labels,smooth,ref):
-#             print(l, s, r)
-#         np.testing.assert_array_equal(smooth, ref)
-
-
 def test_energy_2gauss():
     # read input
     wav = _wav()

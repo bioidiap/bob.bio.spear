@@ -33,4 +33,4 @@ default_protocol = "Default"
 if "protocol" not in locals():
     protocol = default_protocol
 
-database = VoxforgeBioDatabase(protocol=protocol, dataset_protocol_path="/idiap/temp/ydayer/bob_data/datasets/database-protocols-voxforge-short.tar.gz")
+database = VoxforgeBioDatabase(protocol=protocol)

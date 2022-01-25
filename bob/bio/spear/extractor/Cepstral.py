@@ -139,7 +139,7 @@ class Cepstral(BaseEstimator, TransformerMixin):
         ceps.with_delta = self.with_delta
         ceps.with_delta_delta = self.with_delta_delta
 
-        cepstral_features = ceps(wav_data)
+        cepstral_features = ceps(wav_data*32768)
 
         if vad_labels is not None:  # Don't apply VAD if labels are not present
             vad_labels = numpy.array(

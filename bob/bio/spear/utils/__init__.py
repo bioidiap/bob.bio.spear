@@ -243,16 +243,10 @@ def new_smoothing(labels, smoothing_window):
         else np.flatnonzero(toggles)
     )
 
-    print()
-    print("labels before segments:")
-    print(labels)
-    print("SEGMENTS:", segments)
-
     if segments.shape[0] <= 2:
         return labels
 
     starting_value = labels[0]
-    # import ipdb; ipdb.set_trace()
 
     # segments_stacked = np.vstack((segments, np.roll(segments, 1), np.roll(segments, -1)))
 
