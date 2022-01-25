@@ -5,7 +5,7 @@
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.pipelines.vanilla_biometrics import VanillaBiometricsPipeline
-from bob.bio.gmm.bioalgorithm import GMM
+from bob.bio.gmm.algorithm import GMM
 from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
