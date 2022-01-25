@@ -27,12 +27,12 @@ logger = logging.getLogger("bob.bio.spear")
 
 
 def zeromean_unitvar_norm(data, mean, std):
-    """ Normalized the data with zero mean and unit variance. Mean and variance are in numpy.ndarray format"""
+    """Normalized the data with zero mean and unit variance. Mean and variance are in numpy.ndarray format"""
     return numpy.divide(data - mean, std)
 
 
 def calc_mean(c0, c1=[]):
-    """ Calculates the mean of the data."""
+    """Calculates the mean of the data."""
     if c1 != []:
         return (numpy.mean(c0, 0) + numpy.mean(c1, 0)) / 2.0
     else:
@@ -40,7 +40,7 @@ def calc_mean(c0, c1=[]):
 
 
 def calc_std(c0, c1=[]):
-    """ Calculates the variance of the data."""
+    """Calculates the variance of the data."""
     if c1 == []:
         return numpy.std(c0, 0)
     prop = float(len(c0)) / float(len(c1))
@@ -61,7 +61,7 @@ def calc_std(c0, c1=[]):
 
 
 def calc_mean_std(c0, c1=[], nonStdZero=False):
-    """ Calculates both the mean of the data. """
+    """Calculates both the mean of the data."""
     mi = calc_mean(c0, c1)
     std = calc_std(c0, c1)
     if nonStdZero:

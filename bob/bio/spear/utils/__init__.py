@@ -127,7 +127,7 @@ def normalize_std_array(vector: np.ndarray):
 
 
 def smoothing(labels, smoothing_window):
-    """ Applies a smoothing on VAD"""
+    """Applies a smoothing on VAD"""
 
     if np.sum(labels) < smoothing_window:
         return labels

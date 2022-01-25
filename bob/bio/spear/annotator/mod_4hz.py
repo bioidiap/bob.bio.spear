@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 class Mod_4Hz(Annotator):
-    """VAD based on the modulation of the energy around 4 Hz and the energy """
+    """VAD based on the modulation of the energy around 4 Hz and the energy"""
 
     def __init__(
         self,

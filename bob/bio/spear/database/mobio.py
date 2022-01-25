@@ -69,7 +69,10 @@ def MobioBioDatabase(
     """
 
     if dataset_protocol_path is None:
-        dataset_protocol_path = rc.get("bob_data_folder") + f"/datasets/database-protocols-mobio-{gender}.tar.gz"
+        dataset_protocol_path = (
+            rc.get("bob_data_folder")
+            + f"/datasets/database-protocols-mobio-{gender}.tar.gz"
+        )
 
     if data_path is None:
         data_path = rc.get("bob.db.mobio.audio.directory")

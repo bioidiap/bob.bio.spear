@@ -3,7 +3,6 @@
 
 from bob.bio.spear.database import MobioBioDatabase
 
-
 database = MobioBioDatabase(
     gender="male",
 )

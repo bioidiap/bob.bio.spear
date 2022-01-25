@@ -32,7 +32,7 @@ logger = logging.getLogger("bob.bio.spear")
 
 
 class SPROFeatures(Extractor):
-    """ Extracts the Cepstral features """
+    """Extracts the Cepstral features"""
 
     def __init__(
         self, features_mask=numpy.arange(0, 60), normalize_flag=True, **kwargs
@@ -93,7 +93,7 @@ class SPROFeatures(Extractor):
         # nb = (int)(file.len() - header_size) / (getFeatureSize * 4)
 
     def __call__(self, data):
-        """Read the SPRO feature file and (optionally) returns normalized cepstral features for the given VAD labels """
+        """Read the SPRO feature file and (optionally) returns normalized cepstral features for the given VAD labels"""
         spro_file = data[0]
         vad_labels = data[1]
 
