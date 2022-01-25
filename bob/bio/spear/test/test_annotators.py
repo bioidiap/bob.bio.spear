@@ -44,7 +44,7 @@ def _compare(
     # # 2. check sample data
     # np.testing.assert_allclose(data[1], reference[1], atol=1e-5)
     # 3. check VAD labels
-    np.testing.assert_allclose(data, reference["labels"], atol=1e-5)
+    np.testing.assert_allclose(data, reference["array"], atol=1e-5)
 
 
 def _wav(filename="data/sample.wav"):
@@ -59,14 +59,14 @@ def _wav(filename="data/sample.wav"):
 
 def test_energy_2gauss():
     # read input
-    wav = _wav()
+    rate, wav = _wav()
     annotator = bob.bio.base.load_resource("energy-2gauss", "annotator")
     assert isinstance(annotator, bob.bio.spear.annotator.Energy_2Gauss)
 
     # test the energy-based VAD annotator
     annotator = bob.bio.spear.annotator.Energy_2Gauss()
     _compare(
-        annotator.transform_one(wav[1], wav[0]),
+        annotator.transform_one(wav, rate),
         pkg_resources.resource_filename(
             "bob.bio.spear.test", "data/vad_energy_2gauss.hdf5"
         ),
