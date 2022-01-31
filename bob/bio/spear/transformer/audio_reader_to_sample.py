@@ -7,46 +7,38 @@ import logging
 from functools import lru_cache
 from functools import partial
 
+from scipy.io import wavfile
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
 
-from bob.io.audio import reader as AudioReader
 from bob.pipelines import DelayedSample
 
 logger = logging.getLogger(__name__)
 
 
-audio_reader_keys = [
-    "rate",
-    "number_of_samples",
-    "number_of_channels",
-    "bits_per_sample",
-    "duration",
-    "encoding",
-    "type",
-    "compression_factor",
-]
-
-
 @lru_cache()
-def load_metadata_from_file(filename: str):
-    """Extracts data and a set of metadata from a reader object."""
-    logger.debug(f"Reading metadata from audio file {filename}")
-
-    reader = AudioReader(filename)
-    return {key: getattr(reader, key) for key in audio_reader_keys}
-
-
 def load_data_from_file(filename: str):
     logger.debug(f"Reading data from audio file {filename}")
-    reader = AudioReader(filename)
-    return reader.load()
+    rate, wav_samples = wavfile.read(filename)
+    return rate, wav_samples
 
 
-def get_audio_attribute(sample, key):
-    if key == "data":
-        return load_data_from_file(sample.data)
-    return load_metadata_from_file(sample.data)[key]
+def get_audio_sample_rate(sample):
+    return load_data_from_file(sample.data)[0]
+
+
+def get_audio_data(sample):
+    audio_signal = load_data_from_file(sample.data)[1]
+
+    if audio_signal.ndim > 1:
+        if audio_signal.shape[0] > 1:
+            logger.warning(
+                f"audio_signal has {audio_signal.shape[0]} channels. Returning only "
+                "channel 0."
+            )
+        audio_signal = audio_signal[0]
+
+    return audio_signal.astype(float)
 
 
 class AudioReaderToSample(BaseEstimator, TransformerMixin):
@@ -57,11 +49,9 @@ class AudioReaderToSample(BaseEstimator, TransformerMixin):
 
     def populate_from_reader(self, sample: DelayedSample) -> DelayedSample:
         """Assigns the Sample's data and metadata."""
-        delayed_attr = {
-            key: partial(get_audio_attribute, sample, key) for key in audio_reader_keys
-        }
+        delayed_attr = {"rate": partial(get_audio_sample_rate, sample)}
         new_sample = DelayedSample(
-            load=partial(get_audio_attribute, sample, "data"),
+            load=partial(get_audio_data, sample),
             parent=sample,
             delayed_attributes=delayed_attr,
         )

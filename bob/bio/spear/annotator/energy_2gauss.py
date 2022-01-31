@@ -132,13 +132,6 @@ class Energy_2Gauss(Annotator):
            sample_rate: int
                The sample rate in Hertz
         """
-        if audio_signal.ndim > 1:
-            if audio_signal.shape[0] > 1:
-                logger.warning(
-                    f"audio_signal has {audio_signal.shape[0]} channels. Annotating "
-                    "only channel 0."
-                )
-            audio_signal = audio_signal[0]
         labels = self._compute_energy(
             audio_signal=audio_signal, sample_rate=sample_rate
         )

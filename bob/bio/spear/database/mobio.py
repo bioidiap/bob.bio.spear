@@ -39,20 +39,13 @@ def MobioBioDatabase(
         - `data` files are the actual files of the dataset (pointed to by the definition
             files). They are not provided by bob.
 
-    Although not provided by bob, the VoxForge data is freely available online.
-    If you don't already have the data, download it and set the bob configuration using
-    the following commands:
+    You have to set the bob configuration using the following command:
 
-    ``$ bob db download-voxforge -d your_path_to_data``
-
-    ``$ bob config set bob.db.voxforge.directory your_path_to_data``
+    ``$ bob config set bob.db.mobio.directory your_path_to_data``
 
 
     Parameters
     ----------
-
-    protocol: str
-        Name of the protocol to use (subfolder in protocol definition).
 
     dataset_protocol_path: str or None
         Path to an existing protocol definition folder structure.
@@ -60,11 +53,11 @@ def MobioBioDatabase(
         ``bob_data_folder`` config (see :py:func:`bob.extension.download.get_file`).
 
     data_path: str or None
-        Path to the data files of VoxForge.
-        If None: will use the path in the ``bob.db.voxforge.directory`` config.
+        Path to the data files of mobio.
+        If None: will use the path in the ``bob.db.mobio.directory`` config.
 
     annotations_path: str or None
-        Path to the annotations of VoxForge if available.
+        Path to the annotations of mobio if available.
         If None: will not load any annotations.
     """
 
@@ -80,7 +73,7 @@ def MobioBioDatabase(
         raise RuntimeError(
             "No data path was provided! Either set 'bob.db.mobio.audio.directory' with "
             "the 'bob config set' command, or provide a 'data_path' to "
-            "'VoxforgeBioDatabase'."
+            "'MobioBioDatabase'."
         )
 
     logger.info(

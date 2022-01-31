@@ -114,14 +114,6 @@ class Cepstral(BaseEstimator, TransformerMixin):
         """Computes and returns cepstral features for one given audio signal."""
         logger.debug("Cepstral transform.")
 
-        if wav_data.ndim > 1:
-            if wav_data.shape[0] > 1:
-                logger.warning(
-                    "Cepstral Transformer only supports 1 channel data and a signal "
-                    f"contains {wav_data.shape[0]}. Will only consider channel 0."
-                )
-            wav_data = wav_data[0]
-
         # Set parameters
         wl = self.win_length_ms
         ws = self.win_shift_ms
@@ -139,7 +131,7 @@ class Cepstral(BaseEstimator, TransformerMixin):
         ceps.with_delta = self.with_delta
         ceps.with_delta_delta = self.with_delta_delta
 
-        cepstral_features = ceps(wav_data * 32768)
+        cepstral_features = ceps(wav_data)
 
         if vad_labels is not None:  # Don't apply VAD if labels are not present
             vad_labels = numpy.array(

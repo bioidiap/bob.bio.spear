@@ -41,6 +41,7 @@ requirements:
     - bob.db.base
     - bob.bio.base
     - bob.pipelines
+    - scipy
     - matplotlib {{ matplotlib }}
     - tqdm {{ tqdm }}
   run:
