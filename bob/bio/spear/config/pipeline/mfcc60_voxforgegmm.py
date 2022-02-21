@@ -29,7 +29,7 @@ transformer = Pipeline(
         # ("annotations_loader", annotations_loader),
         ("annotator", wrap(["sample"], Energy_2Gauss())),
         ("extractor", wrap(["sample"], Cepstral())),
-        ("algorithm", bioalgorithm),
+        ("algorithm", wrap(["sample"], bioalgorithm)),
     ]
 )
 

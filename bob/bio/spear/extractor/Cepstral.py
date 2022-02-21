@@ -173,8 +173,7 @@ class Cepstral(BaseEstimator, TransformerMixin):
         return {
             "stateless": True,
             "requires_fit": False,
-            "bob_transform_input": (
-                "data",
+            "bob_transform_extra_input": (
                 ("sample_rate", "rate"),
                 ("vad_labels", "annotations"),
             ),

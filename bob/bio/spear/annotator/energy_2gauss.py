@@ -154,6 +154,6 @@ class Energy_2Gauss(Annotator):
         return {
             "stateless": True,
             "requires_fit": False,
-            "bob_transform_input": ("data", ("sample_rates", "rate")),
+            "bob_transform_extra_input": (("sample_rates", "rate"),),
             "bob_output": "annotations",
         }
