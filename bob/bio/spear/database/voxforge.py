@@ -31,7 +31,7 @@ def get_voxforge_protocol_file():
     download it from https://www.idiap.ch/software/bob/data/bob/bob.bio.spear/ if
     needed.
     """
-    proto_def_hash = "dc84ac65"
+    proto_def_hash = "71e494d0"
     proto_def_name = f"database-protocols-voxforge-{proto_def_hash}.tar.gz"
     proto_def_urls = [
         f"https://www.idiap.ch/software/bob/data/bob/bob.bio.spear/{proto_def_name}",

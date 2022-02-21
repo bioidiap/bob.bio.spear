@@ -107,6 +107,7 @@ setup(
             "asvspoof2017-licit = bob.bio.spear.config.database.asvspoof2017:database_licit",
             "asvspoof2017-spoof = bob.bio.spear.config.database.asvspoof2017:database_spoof",
             "voxforge           = bob.bio.spear.config.database.voxforge:database",
+            "mini-voxforge      = bob.bio.spear.config.database.mini_voxforge:database",
         ],
         "bob.bio.annotator": [
             "energy-2gauss = bob.bio.spear.config.annotator.energy_2gauss:annotator",  # Two Gaussian GMM energy VAD
