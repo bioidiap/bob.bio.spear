@@ -12,16 +12,19 @@ from bob.pipelines import wrap
 from bob.pipelines.sample_loaders import AnnotationsLoader
 
 # Loads an annotation file into the `annotations` field
-annotations_loader = AnnotationsLoader(
-    annotation_directory="./results~/annotations/",
-    annotation_extension=".json",
-)
+#annotations_loader = AnnotationsLoader(
+#    annotation_directory="./results~/annotations/",
+#    annotation_extension=".json",
+#)
 
 bioalgorithm = GMM(
     number_of_gaussians=256,
     ubm_training_iterations=25,
+    kmeans_training_iterations=25,
     gmm_enroll_iterations=1,
     training_threshold=0.0,  # Maximum number of iterations as stopping criterion
+    kmeans_init_iterations=5,
+    kmeans_oversampling_factor=64,
 )
 
 transformer = Pipeline(
@@ -29,7 +32,7 @@ transformer = Pipeline(
         # ("annotations_loader", annotations_loader),
         ("annotator", wrap(["sample"], Energy_2Gauss())),
         ("extractor", wrap(["sample"], Cepstral())),
-        ("algorithm", wrap(["sample"], bioalgorithm)),
+        ("algorithm_trainer", wrap(["sample"], bioalgorithm)),
     ]
 )
 
