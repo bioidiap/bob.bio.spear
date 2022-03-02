@@ -9,13 +9,6 @@ from bob.bio.gmm.algorithm import GMM
 from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
-from bob.pipelines.sample_loaders import AnnotationsLoader
-
-# Loads an annotation file into the `annotations` field
-#annotations_loader = AnnotationsLoader(
-#    annotation_directory="./results~/annotations/",
-#    annotation_extension=".json",
-#)
 
 bioalgorithm = GMM(
     number_of_gaussians=256,
@@ -29,7 +22,6 @@ bioalgorithm = GMM(
 
 transformer = Pipeline(
     [
-        # ("annotations_loader", annotations_loader),
         ("annotator", wrap(["sample"], Energy_2Gauss())),
         ("extractor", wrap(["sample"], Cepstral())),
         ("algorithm_trainer", wrap(["sample"], bioalgorithm)),

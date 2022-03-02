@@ -27,20 +27,18 @@ requirements:
     - setuptools {{ setuptools }}
     - pip {{ pip }}
     - bob.extension
-    - bob.blitz
     - bob.core
     - bob.io.base
     - bob.io.audio
-    - bob.learn.activation
     - bob.math
     - bob.sp
     - bob.ap
-    - bob.learn.linear
     - bob.learn.em
     - bob.measure
     - bob.db.base
     - bob.bio.base
     - bob.pipelines
+    - bob.bio.gmm
     - scipy
     - matplotlib {{ matplotlib }}
     - tqdm {{ tqdm }}
@@ -65,10 +63,6 @@ test:
     - sphinx {{ sphinx }}
     - sphinx_rtd_theme {{ sphinx_rtd_theme }}
     - gridtk
-    - bob.db.mobio
-    - bob.db.avspoof
-    - bob.db.asvspoof
-    - bob.db.voicepa
     - bob.db.atnt
 
 about:
