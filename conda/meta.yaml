@@ -45,8 +45,8 @@ requirements:
   run:
     - python
     - setuptools
-    - {{ pin_cpmpatible('matplotlib') }}
-    - {{ pin_cpmpatible('tqdm') }}
+    - {{ pin_compatible('matplotlib') }}
+    - {{ pin_compatible('tqdm') }}
 
 test:
   imports:
