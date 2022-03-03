@@ -1,14 +1,9 @@
 setuptools
 bob.extension
-bob.core
 bob.io.base
-bob.io.audio
-bob.math
-bob.sp
 bob.ap
 bob.bio.gmm
 bob.measure
-bob.db.base
 bob.bio.base
 bob.bio.gmm
 bob.pipelines
