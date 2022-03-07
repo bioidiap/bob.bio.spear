@@ -34,6 +34,7 @@ class External(Annotator):
         # copy parameters
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
+        super().__init__(**kwargs)
 
     def use_existing_vad(self, inArr, vad_file):
         f = open(vad_file)

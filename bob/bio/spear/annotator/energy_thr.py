@@ -48,6 +48,7 @@ class Energy_Thr(Annotator):
         self.win_shift_ms = win_shift_ms
         self.smoothing_window = smoothing_window
         self.ratio_threshold = ratio_threshold
+        super().__init__(**kwargs)
 
     def _voice_activity_detection(self, energy):
 

@@ -55,6 +55,7 @@ class Energy_2Gauss(Annotator):
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
         self.smoothing_window = smoothing_window
+        super().__init__(**kwargs)
 
     def _voice_activity_detection(self, energy_array: np.ndarray) -> np.ndarray:
         """Fits a 2 Gaussian GMM on the energy that splits between voice and silence."""
