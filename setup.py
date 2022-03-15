@@ -158,11 +158,12 @@ setup(
             "gmm-tomi-scfc        = bob.bio.spear.config.algorithm.gmm_tomi_scfc:algorithm",
         ],
         "bob.bio.pipeline": [
-            "test_pipeline = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline"
+            "voxforge-gmm  = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline",
+            "test-pipeline = bob.bio.spear.config.pipeline.mini_voxforgegmm:pipeline",
         ],
         "bob.bio.config": [
             "voxforge      = bob.bio.spear.config.database.voxforge:database",
-            "test_pipeline = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline",
+            "voxforge-gmm  = bob.bio.spear.config.pipeline.mfcc60_voxforgegmm:pipeline",
         ],
         "bob.bio.grid": [
             "modest = bob.bio.spear.config.grid.modest:grid",

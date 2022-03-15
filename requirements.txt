@@ -5,7 +5,6 @@ bob.ap
 bob.bio.gmm
 bob.measure
 bob.bio.base
-bob.bio.gmm
 bob.pipelines
 matplotlib   # for plotting
 tqdm
