@@ -41,7 +41,7 @@ def get_audio_data(sample):
     return audio_signal.astype(float)
 
 
-class AudioReaderToSample(BaseEstimator, TransformerMixin):
+class WavToSample(BaseEstimator, TransformerMixin):
     """Transforms a Sample's data containing a path to an audio signal.
 
     The Sample's metadata are updated.

@@ -1,18 +1,13 @@
 #!/usr/bin/env python
 
-import pkg_resources
+from bob.bio.spear.database import SpearBioDatabase
 
-import bob.bio.base
+default_protocol = "2"
 
-from bob.bio.spear.database import AudioBioFile
+if "protocol" not in locals():
+    protocol = default_protocol
 
-timit_wav_directory = "[YOUR_TIMIT_WAV_DIRECTORY]"
-
-database = bob.bio.base.database.FileListBioDatabase(
-    pkg_resources.resource_filename("bob.bio.spear", "config/database/timit"),
+database = SpearBioDatabase(
     "timit",
-    bio_file_class=AudioBioFile,
-    protocol="2",
-    original_directory=timit_wav_directory,
-    original_extension=".wav",
+    protocol=protocol,
 )

@@ -26,6 +26,6 @@ as configuration::
     $ bob bio pipelines vanilla-biometrics mini-voxforge <pipeline_name> -vv
 """
 
-from bob.bio.spear.database import VoxforgeBioDatabase
+from bob.bio.spear.database import SpearBioDatabase
 
-database = VoxforgeBioDatabase(protocol="Mini")
+database = SpearBioDatabase("voxforge", protocol="Mini")

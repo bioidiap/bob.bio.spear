@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 
-from bob.bio.spear.database import MobioBioDatabase
+from bob.bio.spear.database import SpearBioDatabase
 
-database = MobioBioDatabase(
-    gender="female",
-)
+database = SpearBioDatabase("mobio", protocol="female")

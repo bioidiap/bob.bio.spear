@@ -1,22 +1,13 @@
 #!/usr/bin/env python
 
-from bob.bio.spear.database import ASVspoofBioDatabase
+from bob.bio.spear.database import SpearBioDatabase
 
-# directory where the wave files are stored
-asvspoof_wav_directory = "[YOUR_ASVSPOOF_WAV_DIRECTORY]"
-asvspoof_input_ext = ".wav"
-
-
-database_licit = ASVspoofBioDatabase(
+database_licit = SpearBioDatabase(
+    "asvspoof",
     protocol="licit",
-    original_directory=asvspoof_wav_directory,
-    original_extension=asvspoof_input_ext,
-    training_depends_on_protocol=True,
 )
 
-database_spoof = ASVspoofBioDatabase(
+database_spoof = SpearBioDatabase(
+    "asvspoof",
     protocol="spoof",
-    original_directory=asvspoof_wav_directory,
-    original_extension=asvspoof_input_ext,
-    training_depends_on_protocol=True,
 )
