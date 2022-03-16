@@ -17,12 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-import os
-
 import h5py
 import numpy as np
 import pkg_resources
+
+from scipy.io import wavfile
 
 import bob.bio.base
 import bob.bio.spear
@@ -49,12 +48,9 @@ def _compare(
 
 def _wav(filename="data/sample.wav"):
     path = pkg_resources.resource_filename("bob.bio.spear.test", filename)
-    path, ext = os.path.splitext(path)
-    directory, path = os.path.split(path)
-    base_audiobiofile = bob.bio.spear.database.AudioBioFile(
-        "client_id", path, "file_id"
-    )
-    return base_audiobiofile.load(directory, ext)
+
+    rate, wav_samples = wavfile.read(path)
+    return rate, wav_samples.astype(float)
 
 
 def test_energy_2gauss():
