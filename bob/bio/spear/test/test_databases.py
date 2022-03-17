@@ -19,155 +19,251 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from nose.plugins.skip import SkipTest
-
-import bob.bio.base
-
-from bob.bio.base.test.test_database_implementations import check_database
-from bob.bio.base.test.test_database_implementations import check_database_zt
-from bob.bio.base.test.utils import db_available
+from bob.bio.base.database import CSVDataset
+from bob.bio.spear.database import SpearBioDatabase
 from bob.pipelines import DelayedSample
 from bob.pipelines import SampleSet
 
 
-@db_available("mobio")
-def test_mobio():
-    database = bob.bio.base.load_resource(
-        "mobio-audio-male", "database", preferred_package="bob.bio.spear"
+def _check_database(
+    database,
+    n_train=None,
+    n_dev_references=None,
+    n_dev_references_samples=None,
+    n_dev_probes=None,
+    n_dev_probes_samples=None,
+    n_eval_references=None,
+    n_eval_references_samples=None,
+    n_eval_probes=None,
+    n_eval_probes_samples=None,
+):
+    """Verifies that a SpearBioDatabase instance is constructed correctly.
+
+    Checks the number of samples of each subsets, if a count is provided.
+    """
+
+    assert isinstance(database, CSVDataset)
+
+    if n_train:
+        train = database.background_model_samples()
+        assert len(train) == n_train, f"Wrong train len: {len(train)}"
+
+    if n_dev_references or n_dev_references_samples:
+        dev_ref = database.references(group="dev")
+        if n_dev_references:
+            assert (
+                len(dev_ref) == n_dev_references
+            ), f"Wrong dev ref len: {len(dev_ref)}"
+        assert all(isinstance(s, SampleSet) for s in dev_ref)
+        if n_dev_references_samples:
+            assert all(
+                len(s) == n_dev_references_samples for s in dev_ref
+            ), f"Not all dev references haves the same sample count ({len(dev_ref[0])})"
+        assert all(isinstance(s, DelayedSample) for s in dev_ref[0])
+
+    if n_dev_probes or n_dev_probes_samples:
+        dev_pro = database.probes(group="dev")
+        if n_dev_probes:
+            assert len(dev_pro) == n_dev_probes, f"Wrong dev probes len: {len(dev_pro)}"
+        assert all(isinstance(s, SampleSet) for s in dev_pro)
+        if n_dev_probes_samples:
+            assert all(
+                len(s) == n_dev_probes_samples for s in dev_pro
+            ), f"Not all dev probes haves the same sample count ({len(dev_pro[0])})"
+        assert all(isinstance(s[0], DelayedSample) for s in dev_pro)
+
+    if n_eval_references or n_eval_references_samples:
+        eval_ref = database.references(group="eval")
+        if n_eval_references:
+            assert (
+                len(eval_ref) == n_eval_references
+            ), f"Wrong eval ref len: {len(eval_ref)}"
+        assert all(isinstance(s, SampleSet) for s in eval_ref)
+        if n_eval_references_samples:
+            assert all(
+                len(s) == n_eval_references_samples for s in eval_ref
+            ), f"Not all eval references haves the same sample count ({len(eval_ref[0])})"
+        assert all(isinstance(s, DelayedSample) for s in eval_ref[0])
+
+    if n_eval_probes or n_eval_probes_samples:
+        eval_pro = database.probes(group="eval")
+        if n_eval_probes:
+            assert (
+                len(eval_pro) == n_eval_probes
+            ), f"Wrong eval probes len: {len(eval_pro)}"
+        assert all(isinstance(s, SampleSet) for s in eval_pro)
+        if n_dev_probes_samples:
+            assert all(
+                len(s) == n_eval_probes_samples for s in eval_pro
+            ), f"Not all eval probes haves the same sample count ({len(eval_pro[0])})"
+        assert all(isinstance(s[0], DelayedSample) for s in eval_pro)
+
+
+def test_mobio_male():
+    database = SpearBioDatabase("mobio", protocol="male", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=7104,
+        n_dev_references=24,
+        n_dev_references_samples=5,
+        n_dev_probes=2520,
+        n_dev_probes_samples=1,
+        n_eval_references=38,
+        n_eval_references_samples=5,
+        n_eval_probes=3990,
+        n_eval_probes_samples=1,
     )
-    try:
-        check_database_zt(database, models_depend=True)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
 
 
-@db_available("avspoof")
+def test_mobio_female():
+    database = SpearBioDatabase("mobio", protocol="female", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=2496,
+        n_dev_references=18,
+        n_dev_references_samples=5,
+        n_dev_probes=1890,
+        n_dev_probes_samples=1,
+        n_eval_references=20,
+        n_eval_references_samples=5,
+        n_eval_probes=2100,
+        n_eval_probes_samples=1,
+    )
+
+
 def test_avspoof_licit():
-    database = bob.bio.base.load_resource(
-        "avspoof-licit", "database", preferred_package="bob.bio.spear"
+    database = SpearBioDatabase("avspoof", protocol="licit", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=4973,
+        n_dev_references=14,
+        n_dev_references_samples=None,  # Variable sample count
+        n_dev_probes=4225,
+        n_dev_probes_samples=1,
+        n_eval_references=16,
+        n_eval_references_samples=None,  # Variable sample count
+        n_eval_probes=4708,
+        n_eval_probes_samples=1,
     )
-    try:
-        check_database(database, groups=("dev", "eval"), training_depends=True)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
 
 
-@db_available("asvspoof")
-def test_asvspoof_licit():
-    database = bob.bio.base.load_resource(
-        "asvspoof-licit", "database", preferred_package="bob.bio.spear"
-    )
-    try:
-        check_database(
-            database, groups=("dev", "eval"), training_depends=True, skip_train=True
-        )
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-
-
-@db_available("voicepa")
-def test_voicepa_licit():
-    database = bob.bio.base.load_resource(
-        "voicepa-licit", "database", preferred_package="bob.bio.spear"
-    )
-    try:
-        check_database(database, groups=("dev", "eval"), training_depends=True)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-
-
-@db_available("avspoof")
 def test_avspoof_spoof():
-    database = bob.bio.base.load_resource(
-        "avspoof-spoof", "database", preferred_package="bob.bio.spear"
+    database = SpearBioDatabase("avspoof", protocol="spoof", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=56470,
+        n_dev_references=14,
+        n_dev_references_samples=None,  # Variable sample count
+        n_dev_probes=56470,
+        n_dev_probes_samples=1,
+        n_eval_references=16,
+        n_eval_references_samples=None,  # Variable sample count
+        n_eval_probes=63380,
+        n_eval_probes_samples=1,
     )
-    try:
-        check_database(database, groups=("dev", "eval"), training_depends=True)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
 
 
-@db_available("asvspoof")
+def test_asvspoof_licit():
+    database = SpearBioDatabase("asvspoof", protocol="licit", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=None,
+        n_dev_references=20,
+        n_dev_references_samples=5,
+        n_dev_probes=5700,
+        n_dev_probes_samples=1,
+        n_eval_references=26,
+        n_eval_references_samples=5,
+        n_eval_probes=10400,
+        n_eval_probes_samples=1,
+    )
+
+
 def test_asvspoof_spoof():
-    database = bob.bio.base.load_resource(
-        "asvspoof-spoof", "database", preferred_package="bob.bio.spear"
+    database = SpearBioDatabase("asvspoof", protocol="spoof", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=None,
+        n_dev_references=20,
+        n_dev_references_samples=5,
+        n_dev_probes=28500,
+        n_dev_probes_samples=1,
+        n_eval_references=26,
+        n_eval_references_samples=5,
+        n_eval_probes=104000,
+        n_eval_probes_samples=1,
     )
-    try:
-        check_database(
-            database, groups=("dev", "eval"), training_depends=True, skip_train=True
-        )
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
 
 
-@db_available("voicepa")
+def test_voicepa_licit():
+    database = SpearBioDatabase(
+        "voicepa", protocol="grandtest-licit", data_path="dummy/"
+    )
+
+    _check_database(
+        database,
+        n_train=4973,
+        n_dev_references=14,
+        n_dev_references_samples=None,  # Variable sample count
+        n_dev_probes=4225,
+        n_dev_probes_samples=1,
+        n_eval_references=16,
+        n_eval_references_samples=None,  # Variable sample count
+        n_eval_probes=4708,
+        n_eval_probes_samples=1,
+    )
+
+
 def test_voicepa_spoof():
-    database = bob.bio.base.load_resource(
-        "voicepa-spoof", "database", preferred_package="bob.bio.spear"
+    database = SpearBioDatabase(
+        "voicepa", protocol="grandtest-spoof", data_path="dummy/"
     )
-    try:
-        check_database(
-            database, groups=("dev", "eval"), training_depends=True, skip_train=True
-        )
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
+
+    _check_database(
+        database,
+        n_train=115730,
+        n_dev_references=14,
+        n_dev_references_samples=None,  # Variable sample count
+        n_dev_probes=115740,
+        n_dev_probes_samples=1,
+        n_eval_references=16,
+        n_eval_references_samples=None,  # Variable sample count
+        n_eval_probes=129988,
+        n_eval_probes_samples=1,
+    )
 
 
-# def test_timit():
-#     database = bob.bio.base.load_resource(
-#         "timit", "database", preferred_package="bob.bio.spear"
-#     )
-#     try:
-#         check_database(database, groups=("dev",))
-#     except IOError as e:
-#         raise SkipTest(
-#             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-#             % e
-#         )
+def test_timit():
+    database = SpearBioDatabase("timit", protocol="2", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=3696,
+        n_dev_references=168,
+        n_dev_references_samples=8,
+        n_dev_probes=336,
+        n_dev_probes_samples=1,
+    )
 
 
 def test_voxforge():
-    database = bob.bio.base.load_resource(
-        "voxforge", "database", preferred_package="bob.bio.spear"
+    database = SpearBioDatabase("voxforge", protocol="Default", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=3148,
+        n_dev_references=10,
+        n_dev_references_samples=None,  # Variable sample count
+        n_dev_probes=300,
+        n_dev_probes_samples=1,
+        n_eval_references=10,
+        n_eval_references_samples=None,  # Variable sample count
+        n_eval_probes=300,
+        n_eval_probes_samples=1,
     )
-
-    dev_ref = database.references(group="dev")
-    eval_ref = database.references(group="eval")
-    dev_pro = database.probes(group="dev")
-    eval_pro = database.probes(group="eval")
-    train = database.background_model_samples()
-
-    assert len(dev_ref) == 10, len(dev_ref)
-    assert all(isinstance(s, SampleSet) for s in dev_ref)
-    assert all(isinstance(s, DelayedSample) for s in dev_ref[0])
-    assert len(dev_pro) == 300, len(dev_pro)
-    assert all(len(s) == 1 for s in dev_pro)
-    assert all(isinstance(s[0], DelayedSample) for s in dev_pro)
-    assert len(dev_ref) == 10, len(eval_ref)
-    assert all(isinstance(s, SampleSet) for s in eval_ref)
-    assert all(isinstance(s, DelayedSample) for s in eval_ref[0])
-    assert len(eval_pro) == 300, len(eval_pro)
-    assert all(len(s) == 1 for s in eval_pro)
-    assert all(isinstance(s[0], DelayedSample) for s in eval_pro)
-    assert len(train) == 3148, len(train)

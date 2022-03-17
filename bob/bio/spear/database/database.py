@@ -24,18 +24,30 @@ known_databases = {
         "crc": "71e494d0",
     },
     "mobio": {
-        "definition_file": "database-protocols-mobio.tar.gz",
-        "crc": "",
+        "definition_file": "database-protocols-mobio-58c316e5.tar.gz",
+        "crc": "58c316e5",
         "rc_name": "mobio.audio",
     },
-    "timit": {"definition_file": "database-protocols-timit.tar.gz", "crc": ""},
-    "avspoof": {"definition_file": "database-protocols-avspoof.tar.gz", "crc": ""},
-    "asvspoof": {"definition_file": "database-protocols-asvspoof.tar.gz", "crc": ""},
-    "asvspoof2017": {
-        "definition_file": "database-protocols-asvspoof2017.tar.gz",
-        "crc": "",
+    "timit": {
+        "definition_file": "database-protocols-timit-71d74f4f.tar.gz",
+        "crc": "71d74f4f",
     },
-    "voicepa": {"definition_file": "database-protocols-voicepa.tar.gz", "crc": ""},
+    "avspoof": {
+        "definition_file": "database-protocols-avspoof-c6aa9f67.tar.gz",
+        "crc": "c6aa9f67",
+    },
+    "asvspoof": {
+        "definition_file": "database-protocols-asvspoof-c1ea7c15.tar.gz",
+        "crc": "c1ea7c15",
+    },
+    "asvspoof2017": {
+        "definition_file": "database-protocols-asvspoof2017-1946259d.tar.gz",
+        "crc": "1946259d",
+    },
+    "voicepa": {
+        "definition_file": "database-protocols-voicepa-1e4c1742.tar.gz",
+        "crc": "1e4c1742",
+    },
 }
 
 
