@@ -12,10 +12,11 @@ Usage
 Feed this file (also defined as a ``energy-2gauss`` resource) to ``bob bio annotate`` as
 configuration::
 
-    $ bob bio annotate -a energy_2gauss -d <database> -o annotations/
+    $ bob bio annotate -a energy-2gauss -d <database> -o annotations/
 
+or include it in a pipeline.
 """
 
-from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
+from bob.bio.spear.annotator import Energy_2Gauss
 
 annotator = Energy_2Gauss()

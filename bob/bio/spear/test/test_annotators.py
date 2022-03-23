@@ -26,23 +26,22 @@ from scipy.io import wavfile
 import bob.bio.base
 import bob.bio.spear
 
+from bob.pipelines import Sample
+from bob.pipelines import wrap
+
 regenerate_refs = False
 
 
 def _compare(
     data, reference, write_function=bob.bio.base.save, read_function=bob.bio.base.load
 ):
-    # write reference?
+    # Write reference if needed
     if regenerate_refs:
-        write_function(data, reference)
+        ref_f = h5py.File(reference, "w")
+        ref_f["array"] = data
 
-    # compare reference
+    # Compare reference
     reference = h5py.File(reference, "r")
-    # # 1. check rate
-    # np.testing.assert_allclose(data[0], reference[0], atol=1e-5)
-    # # 2. check sample data
-    # np.testing.assert_allclose(data[1], reference[1], atol=1e-5)
-    # 3. check VAD labels
     np.testing.assert_allclose(data, reference["array"], atol=1e-5)
 
 
@@ -54,63 +53,106 @@ def _wav(filename="data/sample.wav"):
 
 
 def test_energy_2gauss():
-    # read input
-    rate, wav = _wav()
+    """Loading and running the energy-2gauss annotator."""
+    # Test setup and config
     annotator = bob.bio.base.load_resource("energy-2gauss", "annotator")
     assert isinstance(annotator, bob.bio.spear.annotator.Energy_2Gauss)
 
-    # test the energy-based VAD annotator
+    # Read input
+    rate, wav = _wav()
+
+    # Test the energy-based VAD annotator
     annotator = bob.bio.spear.annotator.Energy_2Gauss()
     _compare(
-        annotator.transform_one(wav, rate),
+        annotator.transform_one(wav, sample_rate=rate),
+        pkg_resources.resource_filename(
+            "bob.bio.spear.test", "data/vad_energy_2gauss.hdf5"
+        ),
+    )
+
+    # Test the processing of Sample objects and tags of annotator transformer
+    wrapped_annotator = wrap(["sample"], annotator)
+    samples = [Sample(data=wav, rate=rate)]
+    # Attribute `rate` should be passed as `sample_rate` argument of transform (tags)
+    result = wrapped_annotator.transform(samples)
+    # Annotations should be in attribute `annotations` of result samples (tags)
+    _compare(
+        result[0].annotations,
         pkg_resources.resource_filename(
             "bob.bio.spear.test", "data/vad_energy_2gauss.hdf5"
         ),
     )
 
 
-# def test_energy_thr():
-#     # read input
-#     wav = _wav()
-#     preprocessor = bob.bio.base.load_resource("energy-thr", "preprocessor")
-#     assert isinstance(preprocessor, bob.bio.spear.preprocessor.Energy_Thr)
+def test_mod_4hz():
+    """Loading and running the mod-4hz annotator."""
+    # Test setup and config
+    annotator = bob.bio.base.load_resource("mod-4hz", "annotator")
+    assert isinstance(annotator, bob.bio.spear.annotator.Mod_4Hz)
 
-#     # test the energy-based VAD preprocessor
-#     preprocessor = bob.bio.spear.preprocessor.Energy_Thr()
-#     _compare(
-#         preprocessor(wav),
-#         pkg_resources.resource_filename(
-#             "bob.bio.spear.test", "data/vad_energy_thr.hdf5"
-#         ),
-#         preprocessor.write_data,
-#         preprocessor.read_data,
-#     )
+    # Read input
+    rate, wav = _wav()
 
+    # Test the VAD annotator
+    annotator = bob.bio.spear.annotator.Mod_4Hz()
+    _compare(
+        annotator.transform_one(wav, sample_rate=rate),
+        pkg_resources.resource_filename("bob.bio.spear.test", "data/vad_mod_4hz.hdf5"),
+    )
 
-# def test_mod_4hz():
-#     # read input
-#     wav = _wav()
-#     preprocessor = bob.bio.base.load_resource("mod-4hz", "preprocessor")
-#     assert isinstance(preprocessor, bob.bio.spear.preprocessor.Mod_4Hz)
-
-#     # test the Mod-4hz based VAD preprocessor
-#     preprocessor = bob.bio.spear.preprocessor.Mod_4Hz()
-#     _compare(
-#         preprocessor(wav),
-#         pkg_resources.resource_filename("bob.bio.spear.test", "data/vad_mod_4hz.hdf5"),
-#         preprocessor.write_data,
-#         preprocessor.read_data,
-#     )
+    # Test the processing of Sample objects and tags of annotator transformer
+    wrapped_annotator = wrap(["sample"], annotator)
+    samples = [Sample(data=wav, rate=rate)]
+    # Attribute `rate` should be passed as `sample_rate` argument of transform (tags)
+    result = wrapped_annotator.transform(samples)
+    # Annotations should be in attribute `annotations` of result samples (tags)
+    _compare(
+        result[0].annotations,
+        pkg_resources.resource_filename("bob.bio.spear.test", "data/vad_mod_4hz.hdf5"),
+    )
 
 
-# def test_mute_audio():
-#     # read input
-#     wav = _wav("data/silence.wav")
-#     for preprocessor in [
-#         bob.bio.spear.preprocessor.Mod_4Hz(),
-#         bob.bio.spear.preprocessor.Energy_Thr(),
-#         bob.bio.spear.preprocessor.Energy_2Gauss(),
-#     ]:
-#         # test VAD returns None
-#         data = preprocessor(wav)
-#         assert data is None, (preprocessor, data)
+def test_energy_thr():
+    """Loading and running the mod-4hz annotator."""
+    # Test setup and config
+    annotator = bob.bio.base.load_resource("energy-thr", "annotator")
+    assert isinstance(annotator, bob.bio.spear.annotator.Energy_Thr)
+
+    # Read input
+    rate, wav = _wav()
+
+    # Test the VAD annotator
+    annotator = bob.bio.spear.annotator.Energy_Thr()
+    _compare(
+        annotator.transform_one(wav, sample_rate=rate),
+        pkg_resources.resource_filename(
+            "bob.bio.spear.test", "data/vad_energy_thr.hdf5"
+        ),
+    )
+
+    # Test the processing of Sample objects and tags of annotator transformer
+    wrapped_annotator = wrap(["sample"], annotator)
+    samples = [Sample(data=wav, rate=rate)]
+    # Attribute `rate` should be passed as `sample_rate` argument of transform (tags)
+    result = wrapped_annotator.transform(samples)
+    # Annotations should be in attribute `annotations` of result samples (tags)
+    _compare(
+        result[0].annotations,
+        pkg_resources.resource_filename(
+            "bob.bio.spear.test", "data/vad_energy_thr.hdf5"
+        ),
+    )
+
+
+def test_mute_audio():
+    """Running annotators on silence data to ensure None is returned."""
+    # read input
+    rate, wav = _wav("data/silence.wav")
+    for annotator in [
+        bob.bio.spear.annotator.Mod_4Hz(),
+        bob.bio.spear.annotator.Energy_Thr(),
+        bob.bio.spear.annotator.Energy_2Gauss(),
+    ]:
+        # test VAD returns None
+        data = annotator.transform_one(wav, rate)
+        assert data is None, (annotator, data)
