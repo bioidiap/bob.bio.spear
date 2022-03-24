@@ -24,7 +24,9 @@ This includes:
 
 Notice that most of the machine learning tools (GMM, ISV, JFA, IVectors) are now handled by bob.bio.gmm.
 
-`spear`_ is adapted to run speaker verification/recognition experiments with the SGE grid infrastructure at Idiap.
+`spear`_ is adapted to run speaker verification/recognition experiments with the SGE
+grid infrastructure at Idiap, using Dask. However, you can setup `bob.pipelines` to run
+on another infrastructure.
 
 If you use this package and/or its results, please cite the following paper published at ICASSP 2014::
 
@@ -38,6 +40,7 @@ If you use this package and/or its results, please cite the following paper publ
 
 For more detailed information about the structure of the ``bob.bio`` packages, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.
 Particularly, the installation of this and other ``bob.bio`` packages, please read the installation_.
+Take some time to familiarize yourself with the pipelines of Transformers structure.
 
 In the following, we provide more detailed information about the particularities of this package only.
 
@@ -64,5 +67,3 @@ Reference Manual
 
 
 .. include:: links.rst
-
-.. todolist::

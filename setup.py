@@ -119,13 +119,13 @@ setup(
             "cqcc20p = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Empty preprocessor for CQCC features
         ],
         "bob.bio.extractor": [
-            "mfcc-60 = bob.bio.spear.config.extractor.mfcc60:extractor",  # 60-dim MFCC features
+            "mfcc60 = bob.bio.spear.config.extractor.mfcc60:extractor",  # 60-dim MFCC features
         ],
         "bob.bio.algorithm": [
             "gmm-voxforge         = bob.bio.spear.config.algorithm.gmm_voxforge:algorithm",  # GMM config used for voxforge
         ],
         "bob.bio.pipeline": [
-            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmmvoxforge:pipeline",
+            "mfcc60-gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmmvoxforge:pipeline",
         ],
         "bob.bio.config": [
             "voxforge      = bob.bio.spear.config.database.voxforge",

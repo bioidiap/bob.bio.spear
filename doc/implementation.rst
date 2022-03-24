@@ -4,8 +4,8 @@ Implementation Details
 ======================
 To be very flexible, the tool chains are designed in several stages including::
 
-  1. Preprocessing (Voice Activity Detection)
-  2.  Feature Extraction
+  1. Annotations (Voice Activity Detection)
+  2. Feature Extraction
   3. UBM Training and Projection (computation of sufficient statistics)
   4. Subspace Training and Projection (for ISV and I-Vector modeling)
   5. Conditioning and Compensation (for I-Vector modeling)
@@ -16,7 +16,10 @@ Note that not all tools implement all of the stages.
 
 1. Voice Activity Detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This step aims to filter out the non speech part. Depending on the configuration file, several routines can be enabled or disabled.
+This step aims to filter out the non speech part. Depending on the configuration file,
+several routines can be enabled or disabled.
+The annotator reads the sound data and produces a boolean mask array indicating if
+there is voice or not at each audio sample
 
 * Energy-based VAD
 * 4Hz Modulation energy based VAD
@@ -58,21 +61,20 @@ In the easiest case, the features are simply averaged, and the average feature i
 In the final scoring stage, the models are compared to probe features and a similarity score is computed for each pair of model and probe.
 Some of the models (the so-called T-Norm-Model) and some of the probe features (so-called Z-Norm-probe-features) are split up, so they can be used to normalize the scores later on.
 
-In addition, there are independent scripts for fusion and evaluation.
-
 8. Fusion
 ~~~~~~~~~
 The fusion of scores from different systems is done using `logistic regression`_ that should be trained normally on the development scores.
 
 9. Evaluation
 ~~~~~~~~~~~~~
-One way to compute the final result is to use the *evaluate.py* e.g., by calling::
+One way to compute the final result is to use ``bob bio evaluate`` e.g., by calling::
 
-  $ evaluate.py -d PATH/TO/USER/DIRECTORY/scores-dev -e PATH/TO/USER/DIRECTORY/scores-eval -c EER -D DET.pdf -x
+  $ bob bio evaluate --eval PATH/TO/USER/DIRECTORY/scores-dev PATH/TO/USER/DIRECTORY/scores-eval --criterion EER --output results.pdf
 
-This will compute the EER, the minCLLR, CLLR, and draw the DET curve. To better compare different systems using DET curves, a separate script can be used like in this example::
+This will compute the EER, the minCLLR, CLLR, and draw the DET curve.
+To better compare different systems using DET curves, a separate command can be used::
 
-  $ det.py -s gmm-scores isv-scores ivector-scores -n GMM ISV i-vectors
+  $ bob bio det --split gmm-scores.csv isv-scores.csv ivector-scores.csv --titles "GMM,ISV,i-vectors"
 
 
 .. include:: links.rst

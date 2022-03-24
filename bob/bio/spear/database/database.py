@@ -101,17 +101,20 @@ def SpearBioDatabase(
     Given a series of CSV files (or downloading them from the bob data server), it
     creates the Sample objects for each roles needed by the pipeline (enroll, probe),
     for different groups (train, dev, eval).
+
     Each sample contains:
+
         - `data`: the wav audio data,
         - `rate`: the sample rate of `data`,
         - (optional)`annotations`: some annotations loaded from files if
-            `annotations_path` is provided.
+          `annotations_path` is provided.
 
     `protocol definition` files (CSV files) are not the `data` files (WAV files):
+
         - `protocol definition` files are a list of paths and corresponding reference
-            name. They are available on the bob data server.
+          name. They are available on the bob data server.
         - `data` files are the actual files of the dataset (pointed to by the definition
-            files). They are not provided by bob.
+          files). They are not provided by bob.
 
     You have to set the bob configuration to the root folder of the data files using
     the following command:
