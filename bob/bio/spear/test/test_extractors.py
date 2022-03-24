@@ -45,7 +45,7 @@ def test_mfcc():
     # read input wave file
     rate, wav = _wav()
 
-    extractor = bob.bio.base.load_resource("mfcc-60", "extractor")
+    extractor = bob.bio.base.load_resource("mfcc60", "extractor")
     assert isinstance(extractor, bob.bio.spear.extractor.Cepstral)
 
     # test the Cepstral extractor
