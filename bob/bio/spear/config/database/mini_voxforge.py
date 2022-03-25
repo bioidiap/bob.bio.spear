@@ -23,7 +23,7 @@ Usage
 Feed this file (also defined as a ``mini-voxforge`` resource) to ``bob bio pipelines``
 as configuration::
 
-    $ bob bio pipelines vanilla-biometrics mini-voxforge <pipeline_name> -vv
+    $ bob bio pipelines vanilla mini-voxforge <pipeline_name> -vv
 """
 
 from bob.bio.spear.database import SpearBioDatabase

@@ -28,7 +28,7 @@ typing in a bob environment console:
 
 .. code-block:: sh
 
-   $ bob bio pipelines vanilla-biometrics
+   $ bob bio pipelines vanilla
 
 This command is explained in more detail in
 :ref:`bob.bio.base.vanilla_biometrics_intro`.
@@ -118,7 +118,7 @@ You should then specify to bob where your data is (or where you downloaded it)::
 
 To then run an experiment, use a command line like::
 
-  $ bob bio pipelines vanilla-biometrics --database voxforge --pipeline mfcc60-gmm-voxforge --groups {dev,eval} --output ./results/
+  $ bob bio pipelines vanilla --database voxforge --pipeline mfcc60-gmm-voxforge --groups {dev,eval} --output ./results/
 
 
 In this example, we used the following configuration:
@@ -138,7 +138,7 @@ On *dev* and *eval*, the scores are:
 
 If you want to run the same experiment on SGE::
 
-  $ bob bio pipeline vanilla-biometrics -d voxforge -p mfcc60-gmm-voxforge --groups {dev,eval} --dask-client sge
+  $ bob bio pipeline vanilla -d voxforge -p mfcc60-gmm-voxforge --groups {dev,eval} --dask-client sge
 
 Another example is to use **ISV** pipeline instead of UBM-GMM (to be done)::
 
@@ -175,7 +175,7 @@ Note that in the previous examples, our goal is not to optimize the parameters o
 ~~~~~~~~~~~~~~~~
 `TIMIT`_ is one of the oldest databases (year 1993) used to evaluate speaker recognition systems. In the following example, the processing is done on the development set, and LFCC features are used::
 
-  $ bob bio pipelines vanilla-biometrics -vv -d timit -p lfcc60-gmm-timit
+  $ bob bio pipelines vanilla -vv -d timit -p lfcc60-gmm-timit
 
 Here is the performance of the system on the Development set:
 
