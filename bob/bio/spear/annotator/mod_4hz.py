@@ -50,7 +50,7 @@ class Mod_4Hz(Annotator):
         ratio_threshold=0.1,  # 0.1 of the maximum energy
         **kwargs
     ):
-        # copy parameters
+        super().__init__(**kwargs)
         self.max_iterations = max_iterations
         self.convergence_threshold = convergence_threshold
         self.variance_threshold = variance_threshold
@@ -62,7 +62,6 @@ class Mod_4Hz(Annotator):
         self.f_max = f_max
         self.pre_emphasis_coef = pre_emphasis_coef
         self.ratio_threshold = ratio_threshold
-        super().__init__(**kwargs)
 
     def _voice_activity_detection(self, energy, mod_4hz):
 

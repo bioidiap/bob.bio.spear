@@ -42,12 +42,11 @@ class Energy_Thr(Annotator):
         ratio_threshold=0.15,  # 0.1 of the maximum energy
         **kwargs
     ):
-        # copy parameters
+        super().__init__(**kwargs)
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
         self.smoothing_window = smoothing_window
         self.ratio_threshold = ratio_threshold
-        super().__init__(**kwargs)
 
     def _voice_activity_detection(self, energy):
 

@@ -73,7 +73,6 @@ class Cepstral(BaseEstimator, TransformerMixin):
         """
 
         super().__init__(**kwargs)
-        # copy parameters
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
         self.n_filters = n_filters
