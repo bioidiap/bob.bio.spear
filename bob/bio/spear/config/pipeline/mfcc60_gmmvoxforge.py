@@ -4,7 +4,7 @@
 
 from sklearn.pipeline import Pipeline
 
-from bob.bio.base.pipelines.vanilla_biometrics import VanillaBiometricsPipeline
+from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.gmm.algorithm import GMM
 from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
@@ -29,4 +29,4 @@ transformer = Pipeline(
     ]
 )
 
-pipeline = VanillaBiometricsPipeline(transformer, bioalgorithm)
+pipeline = PipelineSimple(transformer, bioalgorithm)
