@@ -22,12 +22,6 @@ import os
 
 import numpy as np
 
-from .extraction import calc_mean  # noqa: F401
-from .extraction import calc_mean_std  # noqa: F401
-from .extraction import calc_std  # noqa: F401
-from .extraction import vad_filter_features  # noqa: F401
-from .extraction import zeromean_unitvar_norm  # noqa: F401
-
 
 def ensure_dir(dirname):
     """Creates the directory dirname if it does not already exist,

@@ -16,7 +16,7 @@ configuration::
 
 or include it in a pipeline::
 
-    $ bob bio pipelines vanilla energy-thr
+    $ bob bio pipeline simple energy-thr
 """
 
 from bob.bio.spear.annotator import Energy_Thr

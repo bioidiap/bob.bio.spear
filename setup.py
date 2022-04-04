@@ -123,7 +123,7 @@ setup(
             "gmm-voxforge         = bob.bio.spear.config.algorithm.gmm_voxforge:algorithm",  # GMM config used for voxforge
         ],
         "bob.bio.pipeline": [
-            "mfcc60-gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmmvoxforge:pipeline",
+            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmmvoxforge:pipeline",
         ],
         "bob.bio.config": [
             "voxforge      = bob.bio.spear.config.database.voxforge",

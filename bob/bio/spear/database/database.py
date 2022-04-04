@@ -94,7 +94,7 @@ def SpearBioDatabase(
 ):
     """Database interface for the bob.bio.spear datasets for speaker recognition.
 
-    This database interface is meant to be used with the vanilla-biometrics pipeline.
+    This database interface is meant to be used with bob.bio.base pipelines.
 
     Given a series of CSV files (or downloading them from the bob data server), it
     creates the Sample objects for each roles needed by the pipeline (enroll, probe),

@@ -23,7 +23,7 @@ Usage
 Feed this file (also defined as a ``voxforge`` resource) to ``bob bio pipelines`` as
 configuration::
 
-    $ bob bio pipelines vanilla voxforge <pipeline_name> -vv
+    $ bob bio pipeline simple voxforge <pipeline_name> -vv
 """
 
 from bob.bio.spear.database import SpearBioDatabase
