@@ -1,4 +1,0 @@
-python
-numpy
-gridtk
-bob.bio.gmm

@@ -23,32 +23,35 @@ How this is done is explained in more detail at installation_.
 Running Baseline Experiments
 ------------------------------------------------
 
-To run the baseline experiments, you can use the ``verify.py`` script by just going to the console and typing:
+To run the baseline experiments, you can use the ``simple`` pipeline by
+typing in a bob environment console:
 
 .. code-block:: sh
 
-   $ verify.py
+   $ bob bio pipeline simple
 
-This script is explained in more detail in :ref:`bob.bio.base.vanilla_biometrics_intro`.
-The ``verify.py --help`` option shows you, which other options you have.
-Here is an almost complete extract:
+This command is explained in more detail in
+:ref:`bob.bio.base.pipeline_simple_intro`.
+The ``--help`` option shows you, which other options you can provide.
+Here is an extract:
 
-* ``--database``: The database and protocol you want to use.
-* ``--algorithms``: The recognition algorithms that you want to execute.
-* ``--all``: Execute all algorithms that are implemented.
+* ``--database``: The database and protocol you want to use. (*config*)
+* ``--pipeline``: The pipeline to use. (*config*)
 * ``--temp-directory``: The directory where temporary files of the experiments are put to.
-* ``--result-directory``: The directory where resulting score files of the experiments are put to.
-* ``--evaluate``: After running the experiments, the resulting score files will be evaluated, and the result is written to console.
-* ``--dry-run``: Instead of executing the algorithm (or the evaluation), only print the command that would have been executed.
+* ``--output``: The directory where resulting score files of the experiments are put to.
 * ``--verbose``: Increase the verbosity level of the script.
-  By default, only the commands that are executed are printed, and the rest of the calculation runs quietly.
-  You can increase the verbosity by adding the ``--verbose`` parameter repeatedly (up to three times).
+* ``--group``: Specifies the *dev* or *eval* group (or both)
 
-Usually it is a good idea to have at least verbose level 2 (i.e., calling ``verify.py --verbose --verbose``, or the short version ``verify.py -vv``).
+Usually it is a good idea to have at least verbose level 2 (i.e., adding
+``--verbose --verbose``, or the short version ``-vv``).
+
+*config* are given into a python file. Some common configurations are aliased to a
+shorter name, (e.g. the database config file
+``bob/bio/spear/config/database/voxforge.py`` is aliased to ``voxforge``).
 
 Running in Parallel
 ~~~~~~~~~~~~~~~~~~~
-
+TODO
 To run the experiments in parallel, as usual you can define an SGE grid configuration, or run with parallel threads on the local machine.
 For the ``verify.py`` script, the grid configuration is adapted to each of the algorithms.
 Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option.
@@ -69,11 +72,11 @@ The algorithms present a set of state-of-the-art speaker recognition algorithms.
 
 * ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [Vogt08]_ is used to learn what variations in samples are introduced by identity changes and which not.
 
-  - algorithm : :py:class:`bob.bio.gmm.algorithm.ISV`
+  - algorithm : To be done
 
 * ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling [Dehak11]_ (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
 
-  - algorithm : :py:class:`bob.bio.gmm.algorithm.IVector`
+  - algorithm : To be done
 
 .. note::
   The ``ivector`` algorithm needs a lot of training data and fails on small databases such as the `Voxforge`_ database.
@@ -82,64 +85,69 @@ The algorithms present a set of state-of-the-art speaker recognition algorithms.
 Evaluation Results
 ------------------------------
 
-To evaluate the results,  one can use ``evaluate.py`` command.
-Several types of evaluation can be achieved, see :ref:`bob.bio.base.vanilla_biometrics_advanced_features` for details.
-Particularly, here we can enable ROC curves, DET plots, CMC curves and the computation of EER/HTER or minDCF.
+To evaluate the results,  one can use the ``bob bio evaluate`` command.
+Several types of evaluation can be achieved, see
+:ref:`bob.bio.base.pipeline_simple_advanced_features` for details.
+Particularly, we can enable ROC curves, DET plots, CMC curves and the computation of
+EER/HTER or minDCF.
 
 
 Experiments on different databases
 --------------------------------------------------------
 
-To make you more familiar with the tool, we provide you examples of different toolchains applied on different databases: Voxforge, TIMIT, MOBIO, and NIST SRE 2012.
+To make you more familiar with the tool, we provide you examples of different pipelines
+applied on different databases: Voxforge, TIMIT, MOBIO, and NIST SRE 2012.
 
 1. Voxforge dataset
 ~~~~~~~~~~~~~~~~~~~
-`Voxforge`_ is a free database used in free speech recognition engines. We randomly selected a small part of the english corpus (< 1GB).  It is used as a toy example for our speaker recognition tool since experiment can be easily run on a local machine, and the results can be obtained in a reasonnable amount of time (< 2h).
+`Voxforge`_ is a free database used in free speech recognition engines.
+We randomly selected a small part of the english corpus (< 1GB).
+It is used as a toy example for our speaker recognition tool since experiment can be
+easily run on a local machine, and the results can be obtained in a reasonable amount
+of time (< 2h).
 
-Unlike TIMIT, this dataset is completely free of charge.
+Unlike others, this dataset is completely free of charge.
 
-More details about how to download the audio files used in our experiments, and how the data is split into Training, Development and Evaluation set can be found here::
+To download the audio files for our experiment, you can use the following command::
 
-  https://pypi.python.org/pypi/bob.db.voxforge
+  $ bob db download-voxforge ./voxforge_data/
 
-One example of command line is::
+You should then specify to bob where your data is (or where you downloaded it)::
 
-  $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}
+  $ bob config set bob.db.voxforge.directory /your/path/to/voxforge_data/
+
+To then run an experiment, use a command line like::
+
+  $ bob bio pipeline simple --database voxforge --pipeline mfcc60-gmm-voxforge --groups {dev,eval} --output ./results/
 
 
 In this example, we used the following configuration:
 
-* Energy-based VAD,
+* Energy-based VAD with trained GMM with 2 Gaussians,
 * (19 MFCC features + Energy) + First and second derivatives,
-* **UBM-GMM** Modelling (with 256 Gaussians), the scoring is done using the linear approximation of the LLR.
+* **UBM-GMM** Modelling (with 256 Gaussians).the scoring is done using the linear approximation of the LLR.
 
-The performance of the system on DEV and EVAL are:
+The performance of the system can be computed using::
 
-* ``DEV: EER = 1.89%``
-* ``EVAL: HTER = 1.56%``
+  $ bob bio metrics --eval results/scores-{dev,eval}.csv
+
+On *dev* and *eval*, the scores are:
+
+* ``DEV: EER = 1.7%``
+* ``EVAL: HTER = 1.7%``
 
 If you want to run the same experiment on SGE::
 
-  $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm --groups {dev,eval}  -g grid
+  $ bob bio pipeline simple -d voxforge -p mfcc60-gmm-voxforge --groups {dev,eval} --dask-client sge
 
-
-If you want to run the parallel implementation of the UBM on the SGE::
-
-  $ verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_sge --groups {dev,eval} -g grid
-
-
-If you want to run the parallel implementation of the UBM on your local machine::
-
-  $ verify_gmm.py  -d voxforge -p energy-2gauss -e mfcc-60 -a gmm-voxforge -s ubm_gmm_local --groups {dev,eval} -g local
-
-Another example is to use **ISV** toolchain instead of UBM-GMM::
+Another example is to use **ISV** pipeline instead of UBM-GMM (to be done)::
 
   $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a isv-voxforge -s isv --groups {dev,eval} -g grid
 
 * ``DEV: EER = 1.41%``
 * ``EVAL: HTER = 1.52%``
 
-One can also try **JFA** toolchain::
+One can also try **JFA** toolchain (to be done)::
 
   $  verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a jfa-voxforge -s jfa --groups {dev,eval} -g grid
 
@@ -153,7 +161,7 @@ or also **IVector** toolchain where **Whitening, L-Norm, LDA, WCCN** are used li
 * ``DEV: EER = 7.33%``
 * ``EVAL: HTER = 13.80%``
 
-The scoring computation can also be done using **PLDA**::
+The scoring computation can also be done using **PLDA** (to be done)::
 
   $ verify.py  -d voxforge -p energy-2gauss -e mfcc-60 -a ivec-plda-voxforge -s ivec-plda --groups {dev,eval} -g grid
 
@@ -167,11 +175,11 @@ Note that in the previous examples, our goal is not to optimize the parameters o
 ~~~~~~~~~~~~~~~~
 `TIMIT`_ is one of the oldest databases (year 1993) used to evaluate speaker recognition systems. In the following example, the processing is done on the development set, and LFCC features are used::
 
-  $ verify.py -vv -d timit -p energy-2gauss -e lfcc-60 -a gmm-timit -s timit
+  $ bob bio pipeline simple -vv -d timit -p lfcc60-gmm-timit
 
 Here is the performance of the system on the Development set:
 
-* ``DEV: EER = 2.68%``
+* ``DEV: EER = 2.68%`` (To update)
 
 
 3. MOBIO dataset

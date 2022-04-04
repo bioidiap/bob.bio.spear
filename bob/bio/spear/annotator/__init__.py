@@ -1,8 +1,6 @@
-from .Base import Base
-from .Energy_2Gauss import Energy_2Gauss
-from .Energy_Thr import Energy_Thr
-from .External import External
-from .Mod_4Hz import Mod_4Hz
+from .energy_2gauss import Energy_2Gauss
+from .energy_thr import Energy_Thr
+from .mod_4hz import Mod_4Hz
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -22,10 +20,8 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    Base,
     Energy_2Gauss,
     Energy_Thr,
     Mod_4Hz,
-    External,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

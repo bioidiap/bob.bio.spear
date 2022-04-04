@@ -24,17 +24,15 @@ import logging
 import numpy
 
 import bob
-
-from bob.bio.base.preprocessor import Preprocessor
+from bob.bio.base.annotator import Annotator
 
 from .. import utils
-from .Base import Base
 
-logger = logging.getLogger("bob.bio.spear")
+logger = logging.getLogger(__name__)
 
 
-class Energy_Thr(Base):
-    """VAD based on the thresholded energy """
+class Energy_Thr(Annotator):
+    """VAD based on an energy threshold"""
 
     def __init__(
         self,
@@ -44,15 +42,7 @@ class Energy_Thr(Base):
         ratio_threshold=0.15,  # 0.1 of the maximum energy
         **kwargs
     ):
-        # call base class constructor with its set of parameters
-        Preprocessor.__init__(
-            self,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-            smoothing_window=smoothing_window,
-            ratio_threshold=ratio_threshold,
-        )
-        # copy parameters
+        super().__init__(**kwargs)
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
         self.smoothing_window = smoothing_window
@@ -77,11 +67,11 @@ class Energy_Thr(Base):
                 label[i] = 0
         return label
 
-    def _compute_energy(self, rate_wavsample):
+    def _compute_energy(self, data, sample_rate):
         """retreive the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
 
-        e = bob.ap.Energy(rate_wavsample[0], self.win_length_ms, self.win_shift_ms)
-        energy_array = e(rate_wavsample[1])
+        e = bob.ap.Energy(sample_rate, self.win_length_ms, self.win_shift_ms)
+        energy_array = e(data)
         labels = self._voice_activity_detection(energy_array)
         # discard isolated speech a number of frames defined in smoothing_window
         labels = utils.smoothing(labels, self.smoothing_window)
@@ -92,18 +82,32 @@ class Energy_Thr(Base):
         )
         return labels
 
-    def __call__(self, input_signal, annotations=None):
+    def transform_one(self, data, sample_rate, annotations=None):
         """labels speech (1) and non-speech (0) parts of the given input wave file using thresholded Energy
         Input parameter:
            * input_signal[0] --> rate
-           * input_signal[1] --> signal
+           * input_signal[1] --> signal TODO doc
         """
 
-        labels = self._compute_energy(input_signal)
-        rate = input_signal[0]
-        data = input_signal[1]
+        labels = self._compute_energy(data, sample_rate)
         if (labels == 0).all():
             logger.warn("No Audio was detected in the sample!")
             return None
 
-        return rate, data, labels
+        return labels
+
+    def transform(
+        self, audio_signals: "list[numpy.ndarray]", sample_rates: "list[int]"
+    ):
+        results = []
+        for audio_signal, sample_rate in zip(audio_signals, sample_rates):
+            results.append(self.transform_one(audio_signal, sample_rate))
+        return results
+
+    def _more_tags(self):
+        return {
+            "stateless": True,
+            "requires_fit": False,
+            "bob_transform_extra_input": (("sample_rates", "rate"),),
+            "bob_output": "annotations",
+        }

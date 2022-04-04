@@ -25,17 +25,15 @@ import numpy
 import scipy.signal
 
 import bob.ap
-
-from bob.bio.base.preprocessor import Preprocessor
+from bob.bio.base.annotator import Annotator
 
 from .. import utils
-from .Base import Base
 
-logger = logging.getLogger("bob.bio.spear")
+logger = logging.getLogger(__name__)
 
 
-class Mod_4Hz(Base):
-    """VAD based on the modulation of the energy around 4 Hz and the energy """
+class Mod_4Hz(Annotator):
+    """VAD based on the modulation of the energy around 4 Hz and the energy"""
 
     def __init__(
         self,
@@ -52,22 +50,7 @@ class Mod_4Hz(Base):
         ratio_threshold=0.1,  # 0.1 of the maximum energy
         **kwargs
     ):
-        # call base class constructor with its set of parameters
-        Preprocessor.__init__(
-            self,
-            max_iterations=max_iterations,
-            convergence_threshold=convergence_threshold,
-            variance_threshold=variance_threshold,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-            smoothing_window=smoothing_window,
-            n_filters=n_filters,
-            f_min=f_min,
-            f_max=f_max,
-            pre_emphasis_coef=pre_emphasis_coef,
-            ratio_threshold=ratio_threshold,
-        )
-        # copy parameters
+        super().__init__(**kwargs)
         self.max_iterations = max_iterations
         self.convergence_threshold = convergence_threshold
         self.variance_threshold = variance_threshold
@@ -168,8 +151,8 @@ class Mod_4Hz(Base):
         res = scipy.signal.lfilter(num_taps, 1.0, energy_bands)
         return res
 
-    def modulation_4hz(self, filtering_res, rate_wavsample):
-        fs = rate_wavsample[0]
+    def modulation_4hz(self, filtering_res, data, sample_rate):
+        fs = sample_rate
         win_length = int(fs * self.win_length_ms / 1000)
         win_shift = int(fs * self.win_shift_ms / 1000)
         Energy = filtering_res.sum(axis=0)
@@ -177,7 +160,7 @@ class Mod_4Hz(Base):
         Energy = Energy / mean_Energy
 
         # win_size = int(2.0 ** math.ceil(math.log(win_length) / math.log(2)))
-        n_frames = 1 + (rate_wavsample[1].shape[0] - win_length) // win_shift
+        n_frames = 1 + (data.shape[0] - win_length) // win_shift
         range_modulation = int(fs / win_length)  # This corresponds to 1 sec
         res = numpy.zeros(n_frames)
         if n_frames < range_modulation:
@@ -195,7 +178,7 @@ class Mod_4Hz(Base):
         ]
         return res
 
-    def mod_4hz(self, rate_wavsample):
+    def mod_4hz(self, data, sample_rate):
         """Computes and returns the 4Hz modulation energy features for the given input wave file"""
 
         # Set parameters
@@ -206,18 +189,18 @@ class Mod_4Hz(Base):
         f_max = self.f_max
         pre = self.pre_emphasis_coef
 
-        c = bob.ap.Spectrogram(rate_wavsample[0], wl, ws, nf, f_min, f_max, pre)
+        c = bob.ap.Spectrogram(sample_rate, wl, ws, nf, f_min, f_max, pre)
         c.energy_filter = True
         c.log_filter = False
         c.energy_bands = True
 
-        sig = rate_wavsample[1]
+        sig = data
         energy_bands = c(sig)
-        filtering_res = self.pass_band_filtering(energy_bands, rate_wavsample[0])
-        mod_4hz = self.modulation_4hz(filtering_res, rate_wavsample)
+        filtering_res = self.pass_band_filtering(energy_bands, sample_rate)
+        mod_4hz = self.modulation_4hz(filtering_res, data, sample_rate)
         mod_4hz = self.averaging(mod_4hz)
-        e = bob.ap.Energy(rate_wavsample[0], wl, ws)
-        energy_array = e(rate_wavsample[1])
+        e = bob.ap.Energy(sample_rate, wl, ws)
+        energy_array = e(data)
         labels = self._voice_activity_detection(energy_array, mod_4hz)
         labels = utils.smoothing(
             labels, self.smoothing_window
@@ -229,17 +212,31 @@ class Mod_4Hz(Base):
         )
         return labels, energy_array, mod_4hz
 
-    def __call__(self, input_signal, annotations=None):
+    def transform_one(self, data, sample_rate):
         """labels speech (1) and non-speech (0) parts of the given input wave file using 4Hz modulation energy and energy
         Input parameter:
            * input_signal[0] --> rate
-           * input_signal[1] --> signal
+           * input_signal[1] --> signal TODO doc
         """
-        [labels, energy_array, mod_4hz] = self.mod_4hz(input_signal)
-        rate = input_signal[0]
-        data = input_signal[1]
+        [labels, energy_array, mod_4hz] = self.mod_4hz(data, sample_rate)
         if (labels == 0).all():
             logger.warn("No Audio was detected in the sample!")
             return None
 
-        return rate, data, labels
+        return labels
+
+    def transform(
+        self, audio_signals: "list[numpy.ndarray]", sample_rates: "list[int]"
+    ):
+        results = []
+        for audio_signal, sample_rate in zip(audio_signals, sample_rates):
+            results.append(self.transform_one(audio_signal, sample_rate))
+        return results
+
+    def _more_tags(self):
+        return {
+            "stateless": True,
+            "requires_fit": False,
+            "bob_transform_extra_input": (("sample_rates", "rate"),),
+            "bob_output": "annotations",
+        }

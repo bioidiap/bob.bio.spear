@@ -1,16 +1,9 @@
 setuptools
 bob.extension
-bob.blitz
-bob.core
 bob.io.base
-bob.io.audio
-bob.math
-bob.sp
 bob.ap
-bob.learn.linear
-bob.learn.em
+bob.bio.gmm
 bob.measure
-bob.db.base
 bob.bio.base
 bob.pipelines
 matplotlib   # for plotting

@@ -22,18 +22,26 @@
 import logging
 
 import numpy
+from sklearn.base import BaseEstimator, TransformerMixin
 
 import bob.ap
 
-from bob.bio.base.extractor import Extractor
-
-from .. import utils
-
-logger = logging.getLogger("bob.bio.spear")
+logger = logging.getLogger(__name__)
 
 
-class Cepstral(Extractor):
-    """ Extracts the Cepstral features """
+class Cepstral(BaseEstimator, TransformerMixin):
+    """Extracts the Cepstral features of audio wav data.
+
+    Use a SampleWrapper to use with bob pipelines to pass the `rate` and `annotations`
+    attributes to the arguments of `transform`:
+    >>> wrap(
+    ...     ["sample"],
+    ...     Cepstral(),
+    ...     transform_extra_arguments=[
+    ...         ("sample_rate", "rate"), ("vad_labels", "annotations")
+    ...     ]
+    ... )
+    """
 
     def __init__(
         self,
@@ -50,31 +58,21 @@ class Cepstral(Extractor):
         with_delta_delta=True,
         n_ceps=19,  # 0-->18
         pre_emphasis_coef=0.95,
-        features_mask=numpy.arange(0, 60),
-        # Normalization
+        features_mask=None,
         normalize_flag=True,
-        **kwargs
+        **kwargs,
     ):
-        # call base class constructor with its set of parameters
-        Extractor.__init__(
-            self,
-            win_length_ms=win_length_ms,
-            win_shift_ms=win_shift_ms,
-            n_filters=n_filters,
-            dct_norm=dct_norm,
-            f_min=f_min,
-            f_max=f_max,
-            delta_win=delta_win,
-            mel_scale=mel_scale,
-            with_energy=with_energy,
-            with_delta=with_delta,
-            with_delta_delta=with_delta_delta,
-            n_ceps=n_ceps,
-            pre_emphasis_coef=pre_emphasis_coef,
-            features_mask=features_mask,
-            normalize_flag=normalize_flag,
-        )
-        # copy parameters
+        """Most parameters are passed to `bob.ap.Ceps`.
+
+        Parameters
+        ----------
+        features_mask: numpy slice
+            Indices of features to keep (only applied if VAD annotations are present).
+        normalize_flag: bool
+            Controls the normalization of the feature vectors after Cepstral.
+        """
+
+        super().__init__(**kwargs)
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
         self.n_filters = n_filters
@@ -91,34 +89,27 @@ class Cepstral(Extractor):
         self.features_mask = features_mask
         self.normalize_flag = normalize_flag
 
-    def normalize_features(self, params):
-        #########################
-        #  Initialisation part  #
-        #########################
+    def normalize_features(self, params: numpy.ndarray):
+        """Returns the features normalized along the columns.
 
-        normalized_vector = [
-            [0 for i in range(params.shape[1])] for j in range(params.shape[0])
-        ]
-        for index in range(params.shape[1]):
-            vector = numpy.array([row[index] for row in params])
-            n_samples = len(vector)
-            norm_vector = utils.normalize_std_array(vector)
-
-            for i in range(n_samples):
-                normalized_vector[i][index] = numpy.asscalar(norm_vector[i])
-        data = numpy.array(normalized_vector)
-        return data
-
-    def __call__(self, input_data):
-        """Computes and returns normalized cepstral features for the given input data
-        input_data[0] --> sampling rate
-        input_data[1] -->  sample data
-        input_data[2] --> VAD array (either 0 or 1)
+        Parameters
+        ----------
+        params:
+            2D array of feature vectors.
         """
 
-        rate = input_data[0]
-        wavsample = input_data[1]
-        vad_labels = input_data[2]
+        # if there is only 1 frame, we cannot normalize it
+        if len(params) == 1 or (params.std(axis=0) == 0).any():
+            return params
+        # normalized_vector is mean std normalized version of params per feature dimension
+        normalized_vector = (params - params.mean(axis=0)) / params.std(axis=0)
+        return normalized_vector
+
+    def transform_one(
+        self, wav_data: numpy.ndarray, sample_rate: float, vad_labels: numpy.ndarray
+    ):
+        """Computes and returns cepstral features for one given audio signal."""
+        logger.debug("Cepstral transform.")
 
         # Set parameters
         wl = self.win_length_ms
@@ -130,35 +121,22 @@ class Cepstral(Extractor):
         dw = self.delta_win
         pre = self.pre_emphasis_coef
 
-        ceps = bob.ap.Ceps(rate, wl, ws, nf, nc, f_min, f_max, dw, pre)
+        ceps = bob.ap.Ceps(sample_rate, wl, ws, nf, nc, f_min, f_max, dw, pre)
         ceps.dct_norm = self.dct_norm
         ceps.mel_scale = self.mel_scale
         ceps.with_energy = self.with_energy
         ceps.with_delta = self.with_delta
         ceps.with_delta_delta = self.with_delta_delta
 
-        cepstral_features = ceps(wavsample)
-        features_mask = self.features_mask
-        if vad_labels is not None:  # don't apply VAD
-            filtered_features = numpy.ndarray(
-                shape=((vad_labels == 1).sum(), len(features_mask)), dtype=numpy.float64
-            )
-            i = 0
-            cur_i = 0
-            for row in cepstral_features:
-                if i < len(vad_labels):
-                    if vad_labels[i] == 1:
-                        for k in range(len(features_mask)):
-                            filtered_features[cur_i, k] = row[features_mask[k]]
-                        cur_i = cur_i + 1
-                    i = i + 1
-                else:
-                    if vad_labels[-1] == 1:
-                        if cur_i == cepstral_features.shape[0]:
-                            for k in range(len(features_mask)):
-                                filtered_features[cur_i, k] = row[features_mask[k]]
-                            cur_i = cur_i + 1
-                    i = i + 1
+        cepstral_features = ceps(wav_data)
+
+        if vad_labels is not None:  # Don't apply VAD if labels are not present
+            vad_labels = numpy.array(
+                vad_labels
+            )  # Ensure array, as `list == 1` is `False`
+            filtered_features = cepstral_features[vad_labels == 1]
+            if self.features_mask is not None:
+                filtered_features = filtered_features[:, self.features_mask]
         else:
             filtered_features = cepstral_features
 
@@ -166,8 +144,34 @@ class Cepstral(Extractor):
             normalized_features = self.normalize_features(filtered_features)
         else:
             normalized_features = filtered_features
+
         if normalized_features.shape[0] == 0:
-            logger.warn("No speech found for this utterance")
+            logger.warning("No speech found for this utterance")
             # But do not keep it empty!!! This avoids errors in next steps
-            normalized_features = numpy.array([numpy.zeros(len(features_mask))])
+            feature_length = len(self.features_mask) if self.features_mask else 60
+            normalized_features = numpy.zeros((1, feature_length))
         return normalized_features
+
+    def transform(
+        self,
+        wav_data_set: "list[numpy.ndarray]",
+        sample_rate: "list[float]",
+        vad_labels: "list[numpy.ndarray]",
+    ):
+        results = []
+        for wav_data, rate, annotations in zip(wav_data_set, sample_rate, vad_labels):
+            results.append(self.transform_one(wav_data, rate, annotations))
+        return results
+
+    def fit(self, X, y=None, **fit_params):
+        return self
+
+    def _more_tags(self):
+        return {
+            "stateless": True,
+            "requires_fit": False,
+            "bob_transform_extra_input": (
+                ("sample_rate", "rate"),
+                ("vad_labels", "annotations"),
+            ),
+        }

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # @author: Yannick Dayer <yannick.dayer@idiap.ch>
-# @date: Wed 16 Jun 2021 17:20:16 UTC+02
+# @date: Mon 13 Feb 2022 16:34:27 UTC+01
 
-"""VoxForge CSV database interface default configuration
+"""Mini Subset of VoxForge CSV database interface default configuration
 
 VoxForge is an open speech dataset that was set up to collect transcribed speech for
 use with Free and Open Source Speech Recognition Engines. (http://www.voxforge.org/)
@@ -20,17 +20,12 @@ https://www.idiap.ch/software/bob/data/bob/bob.bio.spear/ and downloaded automat
 Usage
 -----
 
-Feed this file (also defined as a ``voxforge`` resource) to ``bob bio pipelines`` as
-configuration::
+Feed this file (also defined as a ``mini-voxforge`` resource) to ``bob bio pipelines``
+as configuration::
 
-    $ bob bio pipeline simple voxforge <pipeline_name> -vv
+    $ bob bio pipeline simple mini-voxforge <pipeline_name> -vv
 """
 
 from bob.bio.spear.database import SpearBioDatabase
 
-default_protocol = "Default"
-
-if "protocol" not in locals():
-    protocol = default_protocol
-
-database = SpearBioDatabase("voxforge", protocol=protocol)
+database = SpearBioDatabase("voxforge", protocol="Mini")
