@@ -3,18 +3,14 @@
 # @date: Thu 31 Mar 2022 16:49:42 UTC+02
 
 import logging
+import pickle
 
-import numpy
 import numpy as np
-
-from h5py import File as HDF5File
 from sklearn.base import BaseEstimator
 
 from bob.bio.base.pipelines.vanilla_biometrics import BioAlgorithm
 from bob.bio.gmm.algorithm import GMM
-from bob.learn.em import GMMMachine
-from bob.learn.em import GMMStats
-from bob.learn.em import ISVMachine
+from bob.learn.em import GMMStats, ISVMachine
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +23,10 @@ class ISV(BioAlgorithm, BaseEstimator):
         # ISV training
         subspace_dimension_of_u,  # U subspace dimension
         isv_training_iterations=10,  # Number of EM iterations for the ISV training
+        isv_relevance_factor=4,
         # ISV enrollment
         isv_enroll_iterations=1,  # Number of iterations for the enrollment phase
+        rng=0,
         # parameters of the GMM
         **kwargs
     ):
@@ -37,102 +35,59 @@ class ISV(BioAlgorithm, BaseEstimator):
         self.subspace_dimension_of_u = subspace_dimension_of_u
         self.isv_training_iterations = isv_training_iterations
         self.isv_enroll_iterations = isv_enroll_iterations
-        self.ubm = None
+        self.isv_relevance_factor = isv_relevance_factor
+        self.rng = rng
 
-        self.gmm_algorithm = GMM(**kwargs)
+        self.gmm_algorithm = GMM(init_seed=rng, **kwargs)
+        self.isv_machine = None
 
-    def train_isv(self, data):
-        """Train the ISV model given a dataset"""
-        logger.info("  -> Training ISV enroller")
-        # self.isvbase = ISVBase(self.ubm, self.subspace_dimension_of_u)
-        # Train the ISV model
-        self.isv_machine.fit(data)
+        super(ISV, self).__init__()
 
     def fit(self, train_features, reference_ids):
-        """Train Projector and Enroller at the same time"""
+        """Train Projector (GMM) and Enroller at the same time"""
 
         # Train the gmm
+        logger.info("ISV: Training the GMM UBM.")
         self.gmm_algorithm.fit(np.vstack(train_features))
-        self.ubm = self.gmm_algorithm.ubm
 
-        # Group the training features by reference id
-        grouped_features = {}
-        for ref_id, features in zip(reference_ids, train_features):
-            ref_id = ref_id[0][0].compute()
-            if ref_id not in grouped_features:
-                grouped_features[ref_id] = []
-            grouped_features[ref_id].append(features)
+        # Project training data using the GMM UBM
+        logger.info("ISV: Projecting training data on UBM with the GMM.")
+        ubm_projected_features = [self.gmm_algorithm.project(f) for f in train_features]
 
-        # project training data
-        logger.info("  -> Projecting training data")
-        data = [
-            [self.gmm_algorithm.project(feature) for feature in client]
-            for client in grouped_features.values()
-        ]
+        # Create the ISV machine based on the GMM UBM
+        self.isv_machine = ISVMachine(
+            self.gmm_algorithm.ubm,
+            r_U=self.subspace_dimension_of_u,
+            em_iterations=self.isv_training_iterations,
+            relevance_factor=self.isv_relevance_factor,
+            seed=self.rng,
+        )
 
-        # train ISV
-        self.train_isv(data)
-
-    def load_isv(self, isv_file):
-        # hdf5file = HDF5File(isv_file, "r")
-        # self.isvbase = bob.learn.em.ISVBase(hdf5file)
-        # add UBM model from base class
-        self.isvbase.ubm = self.ubm
-
-    def load_projector(self, projector_file):
-        """Load the GMM and the ISV model from the same HDF5 file"""
-        hdf5file = HDF5File(projector_file, "r")
-
-        # Load Projector
-        hdf5file.cd("/Projector")
-        self.load_ubm(hdf5file)
-
-        # Load Enroller
-        hdf5file.cd("/Enroller")
-        self.load_isv(hdf5file)
+        # Assign an int to each reference_id as ISVMachine.fit expects a list of ints
+        reference_ids = np.ravel(reference_ids)
+        label_to_int = {label: i for i, label in enumerate(set(reference_ids))}
+        int_reference_ids = np.array([label_to_int[label] for label in reference_ids])
+        # Train the ISV background model
+        logger.info("ISV: Training the ISVMachine with the projected data.")
+        self.isv_machine.fit(ubm_projected_features, int_reference_ids)
+        return self
 
     #######################################################
     #                ISV training                         #
-    def project_isv(self, projected_ubm):
-        projected_isv = numpy.ndarray(
-            shape=(self.ubm.shape[0] * self.ubm.shape[1],), dtype=numpy.float64
-        )
-        model = ISVMachine(self.isvbase)
-        model.estimate_ux(projected_ubm, projected_isv)
-        return projected_isv
+    def project_isv(self, projected_ubm: GMMStats):
+        return self.isv_machine.estimate_ux(projected_ubm)
 
     def project(self, feature):
         """Computes GMM statistics against a UBM, then corresponding Ux vector"""
-        self._check_feature(feature)
-        projected_ubm = GMM.project(self, feature)
+        self.gmm_algorithm._check_feature(feature)
+        # Project the feature once on GMM
+        projected_ubm = self.gmm_algorithm.project(feature)
+        # Feed the projected feature to the ISV projector
         projected_isv = self.project_isv(projected_ubm)
         return [projected_ubm, projected_isv]
 
     #######################################################
     #                 ISV model enroll                    #
-
-    def write_feature(self, data, feature_file):
-        gmmstats = data[0]
-        Ux = data[1]
-        hdf5file = (
-            HDF5File(feature_file, "w")
-            if isinstance(feature_file, str)
-            else feature_file
-        )
-        hdf5file.create_group("gmmstats")
-        hdf5file.cd("gmmstats")
-        gmmstats.save(hdf5file)
-        hdf5file.cd("..")
-        hdf5file.set("Ux", Ux)
-
-    def read_feature(self, feature_file):
-        """Read the type of features that we require, namely GMMStats"""
-        hdf5file = HDF5File(feature_file, "r")
-        hdf5file.cd("gmmstats")
-        gmmstats = GMMStats(hdf5file)
-        hdf5file.cd("..")
-        Ux = hdf5file.read("Ux")
-        return [gmmstats, Ux]
 
     def _check_projected(self, probe):
         """Checks that the probe is of the desired type"""
@@ -140,38 +95,38 @@ class ISV(BioAlgorithm, BaseEstimator):
         assert len(probe) == 2
         assert isinstance(probe[0], GMMStats)
         assert (
-            isinstance(probe[1], numpy.ndarray)
+            isinstance(probe[1], np.ndarray)
             and probe[1].ndim == 1
-            and probe[1].dtype == numpy.float64
+            and probe[1].dtype == np.float64
         )
 
     def enroll(self, enroll_features):
-        """Performs ISV enrollment"""
-        for feature in enroll_features:
+        """Performs ISV enrollment
+
+        Parameters
+        ----------
+        enroll_features : list of numpy.ndarray
+            The features to be enrolled.
+        """
+        projected_features = [self.project(e_f) for e_f in enroll_features]
+        for feature in projected_features:
             self._check_projected(feature)
-        machine = ISVMachine(self.isvbase)
-        self.isv_trainer.enroll(
-            machine, [f[0] for f in enroll_features], self.isv_enroll_iterations
+        return self.isv_machine.enroll(
+            [f[0] for f in projected_features], self.isv_enroll_iterations
         )
-        # return the resulting gmm
-        return machine
 
     ######################################################
     #                Feature comparison                  #
-    def read_model(self, model_file):
-        """Reads the ISV Machine that holds the model"""
-        machine = ISVMachine(HDF5File(model_file, "r"))
-        machine.isv_base = self.isvbase
-        return machine
 
     def score(self, model, probe):
         """Computes the score for the given model and the given probe."""
         assert isinstance(model, ISVMachine)
-        self._check_projected(probe)
+        projected_probe = self.project(probe)
+        self._check_projected(projected_probe)
 
-        gmmstats = probe[0]
-        Ux = probe[1]
-        return model.forward_ux(gmmstats, Ux)
+        gmm_stats = projected_probe[0]
+        Ux = projected_probe[1]
+        return model.score(Ux, gmm_stats)
 
     # def score_for_multiple_probes(self, model, probes):
     #     """This function computes the score between the given model and several given probe files."""
@@ -190,18 +145,22 @@ class ISV(BioAlgorithm, BaseEstimator):
     #         for i in range(1, len(probes)):
     #             gmmstats_acc += probes[i][0]
     #         # compute ISV score with the accumulated statistics
-    #         projected_isv_acc = numpy.ndarray(
-    #             shape=(self.ubm.shape[0] * self.ubm.shape[1],), dtype=numpy.float64
+    #         projected_isv_acc = np.ndarray(
+    #             shape=(self.ubm.shape[0] * self.ubm.shape[1],), dtype=np.float64
     #         )
     #         model.estimate_ux(gmmstats_acc, projected_isv_acc)
     #         return model.forward_ux(gmmstats_acc, projected_isv_acc)
 
+    def transform(self, X):
+        """Passthrough"""
+        return X
+
     @classmethod
     def custom_enrolled_save_fn(cls, data, path):
-        data.save(path)
+        pickle.dump(data, open(path, "wb"))
 
     def custom_enrolled_load_fn(self, path):
-        return GMMMachine.from_hdf5(path, ubm=self.ubm)
+        return pickle.load(open(path, "rb"))
 
     def _more_tags(self):
         return {

@@ -21,7 +21,7 @@ bioalgorithm = ISV(
     training_threshold=0.0,  # Maximum number of iterations as stopping criterion
     kmeans_init_iterations=5,
     kmeans_oversampling_factor=64,
-    init_seed=2,
+    rng=0,
 )
 
 transformer = Pipeline(
