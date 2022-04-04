@@ -23,15 +23,15 @@ How this is done is explained in more detail at installation_.
 Running Baseline Experiments
 ------------------------------------------------
 
-To run the baseline experiments, you can use the ``vanilla-biometrics`` pipeline by
+To run the baseline experiments, you can use the ``simple`` pipeline by
 typing in a bob environment console:
 
 .. code-block:: sh
 
-   $ bob bio pipelines vanilla
+   $ bob bio pipeline simple
 
 This command is explained in more detail in
-:ref:`bob.bio.base.vanilla_biometrics_intro`.
+:ref:`bob.bio.base.pipeline_simple_intro`.
 The ``--help`` option shows you, which other options you can provide.
 Here is an extract:
 
@@ -87,7 +87,7 @@ Evaluation Results
 
 To evaluate the results,  one can use the ``bob bio evaluate`` command.
 Several types of evaluation can be achieved, see
-:ref:`bob.bio.base.vanilla_biometrics_advanced_features` for details.
+:ref:`bob.bio.base.pipeline_simple_advanced_features` for details.
 Particularly, we can enable ROC curves, DET plots, CMC curves and the computation of
 EER/HTER or minDCF.
 
@@ -118,7 +118,7 @@ You should then specify to bob where your data is (or where you downloaded it)::
 
 To then run an experiment, use a command line like::
 
-  $ bob bio pipelines vanilla --database voxforge --pipeline mfcc60-gmm-voxforge --groups {dev,eval} --output ./results/
+  $ bob bio pipeline simple --database voxforge --pipeline mfcc60-gmm-voxforge --groups {dev,eval} --output ./results/
 
 
 In this example, we used the following configuration:
@@ -138,7 +138,7 @@ On *dev* and *eval*, the scores are:
 
 If you want to run the same experiment on SGE::
 
-  $ bob bio pipeline vanilla -d voxforge -p mfcc60-gmm-voxforge --groups {dev,eval} --dask-client sge
+  $ bob bio pipeline simple -d voxforge -p mfcc60-gmm-voxforge --groups {dev,eval} --dask-client sge
 
 Another example is to use **ISV** pipeline instead of UBM-GMM (to be done)::
 
@@ -175,7 +175,7 @@ Note that in the previous examples, our goal is not to optimize the parameters o
 ~~~~~~~~~~~~~~~~
 `TIMIT`_ is one of the oldest databases (year 1993) used to evaluate speaker recognition systems. In the following example, the processing is done on the development set, and LFCC features are used::
 
-  $ bob bio pipelines vanilla -vv -d timit -p lfcc60-gmm-timit
+  $ bob bio pipeline simple -vv -d timit -p lfcc60-gmm-timit
 
 Here is the performance of the system on the Development set:
 
