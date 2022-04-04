@@ -160,11 +160,7 @@ def SpearBioDatabase(
         f"Database: Will read the CSV protocol definitions in '{dataset_protocol_path}'."
     )
 
-    rc_db_name = (
-        known_databases[database_name].get("rc_name", database_name)
-        if database_name in known_databases
-        else database_name
-    )
+    rc_db_name = known_databases.get(database_name, {}).get("rc_name", database_name)
 
     if data_path is None:
         data_path = rc.get(f"bob.db.{rc_db_name}.directory")

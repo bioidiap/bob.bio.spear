@@ -20,10 +20,6 @@
 """Feature extraction tools"""
 
 from .Cepstral import Cepstral
-from .cepstral_extended import CepstralExtended
-from .CQCCFeatures import CQCCFeatures
-from .HTKFeatures import HTKFeatures
-from .SPROFeatures import SPROFeatures
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -44,9 +40,5 @@ def __appropriate__(*args):
 
 __appropriate__(
     Cepstral,
-    HTKFeatures,
-    SPROFeatures,
-    CepstralExtended,
-    CQCCFeatures,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

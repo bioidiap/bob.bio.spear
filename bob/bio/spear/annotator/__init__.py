@@ -1,6 +1,5 @@
 from .energy_2gauss import Energy_2Gauss
 from .energy_thr import Energy_Thr
-from .external import External
 from .mod_4hz import Mod_4Hz
 
 
@@ -23,7 +22,6 @@ def __appropriate__(*args):
 __appropriate__(
     Energy_2Gauss,
     Energy_Thr,
-    External,
     Mod_4Hz,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

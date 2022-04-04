@@ -46,14 +46,13 @@ class Energy_2Gauss(Annotator):
         smoothing_window=10,  # 10 frames (i.e. 100 ms)
         **kwargs,
     ):
-        # copy parameters
+        super().__init__(**kwargs)
         self.max_iterations = max_iterations
         self.convergence_threshold = convergence_threshold
         self.variance_threshold = variance_threshold
         self.win_length_ms = win_length_ms
         self.win_shift_ms = win_shift_ms
         self.smoothing_window = smoothing_window
-        super().__init__(**kwargs)
 
     def _voice_activity_detection(self, energy_array: np.ndarray) -> np.ndarray:
         """Fits a 2 Gaussian GMM on the energy that splits between voice and silence."""
@@ -85,11 +84,12 @@ class Energy_2Gauss(Annotator):
             convergence_threshold=self.convergence_threshold,
             max_fitting_steps=self.max_iterations,
             k_means_trainer=kmeans_trainer,
+
         )
+        ubm_gmm.variance_thresholds = self.variance_threshold
 
         ubm_gmm.fit(normalized_energy)
 
-        ubm_gmm.variance_thresholds = self.variance_threshold  # is a da.Array
 
         if np.isnan(ubm_gmm.means).any():
             logger.warn("Annotation aborted: File contains NaN's")
@@ -98,13 +98,13 @@ class Energy_2Gauss(Annotator):
         # Classify
 
         # Different behavior dep on which mean represents high energy (higher value)
+        labels = ubm_gmm.log_weighted_likelihood(normalized_energy)
         if ubm_gmm.means.argmax() == 0:  # High energy in means[0]
-            labels = ubm_gmm.log_weighted_likelihood(normalized_energy).argmin(axis=0)
+            labels = labels.argmin(axis=0)
         else:  # High energy in means[1]
-            labels = ubm_gmm.log_weighted_likelihood(normalized_energy).argmax(axis=0)
+            labels = labels.argmax(axis=0)
 
-        # Returns a numpy array (computes the dask array)
-        return np.array(labels)
+        return labels
 
     def _compute_energy(self, audio_signal: np.ndarray, sample_rate: int) -> np.ndarray:
         """Retrieves the speech / non speech labels for the speech sample in ``audio_signal``"""
