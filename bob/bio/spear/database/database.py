@@ -18,33 +18,33 @@ logger = logging.getLogger(__name__)
 
 known_databases = {
     "voxforge": {
-        "definition_file": "database-protocols-voxforge-71e494d0.tar.gz",
-        "crc": "71e494d0",
+        "definition_file": "database-protocols-voxforge-f032929d.tar.gz",
+        "crc": "f032929d",
     },
     "mobio": {
-        "definition_file": "database-protocols-mobio-58c316e5.tar.gz",
-        "crc": "58c316e5",
+        "definition_file": "database-protocols-mobio-e069c6aa.tar.gz",
+        "crc": "e069c6aa",
         "rc_name": "mobio.audio",
     },
     "timit": {
-        "definition_file": "database-protocols-timit-71d74f4f.tar.gz",
-        "crc": "71d74f4f",
+        "definition_file": "database-protocols-timit-1f14a1b4.tar.gz",
+        "crc": "1f14a1b4",
     },
     "avspoof": {
-        "definition_file": "database-protocols-avspoof-c6aa9f67.tar.gz",
-        "crc": "c6aa9f67",
+        "definition_file": "database-protocols-avspoof-109c8110.tar.gz",
+        "crc": "109c8110",
     },
     "asvspoof": {
-        "definition_file": "database-protocols-asvspoof-c1ea7c15.tar.gz",
-        "crc": "c1ea7c15",
+        "definition_file": "database-protocols-asvspoof-e96b5728.tar.gz",
+        "crc": "e96b5728",
     },
     "asvspoof2017": {
-        "definition_file": "database-protocols-asvspoof2017-1946259d.tar.gz",
-        "crc": "1946259d",
+        "definition_file": "database-protocols-asvspoof2017-db087bb7.tar.gz",
+        "crc": "db087bb7",
     },
     "voicepa": {
-        "definition_file": "database-protocols-voicepa-1e4c1742.tar.gz",
-        "crc": "1e4c1742",
+        "definition_file": "database-protocols-voicepa-25ce140b.tar.gz",
+        "crc": "25ce140b",
     },
 }
 
