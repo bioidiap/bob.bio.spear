@@ -84,12 +84,10 @@ class Energy_2Gauss(Annotator):
             convergence_threshold=self.convergence_threshold,
             max_fitting_steps=self.max_iterations,
             k_means_trainer=kmeans_trainer,
-
         )
         ubm_gmm.variance_thresholds = self.variance_threshold
 
         ubm_gmm.fit(normalized_energy)
-
 
         if np.isnan(ubm_gmm.means).any():
             logger.warn("Annotation aborted: File contains NaN's")
