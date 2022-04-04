@@ -4,16 +4,13 @@
 
 import csv
 import logging
-
 from pathlib import Path
 
 import click
-
 from tqdm import tqdm
 
 from bob.bio.spear.database.database import get_protocol_file
-from bob.extension.download import download_and_unzip
-from bob.extension.download import search_file
+from bob.extension.download import download_and_unzip, search_file
 from bob.extension.scripts.click_helper import verbosity_option
 
 logger = logging.getLogger(__name__)

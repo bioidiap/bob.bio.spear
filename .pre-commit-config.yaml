@@ -2,20 +2,20 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.8.0
+    rev: 5.10.1
     hooks:
-    - id: isort
-      args: [--sl, --line-length, "88"]
+      - id: isort
+        args: [--settings-path, "pyproject.toml"]
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 22.3.0
     hooks:
       - id: black
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.0
+    rev: 3.9.2
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.1.0
     hooks:
       - id: check-ast
       - id: check-case-conflict
@@ -23,21 +23,5 @@ repos:
       - id: end-of-file-fixer
       - id: debug-statements
       - id: check-added-large-files
-  - repo: local
-    hooks:
-      - id: sphinx-build
-        name: sphinx build
-        entry: python -m sphinx.cmd.build
-        args: [-a, -E, -W, doc, sphinx]
-        language: system
-        files: ^doc/
-        types: [file]
-        pass_filenames: false
-      - id: sphinx-doctest
-        name: sphinx doctest
-        entry: python -m sphinx.cmd.build
-        args: [-a, -E, -b, doctest, doc, sphinx]
-        language: system
-        files: ^doc/
-        types: [file]
-        pass_filenames: false
+      - id: check-yaml
+        exclude: .*/meta.yaml

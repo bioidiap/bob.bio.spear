@@ -26,7 +26,6 @@ import numpy
 
 import bob.ap
 import bob.core
-
 from bob.bio.base.extractor import Extractor
 
 from .. import utils

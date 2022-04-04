@@ -21,8 +21,7 @@
 
 from bob.bio.base.database import CSVDataset
 from bob.bio.spear.database import SpearBioDatabase
-from bob.pipelines import DelayedSample
-from bob.pipelines import SampleSet
+from bob.pipelines import DelayedSample, SampleSet
 
 
 def _check_database(

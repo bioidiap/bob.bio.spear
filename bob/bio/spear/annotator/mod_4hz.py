@@ -25,7 +25,6 @@ import numpy
 import scipy.signal
 
 import bob.ap
-
 from bob.bio.base.annotator import Annotator
 
 from .. import utils

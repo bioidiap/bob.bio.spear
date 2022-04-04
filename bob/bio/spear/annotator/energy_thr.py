@@ -24,7 +24,6 @@ import logging
 import numpy
 
 import bob
-
 from bob.bio.base.annotator import Annotator
 
 from .. import utils

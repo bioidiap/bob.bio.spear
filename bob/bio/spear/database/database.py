@@ -3,13 +3,11 @@
 # Wed 16 Mar 2022 09:32:47 UTC+01
 
 import logging
-
 from typing import Union
 
 from sklearn.pipeline import Pipeline
 
-from bob.bio.base.database import CSVDataset
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.spear.transformer import WavToSample
 from bob.extension import rc
 from bob.extension.download import get_file

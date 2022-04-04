@@ -3,13 +3,10 @@
 # @date: Thu 01 Jul 2021 10:41:55 UTC+02
 
 import logging
-
-from functools import lru_cache
-from functools import partial
+from functools import lru_cache, partial
 
 from scipy.io import wavfile
-from sklearn.base import BaseEstimator
-from sklearn.base import TransformerMixin
+from sklearn.base import BaseEstimator, TransformerMixin
 
 from bob.pipelines import DelayedSample
 

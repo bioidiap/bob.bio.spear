@@ -20,14 +20,11 @@
 import h5py
 import numpy as np
 import pkg_resources
-
 from scipy.io import wavfile
 
 import bob.bio.base
 import bob.bio.spear
-
-from bob.pipelines import Sample
-from bob.pipelines import wrap
+from bob.pipelines import Sample, wrap
 
 regenerate_refs = False
 

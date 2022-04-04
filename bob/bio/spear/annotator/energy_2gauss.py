@@ -25,10 +25,8 @@ import dask
 import numpy as np
 
 import bob.ap
-
 from bob.bio.base.annotator import Annotator
-from bob.learn.em import GMMMachine
-from bob.learn.em import KMeansMachine
+from bob.learn.em import GMMMachine, KMeansMachine
 
 from .. import utils
 
