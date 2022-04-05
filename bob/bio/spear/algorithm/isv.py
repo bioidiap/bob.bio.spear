@@ -8,7 +8,7 @@ import pickle
 import numpy as np
 from sklearn.base import BaseEstimator
 
-from bob.bio.base.pipelines.vanilla_biometrics import BioAlgorithm
+from bob.bio.base.pipelines import BioAlgorithm
 from bob.bio.gmm.algorithm import GMM
 from bob.learn.em import GMMStats, ISVMachine
 
