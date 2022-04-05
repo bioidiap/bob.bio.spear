@@ -34,7 +34,7 @@ requirements:
     - bob.bio.base
     - bob.pipelines
     - bob.bio.gmm
-    - scipy
+    - scikit-learn
     - matplotlib {{ matplotlib }}
     - tqdm {{ tqdm }}
   run:
@@ -57,8 +57,6 @@ test:
     - coverage {{ coverage }}
     - sphinx {{ sphinx }}
     - sphinx_rtd_theme {{ sphinx_rtd_theme }}
-    - gridtk
-    - bob.db.atnt
 
 about:
   home: https://www.idiap.ch/software/bob/
