@@ -1,5 +1,0 @@
-gridtk
-bob.db.mobio
-bob.db.avspoof
-bob.db.asvspoof
-bob.db.voicepa

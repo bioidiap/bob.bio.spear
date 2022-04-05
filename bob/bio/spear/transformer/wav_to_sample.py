@@ -3,7 +3,7 @@
 # @date: Thu 01 Jul 2021 10:41:55 UTC+02
 
 import logging
-from functools import lru_cache, partial
+from functools import partial
 
 from scipy.io import wavfile
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -13,7 +13,6 @@ from bob.pipelines import DelayedSample
 logger = logging.getLogger(__name__)
 
 
-@lru_cache()
 def load_data_from_file(filename: str):
     logger.debug(f"Reading data from audio file {filename}")
     rate, wav_samples = wavfile.read(filename)
