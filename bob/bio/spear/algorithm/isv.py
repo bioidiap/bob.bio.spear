@@ -120,13 +120,14 @@ class ISV(BioAlgorithm, BaseEstimator):
 
     def score(self, model, probe):
         """Computes the score for the given model and the given probe."""
-        assert isinstance(model, ISVMachine)
-        projected_probe = self.project(probe)
-        self._check_projected(projected_probe)
+        # assert isinstance(model, ISVMachine), type(model)
+        # projected_probe = self.project(probe)
+        # self._check_projected(projected_probe)
 
-        gmm_stats = projected_probe[0]
-        Ux = projected_probe[1]
-        return model.score(Ux, gmm_stats)
+        # gmm_stats = projected_probe[0]
+        # Ux = projected_probe[1]
+        projected_probe = self.gmm_algorithm.project(probe)
+        return self.isv_machine.score(model, projected_probe)
 
     # def score_for_multiple_probes(self, model, probes):
     #     """This function computes the score between the given model and several given probe files."""
