@@ -53,7 +53,7 @@ class ISV(BioAlgorithm, BaseEstimator):
 
         # Project training data using the GMM UBM
         logger.info("ISV: Projecting training data on UBM with the GMM.")
-        ubm_projected_features = [self.gmm_algorithm.project(f) for f in X]
+        ubm_projected_features = self.gmm_algorithm.project(X)
 
         # Create the ISV machine based on the GMM UBM
         self.isv_machine = ISVMachine(
@@ -76,7 +76,6 @@ class ISV(BioAlgorithm, BaseEstimator):
 
     def project(self, feature):
         """Computes GMM statistics against a UBM, then corresponding Ux vector"""
-        self.gmm_algorithm._check_feature(feature)
         # Project the feature once on GMM
         projected_ubm = self.gmm_algorithm.project(feature)
         # Feed the projected feature to the ISV projector
