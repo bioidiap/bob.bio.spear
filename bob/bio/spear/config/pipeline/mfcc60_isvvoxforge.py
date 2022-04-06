@@ -5,8 +5,8 @@
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.pipelines import PipelineSimple
-from bob.bio.spear.algorithm import ISV
-from bob.bio.spear.annotator.energy_2gauss import Energy_2Gauss
+from bob.bio.spear.algorithm import ISV, ReferenceIdEncoder
+from bob.bio.spear.annotator import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
 
@@ -28,6 +28,7 @@ transformer = Pipeline(
     [
         ("annotator", wrap([Energy_2Gauss, "sample"])),
         ("extractor", wrap([Cepstral, "sample"])),
+        ("reference_id_encoder", wrap([ReferenceIdEncoder, "sample"])),
         ("algorithm_trainer", wrap(["sample"], bioalgorithm)),
     ]
 )

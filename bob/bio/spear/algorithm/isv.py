@@ -7,6 +7,7 @@ import pickle
 
 import numpy as np
 from sklearn.base import BaseEstimator
+from sklearn.preprocessing import OrdinalEncoder
 
 from bob.bio.base.pipelines import BioAlgorithm
 from bob.bio.gmm.algorithm import GMM
@@ -28,7 +29,7 @@ class ISV(BioAlgorithm, BaseEstimator):
         isv_enroll_iterations=1,  # Number of iterations for the enrollment phase
         rng=0,
         # parameters of the GMM
-        **kwargs
+        **kwargs,
     ):
         """Initializes the local UBM-GMM tool with the given file selector object"""
 
@@ -43,16 +44,16 @@ class ISV(BioAlgorithm, BaseEstimator):
 
         super(ISV, self).__init__()
 
-    def fit(self, train_features, reference_ids):
+    def fit(self, X, y):
         """Train Projector (GMM) and Enroller at the same time"""
 
         # Train the gmm
         logger.info("ISV: Training the GMM UBM.")
-        self.gmm_algorithm.fit(np.vstack(train_features))
+        self.gmm_algorithm.fit(X)
 
         # Project training data using the GMM UBM
         logger.info("ISV: Projecting training data on UBM with the GMM.")
-        ubm_projected_features = [self.gmm_algorithm.project(f) for f in train_features]
+        ubm_projected_features = [self.gmm_algorithm.project(f) for f in X]
 
         # Create the ISV machine based on the GMM UBM
         self.isv_machine = ISVMachine(
@@ -63,13 +64,9 @@ class ISV(BioAlgorithm, BaseEstimator):
             seed=self.rng,
         )
 
-        # Assign an int to each reference_id as ISVMachine.fit expects a list of ints
-        reference_ids = np.ravel(reference_ids)
-        label_to_int = {label: i for i, label in enumerate(set(reference_ids))}
-        int_reference_ids = np.array([label_to_int[label] for label in reference_ids])
         # Train the ISV background model
         logger.info("ISV: Training the ISVMachine with the projected data.")
-        self.isv_machine.fit(ubm_projected_features, int_reference_ids)
+        self.isv_machine.fit(ubm_projected_features, y)
         return self
 
     #######################################################
@@ -160,16 +157,55 @@ class ISV(BioAlgorithm, BaseEstimator):
     def custom_enrolled_save_fn(cls, data, path):
         pickle.dump(data, open(path, "wb"))
 
-    def custom_enrolled_load_fn(self, path):
+    @classmethod
+    def custom_enrolled_load_fn(cls, path):
         return pickle.load(open(path, "rb"))
 
     def _more_tags(self):
         return {
             "bob_fit_supports_dask_array": True,
-            "bob_fit_expects_samplesets": True,
-            "bob_fit_extra_input": [("reference_ids", "reference_id")],
+            "bob_fit_extra_input": [("y", "reference_id_int")],
             "bob_enrolled_save_fn": self.custom_enrolled_save_fn,
             "bob_enrolled_load_fn": self.custom_enrolled_load_fn,
             "requires_fit": True,
             "stateless": False,
+        }
+
+
+class ReferenceIdEncoder(OrdinalEncoder):
+    # Default values of init args are different from the base class
+    def __init__(
+        self,
+        *,
+        categories="auto",
+        dtype=int,
+        handle_unknown="use_encoded_value",
+        unknown_value=-1,
+        **kwargs,
+    ):
+        super().__init__(
+            categories=categories,
+            dtype=dtype,
+            handle_unknown=handle_unknown,
+            unknown_value=unknown_value,
+            **kwargs,
+        )
+
+    def fit(self, X, y=None):
+        # X is a SampleBatch or list of reference_id strings
+        # we want a 2d array of shape (N, 1)
+        X = np.asarray(X).reshape((-1, 1))
+        return super().fit(X)
+
+    def transform(self, X):
+        X = np.asarray(X).reshape((-1, 1))
+        # we output a flat array instead
+        return super().transform(X).flatten()
+
+    def _more_tags(self):
+        return {
+            "bob_input": "reference_id",
+            "bob_output": "reference_id_int",
+            "bob_features_save_fn": ISV.custom_enrolled_save_fn,
+            "bob_features_load_fn": ISV.custom_enrolled_load_fn,
         }
