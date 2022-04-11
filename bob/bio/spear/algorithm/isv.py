@@ -4,16 +4,18 @@
 
 import logging
 import pickle
+from typing import Union
 
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import OrdinalEncoder
 
 from bob.bio.base.pipelines import BioAlgorithm
-from bob.bio.gmm.algorithm import GMM
-from bob.learn.em import GMMStats, ISVMachine
+from bob.learn.em import GMMMachine, GMMStats, ISVMachine, KMeansMachine
 
 logger = logging.getLogger(__name__)
+
+EPSILON = np.finfo(float).eps
 
 
 class ISV(BioAlgorithm, BaseEstimator):
@@ -22,24 +24,48 @@ class ISV(BioAlgorithm, BaseEstimator):
     def __init__(
         self,
         # ISV training
-        subspace_dimension_of_u,  # U subspace dimension
-        isv_training_iterations=10,  # Number of EM iterations for the ISV training
-        isv_relevance_factor=4,
+        subspace_dimension_of_u: int,  # U subspace dimension
+        training_iterations: int = 10,  # Number of EM iterations for the ISV training
+        relevance_factor: float = 4.0,
         # ISV enrollment
-        isv_enroll_iterations=1,  # Number of iterations for the enrollment phase
-        rng=0,
-        # parameters of the GMM
-        **kwargs,
+        enroll_iterations: int = 1,  # Number of iterations for the enrollment phase
+        rng: Union[int, np.random.RandomState] = 0,
+        # Parameters of the GMM (training of the UBM)
+        ubm_n_gaussians: int = 512,
+        ubm_training_threshold: float = 1e-5,
+        ubm_training_iterations: int = 25,
+        ubm_update_means: bool = True,
+        ubm_update_variances: bool = True,
+        ubm_update_weights: bool = True,
+        ubm_mean_var_update_threshold: float = 1e-5,
+        ubm_kmeans_init_method: Union[str, np.ndarray] = "k-means||",
+        ubm_kmeans_init_iterations: int = 5,
+        ubm_kmeans_training_iterations: int = 25,
+        ubm_kmeans_oversampling_factor: int = 2,
     ):
-        """Initializes the local UBM-GMM tool with the given file selector object"""
+        """
+        Parameters
+        ----------
+        """
 
         self.subspace_dimension_of_u = subspace_dimension_of_u
-        self.isv_training_iterations = isv_training_iterations
-        self.isv_enroll_iterations = isv_enroll_iterations
-        self.isv_relevance_factor = isv_relevance_factor
+        self.training_iterations = training_iterations
+        self.enroll_iterations = enroll_iterations
+        self.relevance_factor = relevance_factor
         self.rng = rng
 
-        self.gmm_algorithm = GMM(init_seed=rng, **kwargs)
+        self.ubm_n_gaussians = ubm_n_gaussians
+        self.ubm_training_threshold = ubm_training_threshold
+        self.ubm_training_iterations = ubm_training_iterations
+        self.ubm_update_means = ubm_update_means
+        self.ubm_update_variances = ubm_update_variances
+        self.ubm_update_weights = ubm_update_weights
+        self.ubm_mean_var_update_threshold = ubm_mean_var_update_threshold
+        self.ubm_kmeans_init_method = ubm_kmeans_init_method
+        self.ubm_kmeans_init_iterations = ubm_kmeans_init_iterations
+        self.ubm_kmeans_training_iterations = ubm_kmeans_training_iterations
+        self.ubm_kmeans_oversampling_factor = ubm_kmeans_oversampling_factor
+
         self.isv_machine = None
 
         super(ISV, self).__init__()
@@ -47,40 +73,45 @@ class ISV(BioAlgorithm, BaseEstimator):
     def fit(self, X, y):
         """Train Projector (GMM) and Enroller at the same time"""
 
-        # Train the gmm
-        logger.info("ISV: Training the GMM UBM.")
-        self.gmm_algorithm.fit(X)
-
-        # Project training data using the GMM UBM
-        logger.info("ISV: Projecting training data on UBM with the GMM.")
-        ubm_projected_features = self.gmm_algorithm.project(X)
+        gmm_machine = GMMMachine(
+            n_gaussians=self.ubm_n_gaussians,
+            trainer="ml",
+            max_fitting_steps=self.training_iterations,
+            convergence_threshold=self.ubm_training_threshold,
+            update_means=self.ubm_update_means,
+            update_variances=self.ubm_update_variances,
+            update_weights=self.ubm_update_weights,
+            mean_var_update_threshold=self.ubm_mean_var_update_threshold,
+            k_means_trainer=KMeansMachine(
+                self.ubm_n_gaussians,
+                convergence_threshold=self.ubm_training_threshold,
+                max_iter=self.ubm_kmeans_training_iterations,
+                init_method="k-means||",
+                init_max_iter=self.ubm_kmeans_init_iterations,
+                random_state=self.rng,
+                oversampling_factor=self.ubm_kmeans_oversampling_factor,
+            ),
+        )
 
         # Create the ISV machine based on the GMM UBM
         self.isv_machine = ISVMachine(
-            self.gmm_algorithm.ubm,
             r_U=self.subspace_dimension_of_u,
-            em_iterations=self.isv_training_iterations,
-            relevance_factor=self.isv_relevance_factor,
+            em_iterations=self.training_iterations,
+            relevance_factor=self.relevance_factor,
             seed=self.rng,
+            ubm=gmm_machine,
         )
 
         # Train the ISV background model
         logger.info("ISV: Training the ISVMachine with the projected data.")
-        self.isv_machine.fit(ubm_projected_features, y)
+        self.isv_machine.fit(X, y)
         return self
 
     #######################################################
     #                ISV training                         #
-    def project_isv(self, projected_ubm: GMMStats):
-        return self.isv_machine.estimate_ux(projected_ubm)
-
     def project(self, feature):
         """Computes GMM statistics against a UBM, then corresponding Ux vector"""
-        # Project the feature once on GMM
-        projected_ubm = self.gmm_algorithm.project(feature)
-        # Feed the projected feature to the ISV projector
-        projected_isv = self.project_isv(projected_ubm)
-        return [projected_ubm, projected_isv]
+        return self.isv_machine.transform(feature)
 
     #######################################################
     #                 ISV model enroll                    #
@@ -108,7 +139,7 @@ class ISV(BioAlgorithm, BaseEstimator):
         for feature in projected_features:
             self._check_projected(feature)
         return self.isv_machine.enroll(
-            [f[0] for f in projected_features], self.isv_enroll_iterations
+            [f[0] for f in projected_features], self.enroll_iterations
         )
 
     ######################################################

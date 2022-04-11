@@ -35,12 +35,10 @@ requirements:
     - bob.pipelines
     - bob.bio.gmm
     - scikit-learn
-    - matplotlib {{ matplotlib }}
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
-    - {{ pin_compatible('matplotlib') }}
     - {{ pin_compatible('tqdm') }}
 
 test:
