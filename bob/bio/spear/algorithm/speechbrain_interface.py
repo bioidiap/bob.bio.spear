@@ -1,5 +1,7 @@
 import logging
 
+import torch
+
 # Download pretrained SpeakerRecognition from SpeechBrain
 from speechbrain.pretrained import SpeakerRecognition
 
@@ -24,7 +26,9 @@ class SpeechBrainInterface(BioAlgorithm):
 
         scores = []
         for _model in model:
-            score, _ = self.verification.verify_files(_model, data)
+            score, _ = self.verification.verify_batch(
+                torch.from_numpy(_model), torch.from_numpy(data)
+            )
             scores.append(score)
 
         return scores
