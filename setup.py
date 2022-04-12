@@ -116,6 +116,7 @@ setup(
         "bob.bio.pipeline": [
             "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge:pipeline",
             "isv-voxforge  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
+            "speechbrain   = bob.bio.spear.config.pipeline.speechbrain_pipeline:pipeline",
         ],
         "bob.bio.config": [
             # databases:
