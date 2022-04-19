@@ -274,3 +274,20 @@ def test_voxforge():
         n_eval_probes=300,
         n_eval_probes_samples=1,
     )
+
+
+def test_nist_sre04to16():
+    database = SpearBioDatabase("nist_sre04to16", protocol="core", data_path="dummy/")
+
+    _check_database(
+        database,
+        n_train=71728,
+        n_dev_references=80,
+        n_dev_references_samples=None,  # Variable sample count
+        n_dev_probes=1207,
+        n_dev_probes_samples=1,
+        n_eval_references=802,
+        n_eval_references_samples=None,  # Variable sample count
+        n_eval_probes=9294,
+        n_eval_probes_samples=1,
+    )
