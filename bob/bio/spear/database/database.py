@@ -9,7 +9,7 @@ from typing import Union
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
-from bob.bio.spear.transformer import WavToSample
+from bob.bio.spear.transformer import PathToAudio
 from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines.sample_loaders import AnnotationsLoader
@@ -46,6 +46,10 @@ known_databases = {
     "voicepa": {
         "definition_file": "database-protocols-voicepa-25ce140b.tar.gz",
         "crc": "25ce140b",
+    },
+    "nist_sre04to16": {
+        "definition_file": "database-protocols-nist_sre04to16-8aea7733.tar.gz",
+        "crc": "8aea7733",
     },
 }
 
@@ -126,7 +130,7 @@ def SpearBioDatabase(
     Parameters
     ----------
 
-    database_name
+    name
         name of the database used for retrieving config keys and files.
 
     protocol
@@ -184,7 +188,7 @@ def SpearBioDatabase(
     )
 
     # Read the file at path and set the data and metadata of a sample
-    path_to_sample = WavToSample()
+    path_to_sample = PathToAudio()
 
     # Build the data loading pipeline
     if annotations_path is None:
