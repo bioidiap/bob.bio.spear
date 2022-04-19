@@ -40,6 +40,7 @@ requirements:
     - {{ pin_compatible('scikit-learn') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('tqdm') }}
+    - {{ pin_compatible('librosa') }}
 
 test:
   imports:
