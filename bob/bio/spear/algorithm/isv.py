@@ -5,10 +5,11 @@
 import logging
 import pickle
 from typing import Union
+from bob.pipelines import SampleSet
 
 import numpy as np
-from sklearn.base import BaseEstimator
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.base import TransformerMixin
+from sklearn.preprocessing import OrdinalEncoder, FunctionTransformer
 
 from bob.bio.base.pipelines import BioAlgorithm
 from bob.learn.em import GMMMachine, GMMStats, ISVMachine, KMeansMachine
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 EPSILON = np.finfo(float).eps
 
 
-class ISV(BioAlgorithm, BaseEstimator):
+class ISV(BioAlgorithm, TransformerMixin):
     """Tool for computing Unified Background Models and Gaussian Mixture Models of the features"""
 
     def __init__(
@@ -72,26 +73,10 @@ class ISV(BioAlgorithm, BaseEstimator):
 
     def fit(self, X, y):
         """Train Projector (GMM) and Enroller at the same time"""
-
-        gmm_machine = GMMMachine(
-            n_gaussians=self.ubm_n_gaussians,
-            trainer="ml",
-            max_fitting_steps=self.training_iterations,
-            convergence_threshold=self.ubm_training_threshold,
-            update_means=self.ubm_update_means,
-            update_variances=self.ubm_update_variances,
-            update_weights=self.ubm_update_weights,
-            mean_var_update_threshold=self.ubm_mean_var_update_threshold,
-            k_means_trainer=KMeansMachine(
-                self.ubm_n_gaussians,
-                convergence_threshold=self.ubm_training_threshold,
-                max_iter=self.ubm_kmeans_training_iterations,
-                init_method="k-means||",
-                init_max_iter=self.ubm_kmeans_init_iterations,
-                random_state=self.rng,
-                oversampling_factor=self.ubm_kmeans_oversampling_factor,
-            ),
-        )
+        # if input is a list (or SampleBatch) of 2 dimensional arrays, stack them
+        if X[0].ndim == 2:
+            X = np.vstack(X)
+            y = np.concatenate(y, axis=0)
 
         # Create the ISV machine based on the GMM UBM
         self.isv_machine = ISVMachine(
@@ -99,7 +84,7 @@ class ISV(BioAlgorithm, BaseEstimator):
             em_iterations=self.training_iterations,
             relevance_factor=self.relevance_factor,
             seed=self.rng,
-            ubm=gmm_machine,
+            ubm=self.gmm_algorithm.ubm,
         )
 
         # Train the ISV background model
@@ -135,11 +120,8 @@ class ISV(BioAlgorithm, BaseEstimator):
         enroll_features : list of numpy.ndarray
             The features to be enrolled.
         """
-        projected_features = [self.project(e_f) for e_f in enroll_features]
-        for feature in projected_features:
-            self._check_projected(feature)
         return self.isv_machine.enroll(
-            [f[0] for f in projected_features], self.enroll_iterations
+            enroll_features, self.isv_enroll_iterations
         )
 
     ######################################################
@@ -153,8 +135,7 @@ class ISV(BioAlgorithm, BaseEstimator):
 
         # gmm_stats = projected_probe[0]
         # Ux = projected_probe[1]
-        projected_probe = self.gmm_algorithm.project(probe)
-        return self.isv_machine.score(model, projected_probe)
+        return self.isv_machine.score(model, probe)
 
     # def score_for_multiple_probes(self, model, probes):
     #     """This function computes the score between the given model and several given probe files."""
@@ -239,3 +220,31 @@ class ReferenceIdEncoder(OrdinalEncoder):
             "bob_features_save_fn": ISV.custom_enrolled_save_fn,
             "bob_features_load_fn": ISV.custom_enrolled_load_fn,
         }
+
+
+def label_repeater(samples, data_attr, label_attr):
+    """
+    This function repeats the labels of the samples to be as big as each data sample.
+    """
+    if isinstance(samples[0], SampleSet):
+        return [
+                SampleSet(
+                    label_repeater(sset.samples, data_attr, label_attr),
+                    parent=sset,
+                )
+                for sset in samples
+            ]
+    # we want to repeat labels to be as big as each data sample
+    labels = [getattr(sample, label_attr) for sample in samples]
+    data_lengths = [len(getattr(sample, data_attr)) for sample in samples]
+    for sample, label, repeat in zip(samples, labels, data_lengths):
+        setattr(sample, label_attr, np.repeat(label, repeat))
+    return samples
+
+
+def LabelRepeater(data_attr, label_attr):
+    return FunctionTransformer(
+        func=label_repeater,
+        validate=False,
+        kw_args={"data_attr": data_attr, "label_attr": label_attr},
+    )

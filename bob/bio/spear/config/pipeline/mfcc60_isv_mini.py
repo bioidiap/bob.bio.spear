@@ -12,25 +12,15 @@ from bob.pipelines import wrap
 
 bioalgorithm = ISV(
     # ISV parameters
-    subspace_dimension_of_u=50,
-    training_iterations=5,
+    subspace_dimension_of_u=2,
     # GMM parameters
-<<<<<<< HEAD
-    ubm_n_gaussians=256,
-    ubm_training_iterations=5,
-    ubm_training_threshold=0.0,  # Maximum number of iterations as stopping criterion
-    ubm_kmeans_training_iterations=5,
-    ubm_kmeans_init_iterations=5,
-    ubm_kmeans_oversampling_factor=64,
-=======
-    number_of_gaussians=256,
+    number_of_gaussians=8,
     ubm_training_iterations=2,
     kmeans_training_iterations=2,
     gmm_enroll_iterations=1,
     training_threshold=1e-3,  # Maximum number of iterations as stopping criterion
     kmeans_init_iterations=5,
-    kmeans_oversampling_factor=64,
->>>>>>> 375511e (Add improvements to ISV)
+    kmeans_oversampling_factor=32,
     rng=0,
 )
 
