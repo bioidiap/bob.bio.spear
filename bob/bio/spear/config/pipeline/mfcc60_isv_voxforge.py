@@ -6,29 +6,30 @@ from sklearn.pipeline import Pipeline
 
 from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.spear.algorithm import ISV, ReferenceIdEncoder, LabelRepeater
-from bob.learn.em import KMeansMachine
 from bob.bio.spear.annotator import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
+from bob.learn.em import KMeansMachine
+
 
 SEED = 0
 
 bioalgorithm = ISV(
     # ISV parameters
-    r_U=2,
+    r_U=50,
     random_state=SEED,
     # GMM parameters
     ubm_kwargs=dict(
-        n_gaussians=8,
+        n_gaussians=256,
         max_fitting_steps=2,
         enroll_iterations=1,
         convergence_threshold=1e-3,  # Maximum number of iterations as stopping criterion
         k_means_trainer=KMeansMachine(
-            n_clusters=8,
+            n_clusters=256,
             max_iter=2,
             random_state=SEED,
             init_max_iter=5,
-            oversampling_factor=32,
+            oversampling_factor=64,
         ),
     ),
 )

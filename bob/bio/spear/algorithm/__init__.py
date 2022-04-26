@@ -1,3 +1,4 @@
+from .gmm import GMM
 from .isv import ISV, ReferenceIdEncoder, LabelRepeater
 
 
@@ -18,6 +19,7 @@ def __appropriate__(*args):
 
 
 __appropriate__(
+    GMM,
     ISV,
     ReferenceIdEncoder,
     LabelRepeater,
