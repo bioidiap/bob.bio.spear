@@ -1,4 +1,4 @@
-from .isv import ISV, ReferenceIdEncoder
+from .isv import ISV, ReferenceIdEncoder, LabelRepeater
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -20,5 +20,6 @@ def __appropriate__(*args):
 __appropriate__(
     ISV,
     ReferenceIdEncoder,
+    LabelRepeater,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

@@ -4,7 +4,6 @@
 
 import logging
 import pickle
-from typing import Union
 from bob.pipelines import SampleSet
 
 import numpy as np
@@ -12,11 +11,10 @@ from sklearn.base import TransformerMixin
 from sklearn.preprocessing import OrdinalEncoder, FunctionTransformer
 
 from bob.bio.base.pipelines import BioAlgorithm
-from bob.learn.em import GMMMachine, GMMStats, ISVMachine, KMeansMachine
+from bob.bio.gmm.algorithm import GMM
+from bob.learn.em import GMMStats, ISVMachine
 
 logger = logging.getLogger(__name__)
-
-EPSILON = np.finfo(float).eps
 
 
 class ISV(BioAlgorithm, TransformerMixin):
@@ -25,48 +23,24 @@ class ISV(BioAlgorithm, TransformerMixin):
     def __init__(
         self,
         # ISV training
-        subspace_dimension_of_u: int,  # U subspace dimension
-        training_iterations: int = 10,  # Number of EM iterations for the ISV training
-        relevance_factor: float = 4.0,
+        subspace_dimension_of_u,  # U subspace dimension
+        isv_training_iterations=10,  # Number of EM iterations for the ISV training
+        isv_relevance_factor=4,
         # ISV enrollment
-        enroll_iterations: int = 1,  # Number of iterations for the enrollment phase
-        rng: Union[int, np.random.RandomState] = 0,
-        # Parameters of the GMM (training of the UBM)
-        ubm_n_gaussians: int = 512,
-        ubm_training_threshold: float = 1e-5,
-        ubm_training_iterations: int = 25,
-        ubm_update_means: bool = True,
-        ubm_update_variances: bool = True,
-        ubm_update_weights: bool = True,
-        ubm_mean_var_update_threshold: float = 1e-5,
-        ubm_kmeans_init_method: Union[str, np.ndarray] = "k-means||",
-        ubm_kmeans_init_iterations: int = 5,
-        ubm_kmeans_training_iterations: int = 25,
-        ubm_kmeans_oversampling_factor: int = 2,
+        isv_enroll_iterations=1,  # Number of iterations for the enrollment phase
+        rng=0,
+        # parameters of the GMM
+        **kwargs,
     ):
-        """
-        Parameters
-        ----------
-        """
+        """Initializes the local UBM-GMM tool with the given file selector object"""
 
         self.subspace_dimension_of_u = subspace_dimension_of_u
-        self.training_iterations = training_iterations
-        self.enroll_iterations = enroll_iterations
-        self.relevance_factor = relevance_factor
+        self.isv_training_iterations = isv_training_iterations
+        self.isv_enroll_iterations = isv_enroll_iterations
+        self.isv_relevance_factor = isv_relevance_factor
         self.rng = rng
 
-        self.ubm_n_gaussians = ubm_n_gaussians
-        self.ubm_training_threshold = ubm_training_threshold
-        self.ubm_training_iterations = ubm_training_iterations
-        self.ubm_update_means = ubm_update_means
-        self.ubm_update_variances = ubm_update_variances
-        self.ubm_update_weights = ubm_update_weights
-        self.ubm_mean_var_update_threshold = ubm_mean_var_update_threshold
-        self.ubm_kmeans_init_method = ubm_kmeans_init_method
-        self.ubm_kmeans_init_iterations = ubm_kmeans_init_iterations
-        self.ubm_kmeans_training_iterations = ubm_kmeans_training_iterations
-        self.ubm_kmeans_oversampling_factor = ubm_kmeans_oversampling_factor
-
+        self.gmm_algorithm = GMM(init_seed=rng, **kwargs)
         self.isv_machine = None
 
         super(ISV, self).__init__()
@@ -81,8 +55,8 @@ class ISV(BioAlgorithm, TransformerMixin):
         # Create the ISV machine based on the GMM UBM
         self.isv_machine = ISVMachine(
             r_U=self.subspace_dimension_of_u,
-            em_iterations=self.training_iterations,
-            relevance_factor=self.relevance_factor,
+            em_iterations=self.isv_training_iterations,
+            relevance_factor=self.isv_relevance_factor,
             seed=self.rng,
             ubm=self.gmm_algorithm.ubm,
         )
@@ -92,26 +66,6 @@ class ISV(BioAlgorithm, TransformerMixin):
         self.isv_machine.fit(X, y)
         return self
 
-    #######################################################
-    #                ISV training                         #
-    def project(self, feature):
-        """Computes GMM statistics against a UBM, then corresponding Ux vector"""
-        return self.isv_machine.transform(feature)
-
-    #######################################################
-    #                 ISV model enroll                    #
-
-    def _check_projected(self, probe):
-        """Checks that the probe is of the desired type"""
-        assert isinstance(probe, (tuple, list))
-        assert len(probe) == 2
-        assert isinstance(probe[0], GMMStats)
-        assert (
-            isinstance(probe[1], np.ndarray)
-            and probe[1].ndim == 1
-            and probe[1].dtype == np.float64
-        )
-
     def enroll(self, enroll_features):
         """Performs ISV enrollment
 
@@ -120,6 +74,9 @@ class ISV(BioAlgorithm, TransformerMixin):
         enroll_features : list of numpy.ndarray
             The features to be enrolled.
         """
+        if enroll_features[0].ndim == 2:
+            enroll_features = np.vstack(enroll_features)
+
         return self.isv_machine.enroll(
             enroll_features, self.isv_enroll_iterations
         )
@@ -129,12 +86,6 @@ class ISV(BioAlgorithm, TransformerMixin):
 
     def score(self, model, probe):
         """Computes the score for the given model and the given probe."""
-        # assert isinstance(model, ISVMachine), type(model)
-        # projected_probe = self.project(probe)
-        # self._check_projected(projected_probe)
-
-        # gmm_stats = projected_probe[0]
-        # Ux = projected_probe[1]
         return self.isv_machine.score(model, probe)
 
     # def score_for_multiple_probes(self, model, probes):
@@ -222,7 +173,7 @@ class ReferenceIdEncoder(OrdinalEncoder):
         }
 
 
-def label_repeater(samples, data_attr, label_attr):
+def label_repeater(samples, label_attr, data_attr="data"):
     """
     This function repeats the labels of the samples to be as big as each data sample.
     """
@@ -242,7 +193,7 @@ def label_repeater(samples, data_attr, label_attr):
     return samples
 
 
-def LabelRepeater(data_attr, label_attr):
+def LabelRepeater(label_attr, data_attr="data"):
     return FunctionTransformer(
         func=label_repeater,
         validate=False,

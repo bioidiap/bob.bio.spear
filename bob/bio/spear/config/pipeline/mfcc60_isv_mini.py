@@ -5,7 +5,7 @@
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.pipelines import PipelineSimple
-from bob.bio.spear.algorithm.isv import ISV, ReferenceIdEncoder, LabelRepeater
+from bob.bio.spear.algorithm import ISV, ReferenceIdEncoder, LabelRepeater
 from bob.bio.spear.annotator import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.pipelines import wrap
