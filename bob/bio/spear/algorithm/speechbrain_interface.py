@@ -20,38 +20,29 @@ class SpeechBrainInterface(BioAlgorithm):
             savedir="pretrained_models/spkrec-ecapa-voxceleb",
         )
 
-    def enroll(self, data):
-        return data  # Defines the model as the data itself (used during the scoring)
+    def enroll(self, model_samples):
 
-    def score(self, model, data):
-
-        m_length = [len(m) for m in model]
+        m_lengths = [len(m) for m in model_samples]
 
         model_stack = np.vstack(
-            [np.pad(m, (0, max(m_length) - len(m)), "constant") for m in model]
+            [np.pad(m, (0, max(m_lengths) - len(m)), "constant") for m in model_samples]
         )
-        relative_m_length = [length / (max(m_length)) for length in m_length]
-        scores, _ = self.verification.verify_batch(
+        relative_m_lengths = [length / max(m_lengths) for length in m_lengths]
+
+        embeddings = self.verification.encode_batch(
             torch.from_numpy(model_stack),
-            torch.from_numpy(data),
-            torch.tensor(relative_m_length),
+            torch.tensor(relative_m_lengths),
+            normalize=True,
         )
-        scores = np.array(scores, dtype=float)
 
-        # Reduce to one score for that probe on this model
-        return [scores.mean()]
+        return embeddings  # Embeddings corresponding to one model
 
-        # # Compute the score on each audio file of the model
-        # scores = [
-        #     self.verification.verify_batch(
-        #         torch.from_numpy(m),
-        #         torch.from_numpy(data),
-        #     )[
-        #         0
-        #     ]  # Retrieves the score, discards the decision
-        #     for m in model  # Scores against each sample of model
-        # ]
-        # scores = np.array(scores, dtype=float)
+    def score(self, model_embeddings, probe_sample):
 
-        # # Reduce to one score for that probe on this model
-        # return [scores.mean()]
+        data_embedding = self.verification.encode_batch(
+            torch.from_numpy(probe_sample), normalize=True
+        )
+
+        score = self.verification.similarity(model_embeddings, data_embedding)
+
+        return [np.array(score, dtype=float).mean()]
