@@ -33,7 +33,6 @@ requirements:
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - bob.bio.gmm
     - scikit-learn
     - tqdm {{ tqdm }}
   run:

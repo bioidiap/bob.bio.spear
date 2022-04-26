@@ -57,7 +57,7 @@ For the ``verify.py`` script, the grid configuration is adapted to each of the a
 Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option.
 Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
 
-When running the algorithms from the `bob.bio.gmm`_ package in parallel, the specialized scripts are executed.
+When running the algorithms from the `bob.bio.spear`_ package in parallel, the specialized scripts are executed.
 This will speed up the training of the UBM (and possible additional steps) tremendously.
 
 
@@ -68,7 +68,7 @@ The algorithms present a set of state-of-the-art speaker recognition algorithms.
 
 * ``gmm``: *Gaussian Mixture Models* (GMM) [Rey00]_.
 
-  - algorithm : :py:class:`bob.bio.gmm.algorithm.GMM`
+  - algorithm : :py:class:`bob.bio.spear.algorithm.GMM`
 
 * ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [Vogt08]_ is used to learn what variations in samples are introduced by identity changes and which not.
 

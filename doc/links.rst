@@ -29,4 +29,3 @@
 .. _HTK: http://htk.eng.cam.ac.uk/
 .. _bob.db.mobio: https://pypi.python.org/pypi/bob.db.mobio
 .. _NIST: http://www.nist.gov/itl/iad/ig/focs.cfm
-.. _bob.bio.gmm: https://pypi.python.org/pypi/bob.bio.gmm

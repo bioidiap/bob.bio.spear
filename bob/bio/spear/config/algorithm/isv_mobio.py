@@ -1,6 +1,6 @@
-import bob.bio.gmm
+import bob.bio.spear
 
-algorithm = bob.bio.gmm.algorithm.ISV(
+algorithm = bob.bio.spear.algorithm.ISV(
     # ISV parameters
     subspace_dimension_of_u=50,
     # GMM parameters

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-import bob.bio.gmm
+import bob.bio.spear
 
-algorithm = bob.bio.gmm.algorithm.GMMRegular(number_of_gaussians=256)
+algorithm = bob.bio.spear.algorithm.GMMRegular(number_of_gaussians=256)

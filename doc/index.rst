@@ -22,7 +22,7 @@ This includes:
 * Feature extraction
 * Recognition/Verification tools
 
-Notice that most of the machine learning tools (GMM, ISV, JFA, IVectors) are now handled by bob.bio.gmm.
+Notice that most of the machine learning tools (GMM, ISV, JFA, IVectors) are now handled by bob.bio.spear.
 
 `spear`_ is adapted to run speaker verification/recognition experiments with the SGE
 grid infrastructure at Idiap, using Dask. However, you can setup `bob.pipelines` to run

@@ -11,7 +11,7 @@ from sklearn.base import TransformerMixin
 from sklearn.preprocessing import OrdinalEncoder, FunctionTransformer
 
 from bob.bio.base.pipelines import BioAlgorithm
-from bob.bio.gmm.algorithm import GMM
+from bob.bio.spear.algorithm import GMM
 from bob.learn.em import GMMStats, ISVMachine
 
 logger = logging.getLogger(__name__)
