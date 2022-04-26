@@ -24,17 +24,34 @@ class SpeechBrainInterface(BioAlgorithm):
         return data  # Defines the model as the data itself (used during the scoring)
 
     def score(self, model, data):
-        # Compute the score on each audio file of the model
-        scores = [
-            self.verification.verify_batch(
-                torch.from_numpy(m),
-                torch.from_numpy(data),
-            )[
-                0
-            ]  # Retrieves the score, discards the decision
-            for m in model  # Scores against each sample of model
-        ]
+
+        m_length = [len(m) for m in model]
+
+        model_stack = np.vstack(
+            [np.pad(m, (0, max(m_length) - len(m)), "constant") for m in model]
+        )
+        relative_m_length = [length / (max(m_length)) for length in m_length]
+        scores, _ = self.verification.verify_batch(
+            torch.from_numpy(model_stack),
+            torch.from_numpy(data),
+            torch.tensor(relative_m_length),
+        )
         scores = np.array(scores, dtype=float)
 
         # Reduce to one score for that probe on this model
         return [scores.mean()]
+
+        # # Compute the score on each audio file of the model
+        # scores = [
+        #     self.verification.verify_batch(
+        #         torch.from_numpy(m),
+        #         torch.from_numpy(data),
+        #     )[
+        #         0
+        #     ]  # Retrieves the score, discards the decision
+        #     for m in model  # Scores against each sample of model
+        # ]
+        # scores = np.array(scores, dtype=float)
+
+        # # Reduce to one score for that probe on this model
+        # return [scores.mean()]
