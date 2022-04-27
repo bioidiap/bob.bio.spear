@@ -1,7 +1,6 @@
 setuptools
 bob.extension
 bob.io.base
-bob.ap
 bob.measure
 bob.bio.base
 bob.pipelines

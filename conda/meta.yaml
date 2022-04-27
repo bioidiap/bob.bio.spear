@@ -28,7 +28,6 @@ requirements:
     - pip {{ pip }}
     - bob.extension
     - bob.io.base
-    - bob.ap
     - bob.learn.em
     - bob.measure
     - bob.bio.base

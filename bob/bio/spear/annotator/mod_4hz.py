@@ -24,10 +24,9 @@ import logging
 import numpy
 import scipy.signal
 
-import bob.ap
 from bob.bio.base.annotator import Annotator
 
-from .. import utils
+from .. import utils, audio_processing as ap
 
 logger = logging.getLogger(__name__)
 
@@ -181,26 +180,23 @@ class Mod_4Hz(Annotator):
     def mod_4hz(self, data, sample_rate):
         """Computes and returns the 4Hz modulation energy features for the given input wave file"""
 
-        # Set parameters
-        wl = self.win_length_ms
-        ws = self.win_shift_ms
-        nf = self.n_filters
-        f_min = self.f_min
-        f_max = self.f_max
-        pre = self.pre_emphasis_coef
-
-        c = bob.ap.Spectrogram(sample_rate, wl, ws, nf, f_min, f_max, pre)
-        c.energy_filter = True
-        c.log_filter = False
-        c.energy_bands = True
-
-        sig = data
-        energy_bands = c(sig)
+        energy_bands = ap.spectrogram(
+            data,
+            sample_rate,
+            win_length_ms=self.win_length_ms,
+            win_shift_ms=self.win_shift_ms,
+            n_filters=self.n_filters,
+            f_min=self.f_min,
+            f_max=self.f_max,
+            pre_emphasis_coef=self.pre_emphasis_coef,
+            energy_filter=True,
+            log_filter=False,
+            energy_bands=True,
+        )
         filtering_res = self.pass_band_filtering(energy_bands, sample_rate)
         mod_4hz = self.modulation_4hz(filtering_res, data, sample_rate)
         mod_4hz = self.averaging(mod_4hz)
-        e = bob.ap.Energy(sample_rate, wl, ws)
-        energy_array = e(data)
+        energy_array = ap.energy(data, sample_rate, win_length_ms=self.win_length_ms, win_shift_ms=self.win_shift_ms)
         labels = self._voice_activity_detection(energy_array, mod_4hz)
         labels = utils.smoothing(
             labels, self.smoothing_window
