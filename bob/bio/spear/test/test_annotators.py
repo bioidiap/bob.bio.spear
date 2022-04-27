@@ -20,8 +20,6 @@
 import h5py
 import numpy as np
 import pkg_resources
-from scipy.io import wavfile
-
 import bob.bio.base
 import bob.bio.spear
 from bob.pipelines import Sample, wrap
@@ -38,15 +36,13 @@ def _compare(
         ref_f["array"] = data
 
     # Compare reference
-    reference = h5py.File(reference, "r")
-    np.testing.assert_allclose(data, reference["array"], atol=1e-5)
-
+    reference = np.array(h5py.File(reference, "r")["array"])
+    np.testing.assert_allclose(data, reference, atol=1e-5)
 
 def _wav(filename="data/sample.wav"):
     path = pkg_resources.resource_filename("bob.bio.spear.test", filename)
-
-    rate, wav_samples = wavfile.read(path)
-    return rate, wav_samples.astype(float)
+    waveform, sample_rate = bob.bio.spear.audio_processing.read(path)
+    return sample_rate, waveform
 
 
 def test_energy_2gauss():

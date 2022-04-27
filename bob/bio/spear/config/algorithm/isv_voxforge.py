@@ -1,6 +1,8 @@
-import bob.bio.gmm
+from bob.bio.spear.algorithm import ISV
 
-algorithm = bob.bio.gmm.algorithm.ISV(
+"""Config file for the ISV algorithm tuned for the Voxforge dataset."""
+
+algorithm = ISV(
     # ISV parameters
     subspace_dimension_of_u=50,
     # GMM parameters

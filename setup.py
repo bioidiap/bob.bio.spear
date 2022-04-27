@@ -113,22 +113,15 @@ setup(
             "mod-4hz       = bob.bio.spear.config.annotator.mod_4hz:annotator",  # mod_4hz VAD
             "external      = bob.bio.spear.config.annotator.external:annotator",  # external VAD
         ],
-        "bob.bio.preprocessor": [
-            "cqcc20p = bob.bio.spear.config.extractor.cqcc20:cqcc20",  # Empty preprocessor for CQCC features
-        ],
-        "bob.bio.extractor": [
-            "mfcc60 = bob.bio.spear.config.extractor.mfcc60:extractor",  # 60-dim MFCC features
-        ],
-        "bob.bio.algorithm": [
-            "gmm-voxforge         = bob.bio.spear.config.algorithm.gmm_voxforge:algorithm",  # GMM config used for voxforge
-        ],
         "bob.bio.pipeline": [
-            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmmvoxforge:pipeline",
+            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge:pipeline",
         ],
         "bob.bio.config": [
+            # databases:
             "voxforge      = bob.bio.spear.config.database.voxforge",
             "mini-voxforge = bob.bio.spear.config.database.mini_voxforge",
-            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmmvoxforge",
+            # algorithms:
+            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge",
         ],
         "bob.db.cli": [
             "download-voxforge = bob.bio.spear.database.voxforge:download_voxforge",

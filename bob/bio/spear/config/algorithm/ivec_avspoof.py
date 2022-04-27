@@ -1,6 +1,6 @@
-import bob.bio.gmm
+import bob.bio.spear
 
-algorithm = bob.bio.gmm.algorithm.IVector(
+algorithm = bob.bio.spear.algorithm.IVector(
     # IVector parameters
     subspace_dimension_of_t=100,
     update_sigma=True,

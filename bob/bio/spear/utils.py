@@ -1,61 +1,4 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
-# Laurent El Shafey <Laurent.El-Shafey@idiap.ch>
-# Roy Wallace <roy.wallace@idiap.ch>
-# Elie Khoury <Elie.Khoury@idiap.ch>
-#
-# Copyright (C) 2012-2013 Idiap Research Institute, Martigny, Switzerland
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, version 3 of the License.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-import os
-
 import numpy as np
-
-
-def ensure_dir(dirname):
-    """Creates the directory dirname if it does not already exist,
-    taking into account concurrent 'creation' on the grid.
-    An exception is thrown if a file (rather than a directory) already
-    exists."""
-    try:
-        # Tries to create the directory
-        os.makedirs(dirname)
-    except OSError:
-        # Check that the directory exists
-        if os.path.isdir(dirname):
-            pass
-        else:
-            raise
-
-
-def read(filename):  # TODO remove
-    """Deprecated. Read audio file"""
-    # Deprecated: use load() function from bob.bio.spear.database.AudioBioFile
-    # TODO: update xbob.sox first. This will enable the use of formats like NIST sphere and other
-    # import xbob.sox
-    # audio = xbob.sox.reader(filename)
-    # (rate, data) = audio.load()
-    # We consider there is only 1 channel in the audio file => data[0]
-    # data= np.cast['float'](data[0]*pow(2,15)) # pow(2,15) is used to get the same native format as for scipy.io.wavfile.read
-    DeprecationWarning("Do not.")
-    import scipy.io.wavfile
-
-    rate, audio = scipy.io.wavfile.read(filename)
-
-    # We consider there is only 1 channel in the audio file => data[0]
-    data = np.cast["float"](audio)
-    return rate, data
 
 
 def normalize_std_array(vector: np.ndarray):
@@ -138,6 +81,37 @@ def smoothing(labels, smoothing_window):
             curr[2] = 1
 
     return labels
+
+
+def stack_speech_data(data, expected_ndim):
+    """Stacks the speech data into a matrix of shape (n_samples, n_features) or
+    labels into shape of (n_samples,) if the input data is not like that already
+
+    Parameters
+    ----------
+    data : array-like
+        speech data or labels
+    expected_ndim : int
+        expected number of dimensions of the data
+
+    Returns
+    -------
+    stacked_data : array-like
+        stacked data if needed
+    """
+    if expected_ndim not in (1, 2):
+        raise ValueError(f"expected_ndim must be 1 or 2 but got {expected_ndim}")
+
+    if expected_ndim == 1:
+        stack_function = np.concatenate
+    else:
+        stack_function = np.vstack
+
+    if data[0].ndim == expected_ndim:
+        return stack_function(data)
+
+    return data
+
 
 
 # gets sphinx autodoc done right - don't remove it
