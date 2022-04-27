@@ -18,11 +18,11 @@ bioalgorithm = ISV(
     # ISV parameters
     r_U=50,
     random_state=SEED,
+    enroll_iterations=1,
     # GMM parameters
     ubm_kwargs=dict(
         n_gaussians=256,
         max_fitting_steps=2,
-        enroll_iterations=1,
         convergence_threshold=1e-3,  # Maximum number of iterations as stopping criterion
         k_means_trainer=KMeansMachine(
             n_clusters=256,

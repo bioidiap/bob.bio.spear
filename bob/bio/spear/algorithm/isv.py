@@ -36,8 +36,6 @@ class ISV(ISVMachine, BioAlgorithm):
         **kwargs,
     ):
         """Initializes the local UBM-GMM tool with the given file selector object"""
-        if ubm_kwargs:
-            ubm_kwargs["gmm_class"] = GMM
 
         super().__init__(
             r_U=r_U,
@@ -69,7 +67,7 @@ class ISV(ISVMachine, BioAlgorithm):
             The features to be enrolled.
         """
         enroll_features = stack_speech_data(enroll_features, expected_ndim=2)
-        return super().enroll(enroll_features)
+        return super().enroll(enroll_features, iterations=self.enroll_iterations)
 
     def transform(self, X):
         """Passthrough"""
