@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import bob.bio.gmm
+import bob.bio.spear
 
-algorithm = bob.bio.gmm.algorithm.JFA(
+algorithm = bob.bio.spear.algorithm.JFA(
     # JFA Training
     subspace_dimension_of_u=10,  # U subspace dimension
     subspace_dimension_of_v=5,  # V subspace dimension

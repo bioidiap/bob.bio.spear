@@ -1,12 +1,10 @@
 setuptools
 bob.extension
 bob.io.base
-bob.ap
-bob.bio.gmm
 bob.measure
 bob.bio.base
 bob.pipelines
-matplotlib   # for plotting
 tqdm
 six
-scikit-learn # for pipelines Tranformers
+scipy  # For audio files loading
+scikit-learn  # For pipelines Tranformers

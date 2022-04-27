@@ -83,7 +83,7 @@ def path_loader(path: str):
 
 
 def SpearBioDatabase(
-    database_name: str,
+    name: str,
     protocol: Union[str, None] = None,
     dataset_protocol_path: Union[str, None] = None,
     data_path: Union[str, None] = None,
@@ -154,13 +154,13 @@ def SpearBioDatabase(
     """
 
     if dataset_protocol_path is None:
-        dataset_protocol_path = get_protocol_file(database_name)
+        dataset_protocol_path = get_protocol_file(name)
 
     logger.info(
         f"Database: Will read the CSV protocol definitions in '{dataset_protocol_path}'."
     )
 
-    rc_db_name = known_databases.get(database_name, {}).get("rc_name", database_name)
+    rc_db_name = known_databases.get(name, {}).get("rc_name", name)
 
     if data_path is None:
         data_path = rc.get(f"bob.db.{rc_db_name}.directory")
@@ -208,7 +208,7 @@ def SpearBioDatabase(
         )
 
     return CSVDataset(
-        name=database_name,
+        name=name,
         protocol=protocol,
         dataset_protocol_path=dataset_protocol_path,
         csv_to_sample_loader=sample_loader,

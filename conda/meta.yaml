@@ -28,19 +28,15 @@ requirements:
     - pip {{ pip }}
     - bob.extension
     - bob.io.base
-    - bob.ap
     - bob.learn.em
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - bob.bio.gmm
     - scikit-learn
-    - matplotlib {{ matplotlib }}
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
-    - {{ pin_compatible('matplotlib') }}
     - {{ pin_compatible('tqdm') }}
 
 test:

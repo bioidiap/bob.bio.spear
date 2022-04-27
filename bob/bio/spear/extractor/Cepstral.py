@@ -1,21 +1,6 @@
 #!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
 # Elie Khoury <Elie.Khoury@idiap.ch>
-# Tue  9 Jun 23:10:43 CEST 2015
-#
-# Copyright (C) 2012-2013 Idiap Research Institute, Martigny, Switzerland
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, version 3 of the License.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+# Amir Mohammadi <amir.mohammadi@idiap.ch>
 
 """Cepstral Features for speaker recognition"""
 
@@ -24,7 +9,7 @@ import logging
 import numpy
 from sklearn.base import BaseEstimator, TransformerMixin
 
-import bob.ap
+from .. import audio_processing as ap
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +35,7 @@ class Cepstral(BaseEstimator, TransformerMixin):
         n_filters=24,
         dct_norm=False,
         f_min=0.0,
-        f_max=4000,
+        f_max=4000.0,
         delta_win=2,
         mel_scale=True,
         with_energy=True,
@@ -62,7 +47,7 @@ class Cepstral(BaseEstimator, TransformerMixin):
         normalize_flag=True,
         **kwargs,
     ):
-        """Most parameters are passed to `bob.ap.Ceps`.
+        """Most parameters are passed to `ap.cepstral`.
 
         Parameters
         ----------
@@ -111,24 +96,23 @@ class Cepstral(BaseEstimator, TransformerMixin):
         """Computes and returns cepstral features for one given audio signal."""
         logger.debug("Cepstral transform.")
 
-        # Set parameters
-        wl = self.win_length_ms
-        ws = self.win_shift_ms
-        nf = self.n_filters
-        nc = self.n_ceps
-        f_min = self.f_min
-        f_max = self.f_max
-        dw = self.delta_win
-        pre = self.pre_emphasis_coef
-
-        ceps = bob.ap.Ceps(sample_rate, wl, ws, nf, nc, f_min, f_max, dw, pre)
-        ceps.dct_norm = self.dct_norm
-        ceps.mel_scale = self.mel_scale
-        ceps.with_energy = self.with_energy
-        ceps.with_delta = self.with_delta
-        ceps.with_delta_delta = self.with_delta_delta
-
-        cepstral_features = ceps(wav_data)
+        cepstral_features = ap.cepstral(
+            wav_data,
+            sample_rate,
+            win_length_ms=self.win_length_ms,
+            win_shift_ms=self.win_shift_ms,
+            n_filters=self.n_filters,
+            f_min=self.f_min,
+            f_max=self.f_max,
+            pre_emphasis_coef=self.pre_emphasis_coef,
+            mel_scale=self.mel_scale,
+            n_ceps=self.n_ceps,
+            delta_win=self.delta_win,
+            dct_norm=self.dct_norm,
+            with_energy=self.with_energy,
+            with_delta=self.with_delta,
+            with_delta_delta=self.with_delta_delta,
+        )
 
         if vad_labels is not None:  # Don't apply VAD if labels are not present
             vad_labels = numpy.array(

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import bob.bio.gmm
+import bob.bio.spear
 
-algorithm = bob.bio.gmm.algorithm.GMM(
+algorithm = bob.bio.spear.algorithm.GMM(
     number_of_gaussians=128,
 )
