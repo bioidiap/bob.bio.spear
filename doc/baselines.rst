@@ -57,8 +57,6 @@ For the ``verify.py`` script, the grid configuration is adapted to each of the a
 Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option.
 Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
 
-When running the algorithms from the `bob.bio.spear`_ package in parallel, the specialized scripts are executed.
-This will speed up the training of the UBM (and possible additional steps) tremendously.
 
 
 The Algorithms
