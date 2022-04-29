@@ -26,7 +26,8 @@ import scipy.signal
 
 from bob.bio.base.annotator import Annotator
 
-from .. import utils, audio_processing as ap
+from .. import audio_processing as ap
+from .. import utils
 
 logger = logging.getLogger(__name__)
 
@@ -196,7 +197,12 @@ class Mod_4Hz(Annotator):
         filtering_res = self.pass_band_filtering(energy_bands, sample_rate)
         mod_4hz = self.modulation_4hz(filtering_res, data, sample_rate)
         mod_4hz = self.averaging(mod_4hz)
-        energy_array = ap.energy(data, sample_rate, win_length_ms=self.win_length_ms, win_shift_ms=self.win_shift_ms)
+        energy_array = ap.energy(
+            data,
+            sample_rate,
+            win_length_ms=self.win_length_ms,
+            win_shift_ms=self.win_shift_ms,
+        )
         labels = self._voice_activity_detection(energy_array, mod_4hz)
         labels = utils.smoothing(
             labels, self.smoothing_window

@@ -1,7 +1,9 @@
 import os
-import pkg_resources
-from bob.bio.spear.audio_processing import read, energy, spectrogram, cepstral
+
 import numpy as np
+import pkg_resources
+
+from bob.bio.spear.audio_processing import cepstral, energy, read, spectrogram
 
 TEST_DATA_FOLDER = pkg_resources.resource_filename(__name__, "data")
 DATA, RATE = read(os.path.join(TEST_DATA_FOLDER, "sample.wav"))
