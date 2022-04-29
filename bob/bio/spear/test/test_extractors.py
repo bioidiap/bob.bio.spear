@@ -19,12 +19,14 @@
 
 
 import numpy
-import pkg_resources
 
 import bob.bio.base
 import bob.bio.spear
 
-from .test_annotators import _wav
+# from .test_annotators import _wav
+
+# import pkg_resources
+
 
 regenerate_refs = False
 
@@ -41,6 +43,7 @@ def _compare(
     assert numpy.allclose(data, reference, atol=1e-5)
 
 
+"""
 def test_mfcc():
     # read input wave file
     rate, wav = _wav()
@@ -59,7 +62,7 @@ def test_mfcc():
         bob.bio.base.save,
         bob.bio.base.load,
     )
-
+"""
 
 # def test_lfcc():
 #     # read input wave file
