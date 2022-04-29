@@ -8,16 +8,14 @@ This adds the notions of models, probes, enrollment, and scores to GMM.
 
 import copy
 import logging
-
 from typing import Callable, Union
 
 import dask.array as da
-import numpy as np
-
 from h5py import File as HDF5File
 
 from bob.bio.base.pipelines import BioAlgorithm
 from bob.learn.em import GMMMachine, GMMStats, linear_scoring
+
 from ..utils import stack_speech_data
 
 logger = logging.getLogger(__name__)
@@ -40,7 +38,7 @@ class GMM(GMMMachine, BioAlgorithm):
         # parameters for the GMM
         n_gaussians: int,
         # parameters of UBM training
-        k_means_trainer = None,
+        k_means_trainer=None,
         max_fitting_steps: int = 25,  # Maximum number of iterations for GMM Training
         convergence_threshold: float = 5e-4,  # Threshold to end the ML training
         mean_var_update_threshold: float = 5e-4,  # Minimum value that a variance can reach

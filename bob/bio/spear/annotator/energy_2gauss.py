@@ -27,7 +27,8 @@ import numpy as np
 from bob.bio.base.annotator import Annotator
 from bob.learn.em import GMMMachine, KMeansMachine
 
-from .. import utils, audio_processing as ap
+from .. import audio_processing as ap
+from .. import utils
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +107,12 @@ class Energy_2Gauss(Annotator):
     def _compute_energy(self, audio_signal: np.ndarray, sample_rate: int) -> np.ndarray:
         """Retrieves the speech / non speech labels for the speech sample in ``audio_signal``"""
 
-        energy_array = ap.energy(audio_signal, sample_rate, win_length_ms=self.win_length_ms, win_shift_ms=self.win_shift_ms)
+        energy_array = ap.energy(
+            audio_signal,
+            sample_rate,
+            win_length_ms=self.win_length_ms,
+            win_shift_ms=self.win_shift_ms,
+        )
         labels = self._voice_activity_detection(energy_array)
 
         # discard isolated speech a number of frames defined in smoothing_window
