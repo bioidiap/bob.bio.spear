@@ -5,12 +5,11 @@
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.pipelines import PipelineSimple
-from bob.bio.spear.algorithm import ISV, ReferenceIdEncoder, LabelRepeater
+from bob.bio.spear.algorithm import ISV, LabelRepeater, ReferenceIdEncoder
 from bob.bio.spear.annotator import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
-from bob.pipelines import wrap
 from bob.learn.em import KMeansMachine
-
+from bob.pipelines import wrap
 
 SEED = 0
 
@@ -39,7 +38,10 @@ transformer = Pipeline(
         ("annotator", Energy_2Gauss()),
         ("extractor", Cepstral()),
         ("reference_id_encoder", ReferenceIdEncoder()),
-        ("label_repeater", LabelRepeater(data_attr="data", label_attr="reference_id_int")),
+        (
+            "label_repeater",
+            LabelRepeater(data_attr="data", label_attr="reference_id_int"),
+        ),
         ("algorithm_trainer", bioalgorithm),
     ]
 )

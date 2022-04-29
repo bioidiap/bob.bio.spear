@@ -5,11 +5,11 @@
 # Pavel Korshunov <Pavel.Korshunov@idiap.ch>
 # Amir Mohammadi <amir.mohammadi@idiap.ch>
 
-import os
 import math
+import sys
+
 import numpy
 import scipy.io.wavfile
-import sys
 
 
 def fft(src, dst=None):
@@ -141,7 +141,7 @@ def log_filter_bank(frame, n_filters, p_index, win_size, energy_filter):
 
     if energy_filter:
         # Energy is basically magnitude in power of 2
-        half_frame = half_frame ** 2
+        half_frame = half_frame**2
 
     frame[0 : int(win_size / 2) + 1] = half_frame
     filters = log_triangular_bank(frame, n_filters, p_index)
@@ -189,23 +189,17 @@ def dct_transform(filters, n_filters, dct_kernel, n_ceps):
     return ceps
 
 
-def energy(data, rate, *, win_length_ms=20., win_shift_ms=10.):
+def energy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
 
-    #########################
-    ## Initialisation part ##
-    #########################
+    # Initialisation part
 
     win_length = int(rate * win_length_ms / 1000)
     win_shift = int(rate * win_shift_ms / 1000)
     win_size = int(2.0 ** math.ceil(math.log(win_length) / math.log(2)))
 
-    ######################################
-    ### End of the Initialisation part ###
-    ######################################
+    # End of the Initialisation part
 
-    ######################################
-    ###          Core code             ###
-    ######################################
+    #  Core code
 
     data_size = data.shape[0]
     n_frames = int(1 + (data_size - win_length) / win_shift)
@@ -234,20 +228,18 @@ def spectrogram(
     data,
     rate,
     *,
-    win_length_ms=20.,
-    win_shift_ms=10.,
+    win_length_ms=20.0,
+    win_shift_ms=10.0,
     n_filters=24,
-    f_min=0.,
-    f_max=4000.,
+    f_min=0.0,
+    f_max=4000.0,
     pre_emphasis_coef=0.95,
     mel_scale=True,
     energy_filter=False,
     log_filter=True,
     energy_bands=False,
 ):
-    #########################
-    ## Initialisation part ##
-    #########################
+    # Initialisation part
 
     win_length = int(rate * win_length_ms / 1000)
     win_shift = int(rate * win_shift_ms / 1000)
@@ -259,13 +251,9 @@ def spectrogram(
     # Compute cut-off frequencies
     p_index = init_freqfilter(rate, win_size, mel_scale, n_filters, f_min, f_max)
 
-    ######################################
-    ### End of the Initialisation part ###
-    ######################################
+    # End of the Initialisation part
 
-    ######################################
-    ###          Core code             ###
-    ######################################
+    #          Core code
 
     data_size = data.shape[0]
     n_frames = int(1 + (data_size - win_length) / win_shift)
@@ -292,7 +280,9 @@ def spectrogram(
         # Hamming windowing
         frame = hamming_window(frame, hamming_kernel, win_length)
 
-        _, spec_row = log_filter_bank(frame, n_filters, p_index, win_size, energy_filter)
+        _, spec_row = log_filter_bank(
+            frame, n_filters, p_index, win_size, energy_filter
+        )
 
         features[i] = spec_row[0 : int(win_size / 2) + 1]
 
@@ -318,9 +308,7 @@ def cepstral(
     with_delta_delta=True,
 ):
 
-    #########################
-    ## Initialisation part ##
-    #########################
+    # Initialisation part
 
     win_length = int(rate * win_length_ms / 1000)
     win_shift = int(rate * win_shift_ms / 1000)
@@ -342,13 +330,9 @@ def cepstral(
     # Cosine transform initialisation
     dct_kernel = init_dct_kernel(n_filters, n_ceps, dct_norm)
 
-    ######################################
-    ### End of the Initialisation part ###
-    ######################################
+    # End of the Initialisation part
 
-    ######################################
-    ###          Core code             ###
-    ######################################
+    #          Core code
 
     data_size = data.shape[0]
     n_frames = int(1 + (data_size - win_length) / win_shift)
@@ -391,14 +375,14 @@ def cepstral(
         frame = hamming_window(frame, hamming_kernel, win_length)
 
         # FFT and filters
-        filters, _ = log_filter_bank(frame, n_filters, p_index, win_size, energy_filter=False)
+        filters, _ = log_filter_bank(
+            frame, n_filters, p_index, win_size, energy_filter=False
+        )
 
         # apply DCT
         ceps = dct_transform(filters, n_filters, dct_kernel, n_ceps)
 
-        ######################################
-        ###     Deltas and Delta-Deltas    ###
-        ######################################
+        #     Deltas and Delta-Deltas
 
         d1 = n_ceps
         if with_energy:
@@ -419,7 +403,7 @@ def cepstral(
         for i in range(n_frames):
             for k in range(n_ceps):
                 features[i][d1 + k] = 0.0
-                for l in range(1, delta_win + 1):
+                for l in range(1, delta_win + 1):  # noqa: E741
                     if i + l < n_frames:
                         p_ind = i + l
                     else:
@@ -443,7 +427,7 @@ def cepstral(
         for i in range(n_frames):
             k = n_ceps
             features[i][d1 + k] = 0.0
-            for l in range(1, delta_win + 1):
+            for l in range(1, delta_win + 1):  # noqa: E741
                 if i + l < n_frames:
                     p_ind = i + l
                 else:
@@ -466,7 +450,7 @@ def cepstral(
         for i in range(n_frames):
             for k in range(n_ceps):
                 features[i][2 * d1 + k] = 0.0
-                for l in range(1, delta_win + 1):
+                for l in range(1, delta_win + 1):  # noqa: E741
                     if i + l < n_frames:
                         p_ind = i + l
                     else:
@@ -489,7 +473,7 @@ def cepstral(
         for i in range(n_frames):
             k = n_ceps
             features[i][2 * d1 + k] = 0.0
-            for l in range(1, delta_win + 1):
+            for l in range(1, delta_win + 1):  # noqa: E741
                 if i + l < n_frames:
                     p_ind = i + l
                 else:

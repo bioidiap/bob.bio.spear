@@ -1,5 +1,5 @@
 from .gmm import GMM
-from .isv import ISV, ReferenceIdEncoder, LabelRepeater
+from .isv import ISV, LabelRepeater, ReferenceIdEncoder
 
 
 # gets sphinx autodoc done right - don't remove it

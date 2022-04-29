@@ -20,6 +20,7 @@
 import h5py
 import numpy as np
 import pkg_resources
+
 import bob.bio.base
 import bob.bio.spear
 from bob.pipelines import Sample, wrap
@@ -38,6 +39,7 @@ def _compare(
     # Compare reference
     reference = np.array(h5py.File(reference, "r")["array"])
     np.testing.assert_allclose(data, reference, atol=1e-5)
+
 
 def _wav(filename="data/sample.wav"):
     path = pkg_resources.resource_filename("bob.bio.spear.test", filename)

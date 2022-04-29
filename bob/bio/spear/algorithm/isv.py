@@ -4,16 +4,15 @@
 
 import logging
 import pickle
-from bob.pipelines import SampleSet
 
 import numpy as np
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import OrdinalEncoder
-from sklearn.base import TransformerMixin, BaseEstimator
 
 from bob.bio.base.pipelines import BioAlgorithm
 from bob.learn.em import ISVMachine
+
 from ..utils import stack_speech_data
-from .gmm import GMM
 
 logger = logging.getLogger(__name__)
 
