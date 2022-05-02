@@ -23,10 +23,10 @@ import logging
 
 import numpy
 
-import bob
 from bob.bio.base.annotator import Annotator
 
-from .. import utils, audio_processing as ap
+from .. import audio_processing as ap
+from .. import utils
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +70,12 @@ class Energy_Thr(Annotator):
     def _compute_energy(self, data, sample_rate):
         """retreive the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
 
-        energy_array = ap.energy(data, sample_rate, win_length_ms=self.win_length_ms, win_shift_ms=self.win_shift_ms)
+        energy_array = ap.energy(
+            data,
+            sample_rate,
+            win_length_ms=self.win_length_ms,
+            win_shift_ms=self.win_shift_ms,
+        )
         labels = self._voice_activity_detection(energy_array)
         # discard isolated speech a number of frames defined in smoothing_window
         labels = utils.smoothing(labels, self.smoothing_window)

@@ -4,16 +4,16 @@
 
 import logging
 import pickle
-from bob.pipelines import SampleSet
 
 import numpy as np
+
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import OrdinalEncoder
-from sklearn.base import TransformerMixin, BaseEstimator
 
 from bob.bio.base.pipelines import BioAlgorithm
 from bob.learn.em import ISVMachine
+
 from ..utils import stack_speech_data
-from .gmm import GMM
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +67,9 @@ class ISV(ISVMachine, BioAlgorithm):
             The features to be enrolled.
         """
         enroll_features = stack_speech_data(enroll_features, expected_ndim=2)
-        return super().enroll(enroll_features, iterations=self.enroll_iterations)
+        return super().enroll(
+            enroll_features, iterations=self.enroll_iterations
+        )
 
     def transform(self, X):
         """Passthrough"""

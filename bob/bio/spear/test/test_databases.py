@@ -63,7 +63,9 @@ def _check_database(
     if n_dev_probes or n_dev_probes_samples:
         dev_pro = database.probes(group="dev")
         if n_dev_probes:
-            assert len(dev_pro) == n_dev_probes, f"Wrong dev probes len: {len(dev_pro)}"
+            assert (
+                len(dev_pro) == n_dev_probes
+            ), f"Wrong dev probes len: {len(dev_pro)}"
         assert all(isinstance(s, SampleSet) for s in dev_pro)
         if n_dev_probes_samples:
             assert all(
@@ -167,7 +169,9 @@ def test_avspoof_spoof():
 
 
 def test_asvspoof_licit():
-    database = SpearBioDatabase("asvspoof", protocol="licit", data_path="dummy/")
+    database = SpearBioDatabase(
+        "asvspoof", protocol="licit", data_path="dummy/"
+    )
 
     _check_database(
         database,
@@ -184,7 +188,9 @@ def test_asvspoof_licit():
 
 
 def test_asvspoof_spoof():
-    database = SpearBioDatabase("asvspoof", protocol="spoof", data_path="dummy/")
+    database = SpearBioDatabase(
+        "asvspoof", protocol="spoof", data_path="dummy/"
+    )
 
     _check_database(
         database,
@@ -252,7 +258,9 @@ def test_timit():
 
 
 def test_voxforge():
-    database = SpearBioDatabase("voxforge", protocol="Default", data_path="dummy/")
+    database = SpearBioDatabase(
+        "voxforge", protocol="Default", data_path="dummy/"
+    )
 
     _check_database(
         database,

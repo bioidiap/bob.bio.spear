@@ -27,7 +27,8 @@ import numpy as np
 from bob.bio.base.annotator import Annotator
 from bob.learn.em import GMMMachine, KMeansMachine
 
-from .. import utils, audio_processing as ap
+from .. import audio_processing as ap
+from .. import utils
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,9 @@ class Energy_2Gauss(Annotator):
         energy_array = (1e-6 * np.random.randn(n_samples)) + energy_array
 
         # Normalize the energy array, make it an array of 1D samples
-        normalized_energy = utils.normalize_std_array(energy_array).reshape((-1, 1))
+        normalized_energy = utils.normalize_std_array(energy_array).reshape(
+            (-1, 1)
+        )
 
         # Note: self.max_iterations and self.convergence_threshold are used for both
         # k-means and GMM training.
@@ -103,10 +106,17 @@ class Energy_2Gauss(Annotator):
 
         return labels
 
-    def _compute_energy(self, audio_signal: np.ndarray, sample_rate: int) -> np.ndarray:
+    def _compute_energy(
+        self, audio_signal: np.ndarray, sample_rate: int
+    ) -> np.ndarray:
         """Retrieves the speech / non speech labels for the speech sample in ``audio_signal``"""
 
-        energy_array = ap.energy(audio_signal, sample_rate, win_length_ms=self.win_length_ms, win_shift_ms=self.win_shift_ms)
+        energy_array = ap.energy(
+            audio_signal,
+            sample_rate,
+            win_length_ms=self.win_length_ms,
+            win_shift_ms=self.win_shift_ms,
+        )
         labels = self._voice_activity_detection(energy_array)
 
         # discard isolated speech a number of frames defined in smoothing_window
@@ -131,11 +141,15 @@ class Energy_2Gauss(Annotator):
             audio_signal=audio_signal, sample_rate=sample_rate
         )
         if (labels == 0).all():
-            logger.warning("Could not annotate: No audio was detected in the sample!")
+            logger.warning(
+                "Could not annotate: No audio was detected in the sample!"
+            )
             return None
         return labels.tolist()
 
-    def transform(self, audio_signals: "list[np.ndarray]", sample_rates: "list[int]"):
+    def transform(
+        self, audio_signals: "list[np.ndarray]", sample_rates: "list[int]"
+    ):
         with dask.config.set(scheduler="threads"):
             results = []
             for audio_signal, sample_rate in zip(audio_signals, sample_rates):

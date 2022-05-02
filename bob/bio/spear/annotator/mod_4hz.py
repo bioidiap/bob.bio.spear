@@ -26,7 +26,8 @@ import scipy.signal
 
 from bob.bio.base.annotator import Annotator
 
-from .. import utils, audio_processing as ap
+from .. import audio_processing as ap
+from .. import utils
 
 logger = logging.getLogger(__name__)
 
@@ -113,21 +114,25 @@ class Mod_4Hz(Annotator):
 
     def averaging(self, list_1s_shift):
         len_list = len(list_1s_shift)
-        sample_level_value = numpy.array(numpy.zeros(len_list, dtype=numpy.float))
+        sample_level_value = numpy.array(
+            numpy.zeros(len_list, dtype=numpy.float)
+        )
         sample_level_value[0] = numpy.array(list_1s_shift[0])
         for j in range(2, numpy.min([len_list, 100])):
-            sample_level_value[j - 1] = ((j - 1.0) / j) * sample_level_value[j - 2] + (
-                1.0 / j
-            ) * numpy.array(list_1s_shift[j - 1])
+            sample_level_value[j - 1] = ((j - 1.0) / j) * sample_level_value[
+                j - 2
+            ] + (1.0 / j) * numpy.array(list_1s_shift[j - 1])
         for j in range(numpy.min([len_list, 100]), len_list - 100 + 1):
             sample_level_value[j - 1] = numpy.array(
                 numpy.mean(list_1s_shift[j - 100 : j])
             )
         sample_level_value[len_list - 1] = list_1s_shift[len_list - 1]
         for j in range(2, numpy.min([len_list, 100]) + 1):
-            sample_level_value[len_list - j] = ((j - 1.0) / j) * sample_level_value[
-                len_list + 1 - j
-            ] + (1.0 / j) * numpy.array(list_1s_shift[len_list - j])
+            sample_level_value[len_list - j] = (
+                (j - 1.0) / j
+            ) * sample_level_value[len_list + 1 - j] + (1.0 / j) * numpy.array(
+                list_1s_shift[len_list - j]
+            )
         return sample_level_value
 
     def bandpass_firwin(self, ntaps, lowcut, highcut, fs, window="hamming"):
@@ -196,7 +201,12 @@ class Mod_4Hz(Annotator):
         filtering_res = self.pass_band_filtering(energy_bands, sample_rate)
         mod_4hz = self.modulation_4hz(filtering_res, data, sample_rate)
         mod_4hz = self.averaging(mod_4hz)
-        energy_array = ap.energy(data, sample_rate, win_length_ms=self.win_length_ms, win_shift_ms=self.win_shift_ms)
+        energy_array = ap.energy(
+            data,
+            sample_rate,
+            win_length_ms=self.win_length_ms,
+            win_shift_ms=self.win_shift_ms,
+        )
         labels = self._voice_activity_detection(energy_array, mod_4hz)
         labels = utils.smoothing(
             labels, self.smoothing_window

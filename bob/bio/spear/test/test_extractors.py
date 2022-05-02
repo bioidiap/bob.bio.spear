@@ -30,7 +30,10 @@ regenerate_refs = False
 
 
 def _compare(
-    data, reference, write_function=bob.bio.base.save, read_function=bob.bio.base.load
+    data,
+    reference,
+    write_function=bob.bio.base.save,
+    read_function=bob.bio.base.load,
 ):
     # write reference?
     if regenerate_refs:
@@ -55,7 +58,9 @@ def test_mfcc():
     annotations = annotator.transform_one(wav, rate)
     _compare(
         extractor.transform_one(wav, rate, annotations),
-        pkg_resources.resource_filename("bob.bio.spear.test", "data/mfcc_60.hdf5"),
+        pkg_resources.resource_filename(
+            "bob.bio.spear.test", "data/mfcc_60.hdf5"
+        ),
         bob.bio.base.save,
         bob.bio.base.load,
     )

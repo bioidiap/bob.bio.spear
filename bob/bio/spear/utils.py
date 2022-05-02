@@ -100,7 +100,9 @@ def stack_speech_data(data, expected_ndim):
         stacked data if needed
     """
     if expected_ndim not in (1, 2):
-        raise ValueError(f"expected_ndim must be 1 or 2 but got {expected_ndim}")
+        raise ValueError(
+            f"expected_ndim must be 1 or 2 but got {expected_ndim}"
+        )
 
     if expected_ndim == 1:
         stack_function = np.concatenate
@@ -111,7 +113,6 @@ def stack_speech_data(data, expected_ndim):
         return stack_function(data)
 
     return data
-
 
 
 # gets sphinx autodoc done right - don't remove it

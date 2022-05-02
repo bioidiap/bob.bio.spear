@@ -1,7 +1,9 @@
 import os
-import pkg_resources
-from bob.bio.spear.audio_processing import read, energy, spectrogram, cepstral
+
 import numpy as np
+import pkg_resources
+
+from bob.bio.spear.audio_processing import cepstral, energy, read, spectrogram
 
 TEST_DATA_FOLDER = pkg_resources.resource_filename(__name__, "data")
 DATA, RATE = read(os.path.join(TEST_DATA_FOLDER, "sample.wav"))
@@ -12,7 +14,9 @@ GENERATE_REFS = False
 def _assert_allclose(actual, reference, **kwargs):
     rtol = kwargs.pop("rtol", 1e-07)
     atol = kwargs.pop("atol", 1e-05)
-    np.testing.assert_allclose(actual, reference, rtol=rtol, atol=atol, **kwargs)
+    np.testing.assert_allclose(
+        actual, reference, rtol=rtol, atol=atol, **kwargs
+    )
 
 
 def test_energy():

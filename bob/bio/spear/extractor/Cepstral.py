@@ -7,6 +7,7 @@
 import logging
 
 import numpy
+
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from .. import audio_processing as ap
@@ -91,7 +92,10 @@ class Cepstral(BaseEstimator, TransformerMixin):
         return normalized_vector
 
     def transform_one(
-        self, wav_data: numpy.ndarray, sample_rate: float, vad_labels: numpy.ndarray
+        self,
+        wav_data: numpy.ndarray,
+        sample_rate: float,
+        vad_labels: numpy.ndarray,
     ):
         """Computes and returns cepstral features for one given audio signal."""
         logger.debug("Cepstral transform.")
@@ -132,7 +136,9 @@ class Cepstral(BaseEstimator, TransformerMixin):
         if normalized_features.shape[0] == 0:
             logger.warning("No speech found for this utterance")
             # But do not keep it empty!!! This avoids errors in next steps
-            feature_length = len(self.features_mask) if self.features_mask else 60
+            feature_length = (
+                len(self.features_mask) if self.features_mask else 60
+            )
             normalized_features = numpy.zeros((1, feature_length))
         return normalized_features
 
@@ -143,7 +149,9 @@ class Cepstral(BaseEstimator, TransformerMixin):
         vad_labels: "list[numpy.ndarray]",
     ):
         results = []
-        for wav_data, rate, annotations in zip(wav_data_set, sample_rate, vad_labels):
+        for wav_data, rate, annotations in zip(
+            wav_data_set, sample_rate, vad_labels
+        ):
             results.append(self.transform_one(wav_data, rate, annotations))
         return results
 

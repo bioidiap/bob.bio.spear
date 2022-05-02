@@ -3,6 +3,7 @@
 # @date: Thu 01 Jul 2021 10:41:55 UTC+02
 
 import logging
+
 from functools import partial
 
 from scipy.io import wavfile
