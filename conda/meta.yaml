@@ -33,11 +33,13 @@ requirements:
     - bob.bio.base
     - bob.pipelines
     - scikit-learn {{ scikit_learn }}
+    - pytorch
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
     - {{ pin_compatible('scikit-learn') }}
+    - pytorch
     - {{ pin_compatible('tqdm') }}
 
 test:
