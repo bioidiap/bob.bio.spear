@@ -33,10 +33,12 @@ requirements:
     - bob.bio.base
     - bob.pipelines
     - scikit-learn
+    - pytorch
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
+    - pytorch
     - {{ pin_compatible('tqdm') }}
 
 test:

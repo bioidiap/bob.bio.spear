@@ -10,3 +10,4 @@ scipy  # For audio files loading
 scikit-learn  # For pipelines Tranformers
 speechbrain
 pretrainedmodels
+pytorch
