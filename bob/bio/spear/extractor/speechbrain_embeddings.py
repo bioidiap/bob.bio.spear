@@ -11,29 +11,19 @@ class SpeechbrainEmbeddings(BaseEstimator):
     def fit(self, X, y=None):
         return self
 
+    def transform_one(self, encoder, audio_track):
+        return encoder.encode_batch(
+            torch.from_numpy(audio_track),
+            normalize=True,
+        ).numpy()
+
     def transform(self, audio_tracks, y=None):
-
-        audio_lengths = [len(a) for a in audio_tracks]
-
-        audio_stack = np.vstack(
-            [
-                np.pad(a, (0, max(audio_lengths) - len(a)), "constant")
-                for a in audio_tracks
-            ]
-        )
-        relative_lengths = [length / max(audio_lengths) for length in audio_lengths]
-
-        verification = EncoderClassifier.from_hparams(
+        encoder = EncoderClassifier.from_hparams(
             source="speechbrain/spkrec-ecapa-voxceleb",
             savedir="pretrained_models/spkrec-ecapa-voxceleb",
         )
+        embeddings = [
+            self.transform_one(encoder, audio_track) for audio_track in audio_tracks
+        ]
 
-        embeddings = verification.encode_batch(
-            torch.from_numpy(audio_stack),
-            torch.tensor(relative_lengths),
-            normalize=True,
-        )
-
-        return np.array(
-            embeddings, dtype=float
-        )  # Embeddings corresponding to one model
+        return np.vstack(embeddings)
