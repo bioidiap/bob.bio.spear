@@ -6,6 +6,7 @@ import logging
 import pickle
 
 import numpy as np
+
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import OrdinalEncoder
 
@@ -66,7 +67,9 @@ class ISV(ISVMachine, BioAlgorithm):
             The features to be enrolled.
         """
         enroll_features = stack_speech_data(enroll_features, expected_ndim=2)
-        return super().enroll(enroll_features, iterations=self.enroll_iterations)
+        return super().enroll(
+            enroll_features, iterations=self.enroll_iterations
+        )
 
     def transform(self, X):
         """Passthrough"""

@@ -32,11 +32,12 @@ requirements:
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - scikit-learn
+    - scikit-learn {{ scikit_learn }}
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
+    - {{ pin_compatible('scikit-learn') }}
     - {{ pin_compatible('tqdm') }}
 
 test:

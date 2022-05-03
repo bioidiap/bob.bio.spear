@@ -3,6 +3,7 @@
 # Wed 16 Mar 2022 09:32:47 UTC+01
 
 import logging
+
 from typing import Union
 
 from sklearn.pipeline import Pipeline
@@ -194,7 +195,9 @@ def SpearBioDatabase(
             ]
         )
     else:
-        logger.info(f"Database: Will read annotation files in '{annotations_path}'.")
+        logger.info(
+            f"Database: Will read annotation files in '{annotations_path}'."
+        )
         annotations_transformer = AnnotationsLoader(
             annotation_directory=annotations_path,
             annotation_extension=annotations_ext,
