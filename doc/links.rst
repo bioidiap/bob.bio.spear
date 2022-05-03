@@ -12,7 +12,6 @@
 .. _idiap at gitlab: http://gitlab.idiap.ch/bob
 .. _at&t database: http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html
 .. _bob's gitlab page: http://gitlab.idiap.ch/bob
-.. _gridtk: https://pypi.python.org/pypi/gridtk
 .. _buildout: http://www.buildout.org
 .. _nist: http://www.nist.gov/itl/iad/ig/focs.cfm
 .. _pypi: http://pypi.python.org

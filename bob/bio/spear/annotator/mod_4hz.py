@@ -114,21 +114,25 @@ class Mod_4Hz(Annotator):
 
     def averaging(self, list_1s_shift):
         len_list = len(list_1s_shift)
-        sample_level_value = numpy.array(numpy.zeros(len_list, dtype=numpy.float))
+        sample_level_value = numpy.array(
+            numpy.zeros(len_list, dtype=numpy.float)
+        )
         sample_level_value[0] = numpy.array(list_1s_shift[0])
         for j in range(2, numpy.min([len_list, 100])):
-            sample_level_value[j - 1] = ((j - 1.0) / j) * sample_level_value[j - 2] + (
-                1.0 / j
-            ) * numpy.array(list_1s_shift[j - 1])
+            sample_level_value[j - 1] = ((j - 1.0) / j) * sample_level_value[
+                j - 2
+            ] + (1.0 / j) * numpy.array(list_1s_shift[j - 1])
         for j in range(numpy.min([len_list, 100]), len_list - 100 + 1):
             sample_level_value[j - 1] = numpy.array(
                 numpy.mean(list_1s_shift[j - 100 : j])
             )
         sample_level_value[len_list - 1] = list_1s_shift[len_list - 1]
         for j in range(2, numpy.min([len_list, 100]) + 1):
-            sample_level_value[len_list - j] = ((j - 1.0) / j) * sample_level_value[
-                len_list + 1 - j
-            ] + (1.0 / j) * numpy.array(list_1s_shift[len_list - j])
+            sample_level_value[len_list - j] = (
+                (j - 1.0) / j
+            ) * sample_level_value[len_list + 1 - j] + (1.0 / j) * numpy.array(
+                list_1s_shift[len_list - j]
+            )
         return sample_level_value
 
     def bandpass_firwin(self, ntaps, lowcut, highcut, fs, window="hamming"):

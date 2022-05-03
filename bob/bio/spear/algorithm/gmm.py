@@ -8,9 +8,11 @@ This adds the notions of models, probes, enrollment, and scores to GMM.
 
 import copy
 import logging
+
 from typing import Callable, Union
 
 import dask.array as da
+
 from h5py import File as HDF5File
 
 from bob.bio.base.pipelines import BioAlgorithm

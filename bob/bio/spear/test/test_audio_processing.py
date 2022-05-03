@@ -14,7 +14,9 @@ GENERATE_REFS = False
 def _assert_allclose(actual, reference, **kwargs):
     rtol = kwargs.pop("rtol", 1e-07)
     atol = kwargs.pop("atol", 1e-05)
-    np.testing.assert_allclose(actual, reference, rtol=rtol, atol=atol, **kwargs)
+    np.testing.assert_allclose(
+        actual, reference, rtol=rtol, atol=atol, **kwargs
+    )
 
 
 def test_energy():

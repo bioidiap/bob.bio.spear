@@ -23,13 +23,17 @@ import pkg_resources
 
 import bob.bio.base
 import bob.bio.spear
+
 from bob.pipelines import Sample, wrap
 
 regenerate_refs = False
 
 
 def _compare(
-    data, reference, write_function=bob.bio.base.save, read_function=bob.bio.base.load
+    data,
+    reference,
+    write_function=bob.bio.base.save,
+    read_function=bob.bio.base.load,
 ):
     # Write reference if needed
     if regenerate_refs:
@@ -92,7 +96,9 @@ def test_mod_4hz():
     annotator = bob.bio.spear.annotator.Mod_4Hz()
     _compare(
         annotator.transform_one(wav, sample_rate=rate),
-        pkg_resources.resource_filename("bob.bio.spear.test", "data/vad_mod_4hz.hdf5"),
+        pkg_resources.resource_filename(
+            "bob.bio.spear.test", "data/vad_mod_4hz.hdf5"
+        ),
     )
 
     # Test the processing of Sample objects and tags of annotator transformer
@@ -103,7 +109,9 @@ def test_mod_4hz():
     # Annotations should be in attribute `annotations` of result samples (tags)
     _compare(
         result[0].annotations,
-        pkg_resources.resource_filename("bob.bio.spear.test", "data/vad_mod_4hz.hdf5"),
+        pkg_resources.resource_filename(
+            "bob.bio.spear.test", "data/vad_mod_4hz.hdf5"
+        ),
     )
 
 

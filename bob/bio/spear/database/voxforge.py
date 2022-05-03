@@ -4,9 +4,11 @@
 
 import csv
 import logging
+
 from pathlib import Path
 
 import click
+
 from tqdm import tqdm
 
 from bob.bio.spear.database.database import get_protocol_file
@@ -45,7 +47,9 @@ logger = logging.getLogger(__name__)
 )
 @click.argument("destination")
 @verbosity_option()
-def download_voxforge(protocol_definition, destination, force_download, **kwargs):
+def download_voxforge(
+    protocol_definition, destination, force_download, **kwargs
+):
     """Downloads a series of VoxForge data files from their repository and untar them.
 
     The files will be downloaded and saved in the `destination` folder then extracted.
