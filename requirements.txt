@@ -6,5 +6,5 @@ bob.bio.base
 bob.pipelines
 tqdm
 six
-scipy  # For audio files loading
+torchaudio  # For audio files loading
 scikit-learn  # For pipelines Tranformers
