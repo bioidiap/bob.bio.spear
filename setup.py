@@ -121,9 +121,10 @@ setup(
             # databases:
             "voxforge      = bob.bio.spear.config.database.voxforge",
             "mini-voxforge = bob.bio.spear.config.database.mini_voxforge",
-            # algorithms:
+            # PipelineSimple config (pipeline and db):
             "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge",
-            "isv-voxforge  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
+            "gmm-mobio     = bob.bio.spear.config.pipeline.mfcc60_gmm_mobio",
+            "isv-voxforge  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge",
         ],
         "bob.db.cli": [
             "download-voxforge = bob.bio.spear.database.voxforge:download_voxforge",
