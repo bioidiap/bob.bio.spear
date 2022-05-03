@@ -4,36 +4,35 @@
 
 """Tests the configured bioalgorithms."""
 
-import numpy as np
 from pkg_resources import resource_filename
 
 from bob.bio.base import load_resource
 from bob.bio.spear.algorithm import GMM
 from bob.bio.spear.transformer import WavToSample
+from bob.learn.em import GMMMachine
 from bob.pipelines import Sample
 
 
-def test_gmm_voxforge():
-    """Loading and running the gmm-voxforge bioalgorithm."""
-
+def test_gmm():
+    """Loading and running the GMM bioalgorithm."""
     audio_path = resource_filename("bob.bio.spear.test", "data/sample.wav")
     sample = WavToSample().transform([Sample(data=audio_path)])[0]
 
     # Test setup and config
     pipeline = load_resource("gmm-voxforge", "pipeline")
+    transformer = pipeline.transformer
     algorithm = pipeline.biometric_algorithm
     assert isinstance(algorithm, GMM)
 
-    # Initialize a dummy GMM
-    algorithm.means = np.random.normal(size=(algorithm.n_gaussians, 60))
-    algorithm.variances = np.random.normal(size=(algorithm.n_gaussians, 60))
-    algorithm.weights = [1 / algorithm.n_gaussians] * algorithm.n_gaussians
-    algorithm.ubm = algorithm
+    # Try fitting the algorithm
+    transformer.fit([sample])
+    assert isinstance(algorithm.ubm, GMMMachine)
 
-    extracted_feature = pipeline.transformer.transform([sample])[0]
+    extracted_feature = transformer.transform([sample])[0]
 
     # Test enrollment
     model = algorithm.enroll(extracted_feature.data)
+    assert isinstance(model, GMMMachine)
 
     # Test scoring
     score = algorithm.score(model, extracted_feature.data)
