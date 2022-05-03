@@ -6,26 +6,39 @@ import logging
 from functools import partial
 from typing import Optional
 
-from librosa import load as wav_load
+import numpy
+import torchaudio
 from sklearn.base import BaseEstimator, TransformerMixin
+from torchaudio.transforms import Resample
 
 from bob.pipelines import DelayedSample
 
 logger = logging.getLogger(__name__)
 
 
-def load_data_from_file(filename: str, forced_sr: Optional[int] = None):
+def load_data_from_file(
+    filename: str, forced_sr: Optional[int] = None
+) -> numpy.ndarray:
     logger.debug(f"Reading data from audio file {filename}")
-    # Loading the audio file as int16 as bob.ap expects that format (int16 casted to float).
-    return wav_load(filename, sr=forced_sr, mono=False, dtype="int16")
+    audio, audio_samplerate = torchaudio.load(filename)
+    if forced_sr is not None:
+        audio = Resample(audio_samplerate, forced_sr)(audio)
+        # Resample uses a Kaiser window and some default parameters.
+        # Eventually add a way to configure these parameters, if needed.
+    return audio.numpy()
 
 
-def get_audio_sample_rate(sample: DelayedSample, forced_sr: Optional[int] = None):
+def get_audio_sample_rate(
+    sample: DelayedSample, forced_sr: Optional[int] = None
+) -> int:
     """Returns the sample rate of the audio data."""
-    return load_data_from_file(sample.data, forced_sr=forced_sr)[1]
+    return forced_sr or torchaudio.info(sample.data).sample_rate
 
 
-def get_audio_data(sample: DelayedSample, forced_sr: Optional[int] = None):
+def get_audio_data(
+    sample: DelayedSample,
+    forced_sr: Optional[int] = None,
+) -> numpy.ndarray:
     """Returns the audio data as a numpy array. Returns only mono data.
 
     If the audio data has more than one channel, the first channel (0) is returned
@@ -45,10 +58,10 @@ def get_audio_data(sample: DelayedSample, forced_sr: Optional[int] = None):
     numpy.ndarray of shape (n_audio_samples,)
         The audio data of one channel loaded from the file.
     """
-    audio_signal = load_data_from_file(sample.data, forced_sr=forced_sr)[0]
+    audio_signal = load_data_from_file(sample.data, forced_sr)
 
     if audio_signal.ndim > 1:
-        channel = sample.channel if hasattr(sample, "channel") else 0
+        channel = int(sample.channel) if hasattr(sample, "channel") else 0
         if audio_signal.shape[0] > 1 and not hasattr(sample, "channel"):
             logger.warning(
                 f"audio_signal has {audio_signal.shape[0]} channels and sample.channel "
@@ -56,14 +69,8 @@ def get_audio_data(sample: DelayedSample, forced_sr: Optional[int] = None):
             )
         audio_signal = audio_signal[channel]
 
-    # Converting to float64 as bob.ap expects that format (int16 casted to float).
-    return audio_signal.astype(float)
-
-
-def populate_sample_with_reader(
-    sample: DelayedSample, forced_sr: Optional[int] = None
-) -> DelayedSample:
-    """Assigns the Sample's data and metadata."""
+    # Converting to int16 range as bob.ap expects float in the range [-32768, 32767]
+    return audio_signal.astype(float) * 32768
 
 
 class PathToAudio(BaseEstimator, TransformerMixin):
@@ -88,7 +95,7 @@ class PathToAudio(BaseEstimator, TransformerMixin):
         super().__init__()
         self.forced_sr = forced_sr
 
-    def transform(self, samples: list):
+    def transform(self, samples: list) -> list:
         output_samples = []
         for sample in samples:
             delayed_attrs = {
