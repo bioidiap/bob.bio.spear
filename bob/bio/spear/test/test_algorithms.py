@@ -4,6 +4,7 @@
 
 """Tests the configured bioalgorithms."""
 
+import numpy as np
 from pkg_resources import resource_filename
 
 from bob.bio.base import load_resource
@@ -26,7 +27,7 @@ def test_gmm():
 
     # Try fitting the algorithm
     transformer.fit([sample])
-    assert isinstance(algorithm.ubm, GMMMachine)
+    assert isinstance(algorithm.means, np.ndarray)
 
     extracted_feature = transformer.transform([sample])[0]
 
