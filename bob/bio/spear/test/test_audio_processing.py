@@ -11,6 +11,13 @@ DATA, RATE = read(os.path.join(TEST_DATA_FOLDER, "sample.wav"))
 GENERATE_REFS = False
 
 
+def test_read():
+    assert isinstance(DATA, np.ndarray)
+    assert DATA.shape == (77760,)
+    assert DATA.dtype == float
+    assert DATA[0] == 33.0  # First audio sample of the file
+
+
 def _assert_allclose(actual, reference, **kwargs):
     rtol = kwargs.pop("rtol", 1e-07)
     atol = kwargs.pop("atol", 1e-05)
