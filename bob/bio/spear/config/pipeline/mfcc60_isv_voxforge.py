@@ -48,3 +48,4 @@ transformer = Pipeline(
 transformer = wrap(["sample"], transformer)
 
 pipeline = PipelineSimple(transformer, bioalgorithm)
+database = "voxforge"
