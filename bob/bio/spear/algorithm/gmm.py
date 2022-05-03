@@ -101,7 +101,6 @@ class GMM(GMMMachine, BioAlgorithm):
         scoring_function
             Function returning a score from a model, a UBM, and a probe.
         """
-        BioAlgorithm.__init__(self)
         super().__init__(
             n_gaussians=n_gaussians,
             trainer="ml",
@@ -140,7 +139,7 @@ class GMM(GMMMachine, BioAlgorithm):
         array = stack_speech_data(array, expected_ndim=2)
         logger.debug("Projecting %d feature vectors", array.shape[0])
         # Accumulates statistics
-        gmm_stats = super().transform(array)
+        gmm_stats = self.acc_stats(array)
 
         # Return the resulting statistics
         return gmm_stats
@@ -160,7 +159,7 @@ class GMM(GMMMachine, BioAlgorithm):
         gmm = GMMMachine(
             n_gaussians=self.n_gaussians,
             trainer="map",
-            ubm=copy.deepcopy(super()),
+            ubm=copy.deepcopy(self),
             convergence_threshold=self.convergence_threshold,
             max_fitting_steps=self.enroll_iterations,
             random_state=self.random_state,
@@ -176,7 +175,7 @@ class GMM(GMMMachine, BioAlgorithm):
 
     def read_biometric_reference(self, model_file):
         """Reads an enrolled reference model, which is a MAP GMMMachine."""
-        return GMMMachine.from_hdf5(HDF5File(model_file, "r"), ubm=super())
+        return GMMMachine.from_hdf5(HDF5File(model_file, "r"), ubm=self)
 
     def write_biometric_reference(self, model: GMMMachine, model_file):
         """Write the enrolled reference (MAP GMMMachine) into a file."""
@@ -198,7 +197,7 @@ class GMM(GMMMachine, BioAlgorithm):
         probe = self.project(probe)
         return self.scoring_function(
             models_means=[biometric_reference],
-            ubm=self.ubm,
+            ubm=self,
             test_stats=probe,
             frame_length_normalization=True,
         )[0]
@@ -221,7 +220,7 @@ class GMM(GMMMachine, BioAlgorithm):
         stats = self.project(probe)
         return self.scoring_function(
             models_means=biometric_references,
-            ubm=self.ubm,
+            ubm=self,
             test_stats=stats,
             frame_length_normalization=True,
         )
@@ -239,7 +238,7 @@ class GMM(GMMMachine, BioAlgorithm):
             f"Creating UBM machine with {self.n_gaussians} gaussians and {len(X)} samples"
         )
 
-        self.ubm = super().fit(X)
+        super().fit(X)
 
         return self
 
@@ -256,7 +255,7 @@ class GMM(GMMMachine, BioAlgorithm):
         data.save(path)
 
     def custom_enrolled_load_fn(self, path):
-        return GMMMachine.from_hdf5(path, ubm=super())
+        return GMMMachine.from_hdf5(path, ubm=self)
 
     def _more_tags(self):
         return {
