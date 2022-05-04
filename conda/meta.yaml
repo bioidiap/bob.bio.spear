@@ -33,12 +33,16 @@ requirements:
     - bob.bio.base
     - bob.pipelines
     - scikit-learn
-    - pytorch
+    - speechbrain
+    - pretrained
+    - pytorch {{ pytorch }}
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
-    - pytorch
+    - speechbrain
+    - pretrained
+    - {{ pin_compatible ('pytorch')}
     - {{ pin_compatible('tqdm') }}
 
 test:
