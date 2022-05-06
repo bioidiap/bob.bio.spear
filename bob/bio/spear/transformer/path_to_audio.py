@@ -3,74 +3,34 @@
 # @date: Thu 01 Jul 2021 10:41:55 UTC+02
 
 import logging
+
 from functools import partial
 from typing import Optional
 
 import numpy
-import torchaudio
-from sklearn.base import BaseEstimator, TransformerMixin
-from torchaudio.transforms import Resample
 
+from sklearn.base import BaseEstimator, TransformerMixin
+
+from bob.bio.spear.audio_processing import read as read_audio
 from bob.pipelines import DelayedSample
 
 logger = logging.getLogger(__name__)
 
 
-def load_data_from_file(
-    filename: str, forced_sr: Optional[int] = None
-) -> numpy.ndarray:
-    logger.debug(f"Reading data from audio file {filename}")
-    audio, audio_samplerate = torchaudio.load(filename)
-    if forced_sr is not None:
-        audio = Resample(audio_samplerate, forced_sr)(audio)
-        # Resample uses a Kaiser window and some default parameters.
-        # Eventually add a way to configure these parameters, if needed.
-    return audio.numpy()
-
-
-def get_audio_sample_rate(
-    sample: DelayedSample, forced_sr: Optional[int] = None
-) -> int:
+def get_audio_sample_rate(path: str, forced_sr: Optional[int] = None) -> int:
     """Returns the sample rate of the audio data."""
-    return forced_sr or torchaudio.info(sample.data).sample_rate
+    return (
+        forced_sr if forced_sr is not None else read_audio(path, None, None)[1]
+    )
 
 
 def get_audio_data(
-    sample: DelayedSample,
+    path: str,
+    channel: Optional[int] = None,
     forced_sr: Optional[int] = None,
 ) -> numpy.ndarray:
-    """Returns the audio data as a numpy array. Returns only mono data.
-
-    If the audio data has more than one channel, the first channel (0) is returned
-    unless ``sample`` has a ``channel`` attribute (in which case that channel is
-    returned).
-
-    Parameters
-    ----------
-    sample
-        A Sample containing the path to the audio file. Can also specify the audio
-        channel number to load.
-    forced_sr
-        If not None, the audio is resampled to match this value.
-
-    Returns
-    -------
-    numpy.ndarray of shape (n_audio_samples,)
-        The audio data of one channel loaded from the file.
-    """
-    audio_signal = load_data_from_file(sample.data, forced_sr)
-
-    if audio_signal.ndim > 1:
-        channel = int(sample.channel) if hasattr(sample, "channel") else 0
-        if audio_signal.shape[0] > 1 and not hasattr(sample, "channel"):
-            logger.warning(
-                f"audio_signal has {audio_signal.shape[0]} channels and sample.channel "
-                f"is not specified. loading only channel 0. ({sample})"
-            )
-        audio_signal = audio_signal[channel]
-
-    # Converting to int16 range as bob.ap expects float in the range [-32768, 32767]
-    return audio_signal.astype(float) * 32768
+    """Returns the audio data from the given path."""
+    return read_audio(path, channel, forced_sr)[0]
 
 
 class PathToAudio(BaseEstimator, TransformerMixin):
@@ -79,30 +39,47 @@ class PathToAudio(BaseEstimator, TransformerMixin):
     The Sample's metadata are updated (rate).
 
     Note:
-        bob.ap expects int16 audio (range [-32768, 32767]), but in float format. Hence
-        the loading as int16 and the cast to float. (values will be in the range
-        [-32768.0, 32767.0])
+        audio processing functions expect int16 audio (range [-32768, 32767]), but in
+        float format. Hence the loading as int16 and the cast to float. (values will be
+        in the range [-32768.0, 32767.0])
     """
 
-    def __init__(self, forced_sr: Optional[int] = None) -> None:
+    def __init__(
+        self,
+        forced_channel: Optional[int] = None,
+        forced_sr: Optional[int] = None,
+    ) -> None:
         """
         Parameters
         ----------
-        forced_sr
+        forced_sr:
             If not None, every sample rate will be forced to this value (resampling if
             needed).
+        forced_channel:
+            Forces the loading of a specific channel for each audio file, if the samples
+            don't have a channel attribute. If None, all the channels will be loaded in
+            a 2D array.
         """
         super().__init__()
+        self.forced_channel = forced_channel
         self.forced_sr = forced_sr
 
     def transform(self, samples: list) -> list:
         output_samples = []
         for sample in samples:
+            load_fn = partial(
+                get_audio_data,
+                sample.data,
+                getattr(sample, "channel", self.forced_channel),
+                self.forced_sr,
+            )
             delayed_attrs = {
-                "rate": partial(get_audio_sample_rate, sample, self.forced_sr)
+                "rate": partial(
+                    get_audio_sample_rate, sample.data, self.forced_sr
+                )
             }
             new_sample = DelayedSample(
-                load=partial(get_audio_data, sample, self.forced_sr),
+                load=load_fn,
                 parent=sample,
                 delayed_attributes=delayed_attrs,
             )

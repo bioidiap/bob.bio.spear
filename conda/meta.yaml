@@ -32,14 +32,17 @@ requirements:
     - bob.measure
     - bob.bio.base
     - bob.pipelines
+    - pytorch {{ pytorch }}
+    - torchaudio >=0.11
     - scikit-learn {{ scikit_learn }}
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
+    - {{ pin_comppatible('pytorch') }}
+    - {{ pin_compatible('torchaudio') }}
     - {{ pin_compatible('scikit-learn') }}
     - {{ pin_compatible('tqdm') }}
-    - {{ pin_compatible('librosa') }}
 
 test:
   imports:
