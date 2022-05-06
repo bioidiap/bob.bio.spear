@@ -9,8 +9,8 @@ import numpy as np
 from pkg_resources import resource_filename
 
 from bob.bio.base import load_resource
-from bob.bio.base.algorithm import GMM
-from bob.bio.spear.transformer import WavToSample
+from bob.bio.spear.algorithm import GMM
+from bob.bio.spear.transformer import PathToAudio
 from bob.learn.em import GMMMachine
 from bob.pipelines import Sample
 
@@ -18,7 +18,7 @@ from bob.pipelines import Sample
 def test_gmm():
     """Loading and running the GMM bioalgorithm."""
     audio_path = resource_filename("bob.bio.spear.test", "data/sample.wav")
-    sample = WavToSample().transform([Sample(data=audio_path)])[0]
+    sample = PathToAudio().transform([Sample(data=audio_path)])[0]
 
     # Test setup and config
     pipeline = load_resource("gmm-voxforge", "pipeline")
