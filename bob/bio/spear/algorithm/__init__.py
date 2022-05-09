@@ -1,5 +1,5 @@
 from .gmm import GMM
-from .isv import ISV, LabelRepeater, ReferenceIdEncoder
+from .isv import ISV
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -21,7 +21,5 @@ def __appropriate__(*args):
 __appropriate__(
     GMM,
     ISV,
-    ReferenceIdEncoder,
-    LabelRepeater,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]
