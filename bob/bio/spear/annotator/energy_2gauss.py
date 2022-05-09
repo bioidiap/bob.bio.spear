@@ -161,7 +161,6 @@ class Energy_2Gauss(Annotator):
 
     def _more_tags(self):
         return {
-            "stateless": True,
             "requires_fit": False,
             "bob_transform_extra_input": (("sample_rates", "rate"),),
             "bob_output": "annotations",

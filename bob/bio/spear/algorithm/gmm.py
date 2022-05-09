@@ -58,6 +58,8 @@ class GMM(GMMMachine, BioAlgorithm):
         scoring_function: Callable = linear_scoring,
         # RNG
         random_state: int = 5489,
+        # other
+        return_stats_in_transform: bool = False,
         **kwargs,
     ):
         """Initializes the local UBM-GMM tool chain.
@@ -124,6 +126,7 @@ class GMM(GMMMachine, BioAlgorithm):
         self.enroll_update_weights = enroll_update_weights
         self.enroll_update_variances = enroll_update_variances
         self.scoring_function = scoring_function
+        self.return_stats_in_transform = return_stats_in_transform
 
     def save_model(self, ubm_file):
         """Saves the projector (UBM) to file."""
@@ -250,7 +253,9 @@ class GMM(GMMMachine, BioAlgorithm):
         # to GMMStats), but we must not apply this during the training or enrollment
         # (those require extracted data directly, not projected).
         # `project` is applied in the score function directly.
-        return X
+        if not self.return_stats_in_transform:
+            return X
+        return super().transform(X)
 
     @classmethod
     def custom_enrolled_save_fn(cls, data, path):
@@ -262,6 +267,9 @@ class GMM(GMMMachine, BioAlgorithm):
     def _more_tags(self):
         return {
             "bob_fit_supports_dask_array": True,
+            "bob_features_save_fn": GMMStats.save,
+            "bob_features_load_fn": GMMStats.from_hdf5,
             "bob_enrolled_save_fn": self.custom_enrolled_save_fn,
             "bob_enrolled_load_fn": self.custom_enrolled_load_fn,
+            "bob_checkpoint_features": self.return_stats_in_transform,
         }

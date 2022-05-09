@@ -1,3 +1,4 @@
+from .preprocessing import ReferenceIdEncoder
 from .wav_to_sample import WavToSample
 
 
@@ -19,5 +20,6 @@ def __appropriate__(*args):
 
 __appropriate__(
     WavToSample,
+    ReferenceIdEncoder,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]
