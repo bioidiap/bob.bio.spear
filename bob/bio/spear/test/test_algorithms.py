@@ -5,6 +5,7 @@
 """Tests the configured bioalgorithms."""
 
 import numpy as np
+
 from pkg_resources import resource_filename
 
 from bob.bio.base import load_resource
