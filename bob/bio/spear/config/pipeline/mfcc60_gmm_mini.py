@@ -55,4 +55,3 @@ transformer = Pipeline(
 
 # PipelineSimple instance used by `execute_pipeline_simple` or the `pipeline simple` command
 pipeline = PipelineSimple(transformer, bioalgorithm)
-database = "voxforge"
