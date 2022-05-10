@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+
 from sklearn.base import BaseEstimator
 from speechbrain.pretrained import EncoderClassifier
 
@@ -23,7 +24,8 @@ class SpeechbrainEmbeddings(BaseEstimator):
             savedir="pretrained_models/spkrec-ecapa-voxceleb",
         )
         embeddings = [
-            self.transform_one(encoder, audio_track) for audio_track in audio_tracks
+            self.transform_one(encoder, audio_track)
+            for audio_track in audio_tracks
         ]
 
         return np.vstack(embeddings)

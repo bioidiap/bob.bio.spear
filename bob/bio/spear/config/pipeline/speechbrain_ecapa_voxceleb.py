@@ -8,4 +8,6 @@ transformer_pipeline = make_pipeline(
     wrap(["sample"], SpeechbrainEmbeddings()),
 )
 
-pipeline = PipelineSimple(transformer_pipeline, Distance(average_on_enroll=True))
+pipeline = PipelineSimple(
+    transformer_pipeline, Distance(average_on_enroll=True)
+)
