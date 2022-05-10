@@ -41,7 +41,7 @@ requirements:
     - python
     - setuptools
     - {{ pin_compatible('scikit-learn') }}
-    - {{ pin_compatible ('pytorch')}
+    - {{ pin_compatible ('pytorch') }}
     - speechbrain
     - pretrained
     - {{ pin_compatible('tqdm') }}
