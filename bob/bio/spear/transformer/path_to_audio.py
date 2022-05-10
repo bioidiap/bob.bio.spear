@@ -57,8 +57,8 @@ class PathToAudio(BaseEstimator, TransformerMixin):
             needed).
         forced_channel:
             Forces the loading of a specific channel for each audio file, if the samples
-            don't have a channel attribute. If None, all the channels will be loaded in
-            a 2D array.
+            don't have a ``channel`` attribute. If None and the samples don't have a
+            ``channel`` attribute, all the channels will be loaded in a 2D array.
         """
         super().__init__()
         self.forced_channel = forced_channel
@@ -67,10 +67,11 @@ class PathToAudio(BaseEstimator, TransformerMixin):
     def transform(self, samples: list) -> list:
         output_samples = []
         for sample in samples:
+            channel = getattr(sample, "channel", self.forced_channel)
             load_fn = partial(
                 get_audio_data,
                 sample.data,
-                getattr(sample, "channel", self.forced_channel),
+                int(channel) if channel is not None else None,
                 self.forced_sr,
             )
             delayed_attrs = {
