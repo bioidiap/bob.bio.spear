@@ -83,7 +83,7 @@ def resample(
     rate: int,
     new_rate: int,
     **kwargs,
-) -> numpy.ndarray:
+) -> Union[numpy.ndarray, torch.Tensor]:
     """Resamples the audio to a new sample rate.
 
     Parameters
@@ -94,6 +94,8 @@ def resample(
         The original sample rate of the audio.
     new_rate:
         The wanted sample rate of the output audio.
+    kwargs:
+        Arguments passed to :py:class:``torchaudio.transforms.Resample``.
     """
 
     if rate == new_rate:
@@ -104,7 +106,9 @@ def resample(
         audio = torch.from_numpy(audio)
         was_numpy = True
 
-    resampler = torchaudio.transforms.Resample(rate, new_rate, **kwargs)
+    resampler = torchaudio.transforms.Resample(
+        rate, new_rate, dtype=torch.float32, **kwargs
+    )
     audio = resampler(audio)
 
     return audio.numpy() if was_numpy else audio
@@ -131,8 +135,8 @@ def read(
     Returns
     -------
     signal and sampling rate
-        The signal in int16 range (-32768 to 32767) and float format, and the sampling
-        rate in Hz.
+        The signal in int16 range (-32768 to 32767) and float32 format, and the
+        sampling rate in Hz.
     """
 
     data, rate = torchaudio.load(str(filename))
@@ -147,8 +151,8 @@ def read(
         data = resample(data, rate, force_sample_rate)
         rate = force_sample_rate
 
-    # Expected data is in float format and int16 range (-32768. to 32767.)
-    data = data.numpy().astype(float) * 32768
+    # Expected data is in float32 format and int16 range (-32768. to 32767.)
+    data = data.numpy().astype(numpy.float32) * 32768
 
     return data, rate
 

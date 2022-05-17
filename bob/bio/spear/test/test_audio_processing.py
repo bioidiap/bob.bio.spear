@@ -20,15 +20,15 @@ def test_read():
     data, sr = read(DATA_PATH)
     assert isinstance(data, np.ndarray)
     assert data.shape == (77760,)  # Number of samples in samples.wav
-    assert data.dtype == float
+    assert data.dtype == np.float32
     assert data[0] == 33.0  # First audio sample value of sample.wav
     assert sr == 16000  # Sample rate of sample.wav
 
     # Loading with a set sample rate
-    data, sr = read(DATA_PATH, channel=0, forced_sample_rate=8000)
+    data, sr = read(DATA_PATH, channel=0, force_sample_rate=8000)
     assert isinstance(data, np.ndarray)
     assert data.shape == (38880,)
-    assert data.dtype == float
+    assert data.dtype == np.float32
     assert sr == 8000
 
 
@@ -37,7 +37,9 @@ DATA, RATE = read(os.path.join(TEST_DATA_FOLDER, "sample.wav"))
 
 def test_resample():
     resampled = resample(DATA, RATE, 41100)
-    assert resampled.shape == (1,), resampled.shape
+    assert isinstance(resampled, np.ndarray)
+    assert resampled.shape == (199746,)
+    assert resampled.dtype == np.float32
 
 
 def _assert_allclose(actual, reference, **kwargs):
