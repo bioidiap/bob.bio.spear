@@ -14,6 +14,9 @@ import numpy
 import torch
 import torchaudio
 
+# Handle correctly `a-law` coded files. "sox" (default on linux) fails on those.
+torchaudio.set_audio_backend("soundfile")
+
 
 def fft(src, dst=None):
     out = numpy.fft.fft(src)
