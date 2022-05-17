@@ -11,7 +11,7 @@
 GMM
 ---
 
-On 128 CPU nodes on the SGE Grid: Ran in 16 minutes.
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (5 minutes of training).
 
 .. table:: [Min. criterion: EER] Threshold on Development set: 2.128360e+00
 
@@ -26,16 +26,36 @@ On 128 CPU nodes on the SGE Grid: Ran in 16 minutes.
     Half Total Error Rate  2.0%            1.6%
     =====================  ==============  ==============
 
+Command used to generate scores::
+
+    $ bob bio pipeline -d voxforge -p gmm-voxforge -g dev -g eval -l sge
 
 ISV
 ---
 
-On 128 CPU nodes on the SGE Grid: TODO
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (7 minutes of training).
+
+.. table:: [Min. criterion: EER] Threshold on Development: 1.680925e+00
+
+    =====================  ==============  ==============
+    ..                     Development     Evaluation
+    =====================  ==============  ==============
+    Failure to Acquire     0.0%            0.0%
+    False Match Rate       1.3% (36/2700)  0.7% (20/2700)
+    False Non Match Rate   1.3% (4/300)    2.7% (8/300)
+    False Accept Rate      1.3%            0.7%
+    False Reject Rate      1.3%            2.7%
+    Half Total Error Rate  1.3%            1.7%
+    =====================  ==============  ==============
+
+Command used::
+
+    $ bob bio pipeline -d voxforge -p isv-voxforge -g dev -g eval -l sge
 
 Speechbrain ECAPA-TDNN
 ----------------------
 
-On 128 CPU nodes on the SGE Grid: Ran in 9 minutes.
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -6.159925e-01
 
@@ -49,3 +69,14 @@ On 128 CPU nodes on the SGE Grid: Ran in 9 minutes.
     False Reject Rate      0.0%           0.0%
     Half Total Error Rate  0.0%           0.4%
     =====================  =============  ==============
+
+Command used::
+
+    $ bob bio pipeline -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge
+
+
+.. rubric:: Footnotes
+
+.. [#nodes] The number of nodes is a requested maximum amount and can vary depending on
+    the number of jobs currently running on the grid as well as the scheduler's load
+    estimation. The execution time can then also vary.
