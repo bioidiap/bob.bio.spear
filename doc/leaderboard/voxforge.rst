@@ -19,19 +19,17 @@ use in ``bob.bio.spear`` is a part of the English VoxForge corpus. It contains:
 +--------------------+------------+--------------+
 | train              | 10         | 3148         |
 +-------+------------+------------+--------------+
-|       | references | 10         | 1304         |
-|       +------------+------------+--------------+
+|       | references |            | 1304         |
+|       +------------+            +--------------+
 | dev   | probes     | 10         | 300          |
 +-------+------------+------------+--------------+
-|       | references | 10         | 1509         |
-|       +------------+------------+--------------+
+|       | references |            | 1509         |
+|       +------------+            +--------------+
 | eval  | probes     | 10         | 300          |
 +-------+------------+------------+--------------+
 
 GMM
 ---
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (5 minutes of training).
 
 .. table:: [Min. criterion: EER] Threshold on Development set: 2.128360e+00
 
@@ -50,10 +48,10 @@ Command used to generate scores::
 
     $ bob bio pipeline -d voxforge -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_voxforge
 
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (5 minutes of training).
+
 ISV
 ---
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (7 minutes of training).
 
 .. table:: [Min. criterion: EER] Threshold on Development: 1.680925e+00
 
@@ -72,10 +70,10 @@ Command used::
 
     $ bob bio pipeline -d voxforge -p isv-voxforge -g dev -g eval -l sge -o results/isv_voxforge
 
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (7 minutes of training).
+
 Speechbrain ECAPA-TDNN
 ----------------------
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -6.159925e-01
 
@@ -93,6 +91,8 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 Command used::
 
     $ bob bio pipeline -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_voxforge
+
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 
 
 .. rubric:: Footnotes

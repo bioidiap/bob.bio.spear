@@ -34,8 +34,8 @@ In the following pages, the metrics tables are generated using the command::
     $ bob bio metrics -e ./results/scores-{dev,eval}.csv
 
 
-Datasets
---------
+Leaderboard for each dataset
+-----------------------------
 
 .. toctree::
     :maxdepth: 2

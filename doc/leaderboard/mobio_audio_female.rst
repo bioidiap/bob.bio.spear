@@ -30,8 +30,6 @@ Mobio is a collection of English voice recordings. The set of female subjects co
 GMM
 ---
 
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 15 minutes (11 minutes of training).
-
 .. table:: [Min. criterion: EER] Threshold on Development set: 7.550647e-01
 
     =====================  ==================  =================
@@ -49,10 +47,10 @@ Command used to generate scores::
 
     $ bob bio pipeline -d mobio-audio-female gmm-mobio -g dev -g eval -l sge -o results/gmm_mobio_female
 
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 15 minutes (11 minutes of training).
+
 ISV
 ---
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 8 minutes (3 minutes of training).
 
 .. table:: [Min. criterion: EER] Threshold on Development set: 3.483318e-01
 
@@ -71,10 +69,10 @@ Command used to generate scores::
 
     $ bob bio pipeline -d mobio-audio-female -p isv-voxforge -g dev -g eval -l sge -o results/isv_mobio_female
 
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 8 minutes (3 minutes of training).
+
 Speechbrain ECAPA-TDNN
 ----------------------
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: 12 minutes (no training).
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -5.091601e-01
 
@@ -93,6 +91,8 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: 12 minutes (no training).
 Command used to generate scores::
 
     $ bob bio pipeline -d mobio-audio-female -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_mobio_female
+
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: 12 minutes (no training).
 
 
 .. rubric:: Footnotes

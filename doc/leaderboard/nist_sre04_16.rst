@@ -29,8 +29,6 @@ This is an aggregation of the NIST-SRE datasets from 2004 to 2016.
 GMM
 ---
 
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
-
 .. table:: [Min. criterion: EER] Threshold on Development set: TODO
 
     =====================  ================  ==================
@@ -41,10 +39,10 @@ Command used::
 
     $ bob bio pipeline -d nist-sre04to16 -p gmm-nist -g dev -g eval -l sge -o results/gmm_nist
 
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
+
 ISV
 ---
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
 
 .. table:: [Min. criterion: EER] Threshold on Development set: TODO
 
@@ -56,10 +54,10 @@ Command used::
 
     $ bob bio pipeline -d nist-sre04to16 -p isv-nist -g dev -g eval -l sge -o results/isv_nist
 
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
+
 Speechbrain ECAPA-TDNN
 ----------------------
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 50 minutes (no training).
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -2.857224e-01
 
@@ -85,6 +83,8 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 50 minutes (no training).
 Command used::
 
     $ bob bio pipeline -d nist-sre04to16 -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_nist
+
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 50 minutes (no training).
 
 
 .. rubric:: Footnotes
