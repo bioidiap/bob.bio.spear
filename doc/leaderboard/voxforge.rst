@@ -8,6 +8,26 @@
  VoxForge Dataset
 ==================
 
+Dataset Description
+-------------------
+
+VoxForge is a collection of voice recordings from various languages. The set that we
+use in ``bob.bio.spear`` is a part of the English VoxForge corpus. It contains:
+
++--------------------+------------+--------------+
+|                    | Identities | Sample count |
++--------------------+------------+--------------+
+| train              | 10         | 3148         |
++-------+------------+------------+--------------+
+|       | references | 10         | 1304         |
+|       +------------+------------+--------------+
+| dev   | probes     | 10         | 300          |
++-------+------------+------------+--------------+
+|       | references | 10         | 1509         |
+|       +------------+------------+--------------+
+| eval  | probes     | 10         | 300          |
++-------+------------+------------+--------------+
+
 GMM
 ---
 
@@ -28,7 +48,7 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (5 minutes of tra
 
 Command used to generate scores::
 
-    $ bob bio pipeline -d voxforge -p gmm-voxforge -g dev -g eval -l sge
+    $ bob bio pipeline -d voxforge -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_voxforge
 
 ISV
 ---
@@ -50,7 +70,7 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (7 minutes of tra
 
 Command used::
 
-    $ bob bio pipeline -d voxforge -p isv-voxforge -g dev -g eval -l sge
+    $ bob bio pipeline -d voxforge -p isv-voxforge -g dev -g eval -l sge -o results/isv_voxforge
 
 Speechbrain ECAPA-TDNN
 ----------------------
@@ -72,7 +92,7 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 
 Command used::
 
-    $ bob bio pipeline -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge
+    $ bob bio pipeline -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_voxforge
 
 
 .. rubric:: Footnotes

@@ -8,35 +8,68 @@
  Mobio Dataset, male subjects
 ==============================
 
+Dataset Description
+-------------------
+
+Mobio is a collection of English voice recordings. The set of male subjects contains:
+
++--------------------+------------+--------------+
+|                    | Identities | Sample count |
++--------------------+------------+--------------+
+| train              | 37         | 7104         |
++-------+------------+------------+--------------+
+|       | references |            | 120          |
+|       +------------+            +--------------+
+| dev   | probes     | 24         | 2520         |
++-------+------------+------------+--------------+
+|       | references |            | 190          |
+|       +------------+            +--------------+
+| eval  | probes     | 38         | 3990         |
++-------+------------+------------+--------------+
+
 GMM
 ---
 
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 39 minutes (30 minutes of training).
 
-.. table:: [Min. criterion: EER] Threshold on Development set: TODO
+.. table:: [Min. criterion: EER] Threshold on Development set: 6.918534e-01
 
-    =====================  ================  ==================
-    ..                     Development       Evaluation
-    =====================  ================  ==================
+    =====================  ===================  ==================
+    ..                     Development          Evaluation
+    =====================  ===================  ==================
+    Failure to Acquire     0.0%                 0.0%
+    False Match Rate       18.3% (10603/57960)  3.2% (4684/147630)
+    False Non Match Rate   18.3% (461/2520)     30.4% (1211/3990)
+    False Accept Rate      18.3%                3.2%
+    False Reject Rate      18.3%                30.4%
+    Half Total Error Rate  18.3%                16.8%
+    =====================  ===================  ==================
 
 Command used to generate scores::
 
-    $ bob bio pipeline -d mobio-audio-male gmm-mobio -g dev -g eval -l sge
+    $ bob bio pipeline -d mobio-audio-male gmm-mobio -g dev -g eval -l sge -o results/gmm_mobio_male
 
 ISV
 ---
 
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 18 minutes (11 minutes of training).
 
-.. table:: [Min. criterion: EER] Threshold on Development set: TODO
+.. table:: [Min. criterion: EER] Threshold on Development set: 2.974263e-01
 
-    =====================  ================  ==================
-    ..                     Development       Evaluation
-    =====================  ================  ==================
+    =====================  ==================  ====================
+    ..                     Development         Evaluation
+    =====================  ==================  ====================
+    Failure to Acquire     0.0%                0.0%
+    False Match Rate       12.7% (7360/57960)  14.7% (21697/147630)
+    False Non Match Rate   12.7% (320/2520)    14.3% (572/3990)
+    False Accept Rate      12.7%               14.7%
+    False Reject Rate      12.7%               14.3%
+    Half Total Error Rate  12.7%               14.5%
+    =====================  ==================  ====================
 
 Command used to generate scores::
 
-    $ bob bio pipeline -d mobio-audio-male -p isv-voxforge -g dev -g eval -l sge
+    $ bob bio pipeline -d mobio-audio-male -p isv-voxforge -g dev -g eval -l sge -o results/isv_mobio_male
 
 Speechbrain ECAPA-TDNN
 ----------------------
@@ -59,7 +92,7 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: 19 minutes (no training).
 
 Command used to generate scores::
 
-    $ bob bio pipeline -d mobio-audio-male -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge
+    $ bob bio pipeline -d mobio-audio-male -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_mobio_male
 
 
 .. rubric:: Footnotes
