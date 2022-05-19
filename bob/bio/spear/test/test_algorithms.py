@@ -9,7 +9,7 @@ import numpy as np
 from pkg_resources import resource_filename
 
 from bob.bio.base import load_resource
-from bob.bio.spear.algorithm import GMM
+from bob.bio.base.algorithm import GMM
 from bob.bio.spear.transformer import WavToSample
 from bob.learn.em import GMMMachine
 from bob.pipelines import Sample

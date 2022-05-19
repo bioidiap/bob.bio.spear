@@ -83,37 +83,5 @@ def smoothing(labels, smoothing_window):
     return labels
 
 
-def stack_speech_data(data, expected_ndim):
-    """Stacks the speech data into a matrix of shape (n_samples, n_features) or
-    labels into shape of (n_samples,) if the input data is not like that already
-
-    Parameters
-    ----------
-    data : array-like
-        speech data or labels
-    expected_ndim : int
-        expected number of dimensions of the data
-
-    Returns
-    -------
-    stacked_data : array-like
-        stacked data if needed
-    """
-    if expected_ndim not in (1, 2):
-        raise ValueError(
-            f"expected_ndim must be 1 or 2 but got {expected_ndim}"
-        )
-
-    if expected_ndim == 1:
-        stack_function = np.concatenate
-    else:
-        stack_function = np.vstack
-
-    if data[0].ndim == expected_ndim:
-        return stack_function(data)
-
-    return data
-
-
 # gets sphinx autodoc done right - don't remove it
 __all__ = [_ for _ in dir() if not _.startswith("_")]

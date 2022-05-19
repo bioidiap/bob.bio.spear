@@ -1,4 +1,3 @@
-from . import algorithm  # noqa: F401
 from . import annotator  # noqa: F401
 from . import audio_processing  # noqa: F401
 from . import database  # noqa: F401
