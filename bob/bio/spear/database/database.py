@@ -95,6 +95,8 @@ def SpearBioDatabase(
     data_ext: str = ".wav",
     annotations_path: Union[str, None] = None,
     annotations_ext: str = ".json",
+    force_sample_rate: Union[int, None] = None,
+    force_channel: Union[int, None] = None,
     **kwargs,
 ):
     """Database interface for the bob.bio.spear datasets for speaker recognition.
@@ -156,6 +158,15 @@ def SpearBioDatabase(
 
     annotations_ext
         If annotations_path is provided, will load annotation using this extension.
+
+    force_sample_rate
+        If not None, will force the sample rate of the data to a specific value.
+        Otherwise the sample rate will be specified by each loaded file.
+
+    force_channel
+        If not None, will force to load the nth channel of each file. If None and the
+        samples have a ``channel`` attribute, this channel will be loaded, and
+        otherwise all channels will be loaded in a 2D array if multiple are present.
     """
 
     if dataset_protocol_path is None:
@@ -188,7 +199,9 @@ def SpearBioDatabase(
     )
 
     # Read the file at path and set the data and metadata of a sample
-    path_to_sample = PathToAudio()
+    path_to_sample = PathToAudio(
+        forced_channel=force_channel, forced_sr=force_sample_rate
+    )
 
     # Build the data loading pipeline
     if annotations_path is None:

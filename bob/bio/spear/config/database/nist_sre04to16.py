@@ -24,4 +24,9 @@ from bob.bio.spear.database import SpearBioDatabase
 if "protocol" not in locals():
     protocol = "core"
 
-database = SpearBioDatabase("nist_sre04to16", protocol=protocol, data_ext=".sph")
+database = SpearBioDatabase(
+    "nist_sre04to16",
+    protocol=protocol,
+    data_ext=".sph",
+    force_sample_rate=16000,
+)

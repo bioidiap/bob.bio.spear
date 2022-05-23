@@ -3,6 +3,7 @@
 # @date: Tue 03 May 2022 10:44:57 UTC+02
 
 import numpy as np
+
 from pkg_resources import resource_filename
 
 from bob.bio.spear.transformer import PathToAudio
@@ -22,7 +23,7 @@ def test_path_to_audio():
     assert isinstance(results.data, np.ndarray)
     assert results.data.shape == (audio_n_samples,), len(results.data)
 
-    assert results.data.dtype == float, results.data.dtype
+    assert results.data.dtype == np.float32, results.data.dtype
 
     # Force a different sample rate
     sample = Sample(data=audio_path)
