@@ -215,6 +215,6 @@ def SpearBioDatabase(
         protocol=protocol,
         dataset_protocol_path=dataset_protocol_path,
         csv_to_sample_loader=sample_loader,
-        allow_scoring_with_all_biometric_references=True,
+        score_all_vs_all=True,
         **kwargs,
     )
