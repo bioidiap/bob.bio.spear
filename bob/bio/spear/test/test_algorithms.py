@@ -30,17 +30,16 @@ def test_gmm():
     transformer.fit([sample])
     assert isinstance(algorithm.means, np.ndarray)
 
-    extracted_feature = transformer.transform([sample])[0]
+    extracted_feature = transformer.transform([sample])[0].data
 
     # Test enrollment
-    model = algorithm.enroll(extracted_feature.data)
+    model = algorithm.create_templates([extracted_feature], enroll=True)[0]
     assert isinstance(model, GMMMachine)
 
+    # Test probe template
+    probe = algorithm.create_templates([extracted_feature], enroll=False)[0]
+
     # Test scoring
-    score = algorithm.score(model, extracted_feature.data)
-    assert score.shape == (1,)
-    assert score[0] > 0.0
-    scores = algorithm.score_multiple_biometric_references(
-        [model, model], extracted_feature.data
-    )
-    assert scores.shape == (2, 1)
+    scores = algorithm.compare([model], [probe])
+    assert scores.shape == (1, 1)
+    assert scores[0, 0] > 0.0
