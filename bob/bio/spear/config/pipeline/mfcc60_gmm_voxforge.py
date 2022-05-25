@@ -4,8 +4,8 @@
 
 from sklearn.pipeline import Pipeline
 
+from bob.bio.base.algorithm import GMM
 from bob.bio.base.pipelines import PipelineSimple
-from bob.bio.spear.algorithm import GMM
 from bob.bio.spear.annotator import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
 from bob.learn.em import KMeansMachine

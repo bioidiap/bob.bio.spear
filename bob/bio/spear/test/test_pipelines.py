@@ -1,8 +1,8 @@
 from sklearn.pipeline import Pipeline as SklearnPipeline
 
 from bob.bio.base import load_resource
+from bob.bio.base.algorithm import GMM
 from bob.bio.base.pipelines import PipelineSimple
-from bob.bio.spear.algorithm import GMM
 
 """Tests for pipelines default configurations."""
 
