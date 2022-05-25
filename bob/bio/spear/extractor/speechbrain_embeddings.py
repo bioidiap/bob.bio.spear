@@ -2,30 +2,47 @@ import numpy as np
 import torch
 
 from sklearn.base import BaseEstimator
-from speechbrain.pretrained import EncoderClassifier
 
 
 class SpeechbrainEmbeddings(BaseEstimator):
     def __init__(self, **kwargs) -> None:
+        # later on we will add source and savedir as input parameters to allow
+        # loading of different models
         super().__init__(**kwargs)
+        self.model = None
+
+    def load_model(self):
+        if self.model is not None:
+            return
+        from speechbrain.pretrained import EncoderClassifier
+
+        self.model = EncoderClassifier.from_hparams(
+            source="speechbrain/spkrec-ecapa-voxceleb",
+            savedir="pretrained_models/spkrec-ecapa-voxceleb",
+        )
 
     def fit(self, X, y=None):
         return self
 
-    def transform_one(self, encoder, audio_track):
-        return encoder.encode_batch(
+    def transform_one(self, audio_track):
+        return self.model.encode_batch(
             torch.from_numpy(audio_track),
             normalize=True,
         ).numpy()
 
     def transform(self, audio_tracks, y=None):
-        encoder = EncoderClassifier.from_hparams(
-            source="speechbrain/spkrec-ecapa-voxceleb",
-            savedir="pretrained_models/spkrec-ecapa-voxceleb",
-        )
+        self.load_model()
         embeddings = [
-            self.transform_one(encoder, audio_track)
-            for audio_track in audio_tracks
+            self.transform_one(audio_track) for audio_track in audio_tracks
         ]
 
         return np.vstack(embeddings)
+
+    def __getstate__(self):
+        # Handling unpicklable objects
+        d = self.__dict__.copy()
+        d["model"] = None
+        return d
+
+    def _more_tags(self):
+        return {"requires_fit": False}
