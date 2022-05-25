@@ -160,6 +160,23 @@ def read(
     return data, rate
 
 
+def audio_info(filename: str) -> torchaudio.backend.common.AudioMetaData:
+    """Returns the audio info of a file.
+
+    Parameters
+    ----------
+    filename:
+        The full path to the audio file to load.
+
+    Returns
+    -------
+    info:
+        A dictionary containing the audio information.
+    """
+
+    return torchaudio.info(str(filename))
+
+
 def compare(v1, v2, width):
     return abs(v1 - v2) <= width
 
