@@ -3,6 +3,7 @@ from . import audio_processing  # noqa: F401
 from . import database  # noqa: F401
 from . import extractor  # noqa: F401
 from . import test  # noqa: F401
+from . import transformer  # noqa: F401
 
 
 def get_config():
