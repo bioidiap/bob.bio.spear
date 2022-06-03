@@ -277,7 +277,9 @@ def test_voxforge():
 
 
 def test_nist_sre04to16():
-    database = SpearBioDatabase("nist_sre04to16", protocol="core", data_path="dummy/")
+    database = SpearBioDatabase(
+        "nist_sre04to16", protocol="core", data_path="dummy/"
+    )
 
     _check_database(
         database,
