@@ -32,11 +32,13 @@ requirements:
     - bob.measure
     - bob.bio.base
     - bob.pipelines
+    - pytorch {{ pytorch }}
     - scikit-learn {{ scikit_learn }}
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
+    - {{ pin_compatible('pytorch') }}
     - {{ pin_compatible('scikit-learn') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('tqdm') }}
@@ -55,6 +57,7 @@ test:
     - coverage {{ coverage }}
     - sphinx {{ sphinx }}
     - sphinx_rtd_theme {{ sphinx_rtd_theme }}
+    - librosa
 
 about:
   home: https://www.idiap.ch/software/bob/

@@ -8,8 +8,10 @@
 import math
 import sys
 
+from typing import Optional, Tuple, Union
+
 import numpy
-import scipy.io.wavfile
+import torch
 
 
 def fft(src, dst=None):
@@ -75,14 +77,110 @@ def init_dct_kernel(n_filters, n_ceps, dct_norm):
     return dct_kernel
 
 
-def read(filename):
-    """Reads audio file and returns the signal and the sampling rate"""
+def resample(
+    audio: Union[numpy.ndarray, torch.Tensor],
+    rate: int,
+    new_rate: int,
+    **kwargs,
+) -> Union[numpy.ndarray, torch.Tensor]:
+    """Resamples the audio to a new sample rate.
 
-    # the data is read in its native format
-    rate, data = scipy.io.wavfile.read(str(filename))
-    if data.dtype == "int16":
-        data = numpy.cast["float"](data)
+    Parameters
+    ----------
+    audio:
+        The audio to resample.
+    rate:
+        The original sample rate of the audio.
+    new_rate:
+        The wanted sample rate of the output audio.
+    kwargs:
+        Arguments passed to :py:class:``torchaudio.transforms.Resample``.
+    """
+
+    import torchaudio
+
+    torchaudio.set_audio_backend("soundfile")
+
+    if rate == new_rate:
+        return audio
+
+    was_numpy = False
+    if isinstance(audio, numpy.ndarray):
+        audio = torch.from_numpy(audio)
+        was_numpy = True
+
+    resampler = torchaudio.transforms.Resample(
+        rate, new_rate, dtype=torch.float32, **kwargs
+    )
+    audio = resampler(audio)
+
+    return audio.numpy() if was_numpy else audio
+
+
+def read(
+    filename: str,
+    channel: Optional[int] = None,
+    force_sample_rate: Optional[int] = None,
+) -> Tuple[numpy.ndarray, int]:
+    """Reads audio file and returns the signal and the sampling rate
+
+    Parameters
+    ----------
+    filename:
+        The full path to the audio file to load.
+    channel:
+        The channel to load. If None, all channels will be loaded and returned in a 2D
+        array in the shape (n_channels, n_samples).
+    force_sample_rate:
+        If specified, the audio will be resampled to the specified rate. Otherwise, the
+        sample rate of the file will be used.
+
+    Returns
+    -------
+    signal and sampling rate
+        The signal in int16 range (-32768 to 32767) and float32 format, and the
+        sampling rate in Hz.
+    """
+
+    import torchaudio
+
+    torchaudio.set_audio_backend("soundfile")
+
+    data, rate = torchaudio.load(str(filename))
+
+    if channel is not None:
+        data = data[channel]
+    else:
+        if data.ndim > 1:
+            data = data[0]
+
+    if force_sample_rate is not None:
+        data = resample(data, rate, force_sample_rate)
+        rate = force_sample_rate
+
+    # Expected data is in float32 format and int16 range (-32768. to 32767.)
+    data = data.numpy().astype(numpy.float32) * 32768
+
     return data, rate
+
+
+def audio_info(filename: str):
+    """Returns the audio info of a file.
+
+    Parameters
+    ----------
+    filename:
+        The full path to the audio file to load.
+
+    Returns
+    -------
+    info: torchaudio.backend.common.AudioMetaData
+        A dictionary containing the audio information.
+    """
+
+    import torchaudio
+
+    return torchaudio.info(str(filename))
 
 
 def compare(v1, v2, width):

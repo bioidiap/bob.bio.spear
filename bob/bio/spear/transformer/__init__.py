@@ -1,5 +1,6 @@
+from .path_to_audio import PathToAudio
 from .preprocessing import ReferenceIdEncoder
-from .wav_to_sample import WavToSample
+from .resample import Resample
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -19,7 +20,8 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    WavToSample,
     ReferenceIdEncoder,
+    PathToAudio,
+    Resample,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

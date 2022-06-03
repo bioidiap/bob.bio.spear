@@ -18,7 +18,7 @@ These parameters were chosen to work best with the VoxForge database.
 This pipeline is composed of the following steps:
     - annotator: Energy_2Gauss (VAD on 2 Gaussians)
     - extractor: Cepstral (MFCC, 60 features)
-    - algorithm: GMM (trained in the pipeline as a Transfomer, and used as BioAlgorithm
+    - algorithm: GMM (trained in the pipeline as a Transformer, and used as BioAlgorithm
         for enrollment and scoring)
 """
 

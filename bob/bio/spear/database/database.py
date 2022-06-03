@@ -9,7 +9,7 @@ from typing import Union
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
-from bob.bio.spear.transformer import WavToSample
+from bob.bio.spear.transformer import PathToAudio
 from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines.sample_loaders import AnnotationsLoader
@@ -46,6 +46,10 @@ known_databases = {
     "voicepa": {
         "definition_file": "database-protocols-voicepa-25ce140b.tar.gz",
         "crc": "25ce140b",
+    },
+    "nist_sre04to16": {
+        "definition_file": "database-protocols-nist_sre04to16-8aea7733.tar.gz",
+        "crc": "8aea7733",
     },
 }
 
@@ -91,6 +95,8 @@ def SpearBioDatabase(
     data_ext: str = ".wav",
     annotations_path: Union[str, None] = None,
     annotations_ext: str = ".json",
+    force_sample_rate: Union[int, None] = None,
+    force_channel: Union[int, None] = None,
     **kwargs,
 ):
     """Database interface for the bob.bio.spear datasets for speaker recognition.
@@ -126,7 +132,7 @@ def SpearBioDatabase(
     Parameters
     ----------
 
-    database_name
+    name
         name of the database used for retrieving config keys and files.
 
     protocol
@@ -152,6 +158,15 @@ def SpearBioDatabase(
 
     annotations_ext
         If annotations_path is provided, will load annotation using this extension.
+
+    force_sample_rate
+        If not None, will force the sample rate of the data to a specific value.
+        Otherwise the sample rate will be specified by each loaded file.
+
+    force_channel
+        If not None, will force to load the nth channel of each file. If None and the
+        samples have a ``channel`` attribute, this channel will be loaded, and
+        otherwise all channels will be loaded in a 2D array if multiple are present.
     """
 
     if dataset_protocol_path is None:
@@ -184,7 +199,9 @@ def SpearBioDatabase(
     )
 
     # Read the file at path and set the data and metadata of a sample
-    path_to_sample = WavToSample()
+    path_to_sample = PathToAudio(
+        forced_channel=force_channel, forced_sr=force_sample_rate
+    )
 
     # Build the data loading pipeline
     if annotations_path is None:
