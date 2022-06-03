@@ -12,10 +12,6 @@ from typing import Optional, Tuple, Union
 
 import numpy
 import torch
-import torchaudio
-
-# Handle correctly `a-law` coded files. "sox" (default on linux) fails on those.
-torchaudio.set_audio_backend("soundfile")
 
 
 def fft(src, dst=None):
@@ -101,6 +97,10 @@ def resample(
         Arguments passed to :py:class:``torchaudio.transforms.Resample``.
     """
 
+    import torchaudio
+
+    torchaudio.set_audio_backend("soundfile")
+
     if rate == new_rate:
         return audio
 
@@ -142,6 +142,10 @@ def read(
         sampling rate in Hz.
     """
 
+    import torchaudio
+
+    torchaudio.set_audio_backend("soundfile")
+
     data, rate = torchaudio.load(str(filename))
 
     if channel is not None:
@@ -160,7 +164,7 @@ def read(
     return data, rate
 
 
-def audio_info(filename: str) -> torchaudio.backend.common.AudioMetaData:
+def audio_info(filename: str):
     """Returns the audio info of a file.
 
     Parameters
@@ -170,9 +174,11 @@ def audio_info(filename: str) -> torchaudio.backend.common.AudioMetaData:
 
     Returns
     -------
-    info:
+    info: torchaudio.backend.common.AudioMetaData
         A dictionary containing the audio information.
     """
+
+    import torchaudio
 
     return torchaudio.info(str(filename))
 

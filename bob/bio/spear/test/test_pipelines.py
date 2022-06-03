@@ -3,10 +3,12 @@ from sklearn.pipeline import Pipeline as SklearnPipeline
 from bob.bio.base import load_resource
 from bob.bio.base.algorithm import GMM
 from bob.bio.base.pipelines import PipelineSimple
+from bob.bio.base.test.utils import is_library_available
 
 """Tests for pipelines default configurations."""
 
 
+@is_library_available("torchaudio")
 def test_mfcc_gmm_voxforge():
     """Creating the gmm-voxforge pipeline."""
 
@@ -16,6 +18,7 @@ def test_mfcc_gmm_voxforge():
     assert isinstance(pipeline.biometric_algorithm, GMM)
 
 
+# @is_library_available("torchaudio")
 def test_mfcc_gmm_mobio():
     """Creating the gmm-mobio pipeline."""
 
@@ -26,6 +29,7 @@ def test_mfcc_gmm_mobio():
     assert isinstance(pipeline.biometric_algorithm, GMM)
 
 
+@is_library_available("torchaudio")
 def test_mfcc_isv_voxforge():
     """Creating the isv-voxforge pipeline."""
 

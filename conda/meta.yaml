@@ -33,14 +33,12 @@ requirements:
     - bob.bio.base
     - bob.pipelines
     - pytorch {{ pytorch }}
-    - torchaudio >=0.11
     - scikit-learn {{ scikit_learn }}
     - tqdm {{ tqdm }}
   run:
     - python
     - setuptools
-    - {{ pin_comppatible('pytorch') }}
-    - torchaudio >=0.11,<1.0
+    - {{ pin_compatible('pytorch') }}
     - {{ pin_compatible('scikit-learn') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('tqdm') }}
@@ -59,6 +57,7 @@ test:
     - coverage {{ coverage }}
     - sphinx {{ sphinx }}
     - sphinx_rtd_theme {{ sphinx_rtd_theme }}
+    - librosa
 
 about:
   home: https://www.idiap.ch/software/bob/

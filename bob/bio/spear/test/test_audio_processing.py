@@ -3,6 +3,9 @@ import os
 import numpy as np
 import pkg_resources
 
+from h5py import File as HDF5File
+
+from bob.bio.base.test.utils import is_library_available
 from bob.bio.spear.audio_processing import (
     cepstral,
     energy,
@@ -12,12 +15,17 @@ from bob.bio.spear.audio_processing import (
 )
 
 TEST_DATA_FOLDER = pkg_resources.resource_filename(__name__, "data")
-DATA_PATH = os.path.join(TEST_DATA_FOLDER, "sample.wav")
+WAV_PATH = os.path.join(TEST_DATA_FOLDER, "sample.wav")
+DATA_PATH = os.path.join(TEST_DATA_FOLDER, "sample.hdf5")
 GENERATE_REFS = False
+with HDF5File(DATA_PATH, "r") as f:
+    DATA = f["data"][()]
+    RATE = f["rate"][()]
 
 
+@is_library_available("torchaudio")
 def test_read():
-    data, sr = read(DATA_PATH)
+    data, sr = read(WAV_PATH)
     assert isinstance(data, np.ndarray)
     assert data.shape == (77760,)  # Number of samples in samples.wav
     assert data.dtype == np.float32
@@ -25,16 +33,14 @@ def test_read():
     assert sr == 16000  # Sample rate of sample.wav
 
     # Loading with a set sample rate
-    data, sr = read(DATA_PATH, channel=0, force_sample_rate=8000)
+    data, sr = read(WAV_PATH, channel=0, force_sample_rate=8000)
     assert isinstance(data, np.ndarray)
     assert data.shape == (38880,)
     assert data.dtype == np.float32
     assert sr == 8000
 
 
-DATA, RATE = read(os.path.join(TEST_DATA_FOLDER, "sample.wav"))
-
-
+@is_library_available("torchaudio")
 def test_resample():
     resampled = resample(DATA, RATE, 41100)
     assert isinstance(resampled, np.ndarray)

@@ -44,4 +44,4 @@ class Resample(BaseEstimator, TransformerMixin):
             "stateless": True,
             "requires_fit": False,
             "bob_transform_extra_input": [("sample_rates", "rate")],
-        }
+        }  # TODO: add multi-output tag
