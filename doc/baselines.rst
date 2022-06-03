@@ -51,11 +51,19 @@ shorter name, (e.g. the database config file
 
 Running in Parallel
 ~~~~~~~~~~~~~~~~~~~
-TODO
-To run the experiments in parallel, as usual you can define an SGE grid configuration, or run with parallel threads on the local machine.
-For the ``verify.py`` script, the grid configuration is adapted to each of the algorithms.
-Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option.
-Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
+
+By default (without ``--dask-client`` option), the experiments are still run with dask,
+but in one thread on the local machine.
+
+To run the experiments in parallel, you can use a default dask client configuration or
+define a customized configuration (see :ref:`bob.pipelines`).
+
+The following command will run the experiments in parallel on the Idiap SGE grid using
+the default number of workers::
+
+  $ bob bio pipeline simple -d <database> -p <pipeline> --dask-client sge
+
+To run locally in parallel, you can pass the ``--dask-client local-parallel`` option.
 
 
 
@@ -70,7 +78,7 @@ The algorithms present a set of state-of-the-art speaker recognition algorithms.
 
 * ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [Vogt08]_ is used to learn what variations in samples are introduced by identity changes and which not.
 
-  - algorithm : To be done
+  - algorithm : :py:class:`bob.bio.spear.algorithm.ISV`
 
 * ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling [Dehak11]_ (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
 
