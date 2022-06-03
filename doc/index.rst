@@ -52,6 +52,7 @@ Users Guide
    :maxdepth: 2
 
    baselines
+   leaderboard/leaderboard
    implementation
    references
 
