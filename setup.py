@@ -112,7 +112,6 @@ setup(
             "energy-2gauss = bob.bio.spear.config.annotator.energy_2gauss:annotator",  # Two Gaussian GMM energy VAD
             "energy-thr    = bob.bio.spear.config.annotator.energy_thr:annotator",  # Energy threshold VAD
             "mod-4hz       = bob.bio.spear.config.annotator.mod_4hz:annotator",  # mod_4hz VAD
-            "external      = bob.bio.spear.config.annotator.external:annotator",  # external VAD
         ],
         "bob.bio.pipeline": [
             "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge:pipeline",
