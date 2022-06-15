@@ -1,12 +1,12 @@
 .. vim: set fileencoding=utf-8 :
 .. Sun Aug 21 09:26:51 CEST 2016
 
-.. image:: https://img.shields.io/badge/docs-v4.0.0-orange.svg
-   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/v4.0.0/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/v4.0.0/pipeline.svg
-   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/v4.0.0
-.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/v4.0.0/coverage.svg
-   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/v4.0.0
+.. image:: https://img.shields.io/badge/docs-latest-orange.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/master/index.html
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/pipeline.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/coverage.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear
 
@@ -28,7 +28,7 @@ In this package, utilities that are specific for speaker recognition are contain
 * Acoustic feature extractors
 * Recognition algorithms based on acoustic features
 
-For further information about ``bob.bio``, please read `its Documentation <https://www.idiap.ch/software/bob/docs/bob/bob.bio.base/v4.0.0/index.html>`_.
+For further information about ``bob.bio``, please read `its Documentation <https://www.idiap.ch/software/bob/docs/bob/bob.bio.base/master/index.html>`_.
 
 
 Installation
