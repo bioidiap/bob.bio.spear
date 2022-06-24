@@ -4,7 +4,7 @@
 
 import logging
 
-from typing import Union
+from typing import Optional
 
 from sklearn.pipeline import Pipeline
 
@@ -51,6 +51,10 @@ known_databases = {
         "definition_file": "database-protocols-nist_sre04to16-8aea7733.tar.gz",
         "crc": "8aea7733",
     },
+    "voxceleb": {
+        "definition_file": "database-protocols-voxceleb.tar.gz",  # TODO fix name when uploaded
+        "crc": "",  # TODO fix crc when uploaded
+    },
 }
 
 
@@ -89,14 +93,14 @@ def path_loader(path: str):
 
 def SpearBioDatabase(
     name: str,
-    protocol: Union[str, None] = None,
-    dataset_protocol_path: Union[str, None] = None,
-    data_path: Union[str, None] = None,
+    protocol: Optional[str] = None,
+    dataset_protocol_path: Optional[str] = None,
+    data_path: Optional[str] = None,
     data_ext: str = ".wav",
-    annotations_path: Union[str, None] = None,
+    annotations_path: Optional[str] = None,
     annotations_ext: str = ".json",
-    force_sample_rate: Union[int, None] = None,
-    force_channel: Union[int, None] = None,
+    force_sample_rate: Optional[int] = None,
+    force_channel: Optional[int] = None,
     **kwargs,
 ):
     """Database interface for the bob.bio.spear datasets for speaker recognition.
@@ -196,6 +200,7 @@ def SpearBioDatabase(
         data_loader=path_loader,
         dataset_original_directory=data_path,
         extension=data_ext,
+        reference_id_equal_subject_id=name not in ["voxceleb"],
     )
 
     # Read the file at path and set the data and metadata of a sample
@@ -232,6 +237,7 @@ def SpearBioDatabase(
         protocol=protocol,
         dataset_protocol_path=dataset_protocol_path,
         csv_to_sample_loader=sample_loader,
-        score_all_vs_all=True,
+        score_all_vs_all=name not in ["voxceleb"],
+        is_sparse=name in ["voxceleb"],
         **kwargs,
     )
