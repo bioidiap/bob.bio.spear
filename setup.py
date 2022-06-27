@@ -107,6 +107,7 @@ setup(
             "voxforge           = bob.bio.spear.config.database.voxforge:database",
             "mini-voxforge      = bob.bio.spear.config.database.mini_voxforge:database",  # For tests only
             "nist-sre04to16     = bob.bio.spear.config.database.nist_sre04to16:database",
+            "voxceleb           = bob.bio.spear.config.database.voxceleb:database",
         ],
         "bob.bio.annotator": [
             "energy-2gauss = bob.bio.spear.config.annotator.energy_2gauss:annotator",  # Two Gaussian GMM energy VAD
@@ -123,6 +124,7 @@ setup(
             # databases:
             "voxforge      = bob.bio.spear.config.database.voxforge",
             "mini-voxforge = bob.bio.spear.config.database.mini_voxforge",
+            "voxceleb      = bob.bio.spear.config.database.voxceleb",
             # PipelineSimple config (pipeline and db):
             "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge",
             "gmm-mobio     = bob.bio.spear.config.pipeline.mfcc60_gmm_mobio",
