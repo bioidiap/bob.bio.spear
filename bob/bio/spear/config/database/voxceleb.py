@@ -9,5 +9,4 @@ from bob.bio.spear.database import SpearBioDatabase
 database = SpearBioDatabase(
     "voxceleb",
     protocol="voxceleb1",
-    dataset_protocol_path="../bob_data/datasets/database-protocols-voxceleb.tar.gz",  # TODO remove this line
 )

@@ -52,8 +52,8 @@ known_databases = {
         "crc": "8aea7733",
     },
     "voxceleb": {
-        "definition_file": "database-protocols-voxceleb.tar.gz",  # TODO fix name when uploaded
-        "crc": "",  # TODO fix crc when uploaded
+        "definition_file": "database-protocols-voxceleb-16fbdfe6.tar.gz",
+        "crc": "16fbdfe6",
     },
 }
 
