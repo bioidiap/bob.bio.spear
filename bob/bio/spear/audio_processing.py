@@ -291,7 +291,66 @@ def dct_transform(filters, n_filters, dct_kernel, n_ceps):
     return ceps
 
 
-def energy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
+def energy(
+    data: numpy.ndarray,
+    rate: int,
+    *,
+    win_length_ms: float = 20.0,
+    win_shift_ms: float = 10.0,
+):
+    """Returns the energy of an audio signal.
+
+    **parameters**:
+    data:
+        Audio data of the shape (n_audio_samples,)
+    rate:
+        Sample rate of ``data``
+    win_length_ms:
+        Length of the window in milliseconds.
+    win_shift_ms:
+        Shift of the window in milliseconds.
+
+    **returns**:
+    energy:
+        The energy of the audio signal.
+    """
+
+    win_length = int(rate * win_length_ms / 1000)
+    win_shift = int(rate * win_shift_ms / 1000)
+    win_size = int(2.0 ** math.ceil(math.log(win_length) / math.log(2)))
+
+    ######################################
+    # End of the Initialisation part ###
+    ######################################
+
+    ######################################
+    #          Core code             ###
+    ######################################
+
+    data_size = data.shape[0]
+    n_frames = int(1 + (data_size - win_length) / win_shift)
+
+    # create features set
+
+    features = [0 for j in range(n_frames)]
+
+    # compute cepstral coefficients
+    for i in range(n_frames):
+        # create a frame
+        frame = numpy.zeros(win_size, dtype=numpy.float32)
+        vec = numpy.arange(win_length)
+        frame[vec] = data[vec + i * win_shift]
+        som = numpy.sum(frame)
+        som = som / win_size
+        frame[vec] -= som  # normalization by mean here
+
+        energy = sig_norm(win_length, frame, False)
+        features[i] = energy
+
+    return numpy.array(features)
+
+
+def energy_legacy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
 
     #########################
     # Initialisation part ##
@@ -408,6 +467,97 @@ def spectrogram(
 
 
 def cepstral(
+    data: numpy.ndarray,
+    rate: int,
+    *,
+    win_length_ms: float = 20.0,
+    win_shift_ms: float = 10.0,
+    n_filters: int = 20,
+    f_min: float = 0.0,
+    f_max: float = 4000.0,
+    pre_emphasis_coef: float = 1.0,
+    mel_scale: bool = True,
+    with_energy: bool = True,
+    with_delta: bool = True,
+    with_delta_delta: bool = True,
+):
+    """
+    Compute the cepstral coefficients of the given audio signal with torchaudio.
+
+    **parameters**:
+    data:
+        The audio signal to compute the cepstral coefficients.
+    rate:
+        The sampling rate of the audio signal.
+    win_length_ms:
+        Length of the window in milliseconds.
+    win_shift_ms:
+        Shift of the window in milliseconds.
+    n_filters:
+        Number of filters in the filterbank.
+    f_min:
+        Minimum frequency of the filterbank.
+    f_max:
+        Maximum frequency of the filterbank.
+    pre_emphasis_coef:
+        Coefficient of the pre-emphasis filter.
+    mel_scale:
+        Whether to use the mel scale for the filterbank.
+    with_energy:
+        Whether to include the energy in the cepstral coefficients.
+    with_delta:
+        Whether to include the delta coefficients.
+    with_delta_delta:
+        Whether to include the delta-delta coefficients.
+
+    **returns**:
+    cepstral:
+        The cepstral coefficients.
+    """
+
+    win_length = int(rate * win_length_ms / 1000)
+    win_shift = int(rate * win_shift_ms / 1000)
+    win_size = int(2.0 ** math.ceil(math.log(win_length) / math.log(2)))
+
+    import torchaudio
+
+    cepstral_transform = torchaudio.transforms.MelSpectrogram(
+        sample_rate=rate,
+        n_fft=win_size,
+        win_length=win_length,
+        win_shift=win_shift,
+        n_mels=n_filters,
+        f_min=f_min,
+        f_max=f_max,
+        pad=0,
+        power=2.0,
+        normalized=False,
+        onesided=True,
+        mel_scale=mel_scale,
+    )
+
+    cepstral = cepstral_transform(data)
+
+    if with_energy:
+        cepstral = numpy.concatenate(
+            energy(
+                data,
+                rate,
+                win_length_ms=win_length_ms,
+                win_shift_ms=win_shift_ms,
+            ),
+            cepstral,
+        )
+
+    if with_delta:
+        cepstral = numpy.concatenate(
+            cepstral, torchaudio.delta(cepstral)
+        )  # TODO
+
+    return cepstral
+
+
+def cepstral_legacy(
     data,
     rate,
     *,
