@@ -52,8 +52,8 @@ known_databases = {
         "crc": "8aea7733",
     },
     "voxceleb": {
-        "definition_file": "database-protocols-voxceleb-16fbdfe6.tar.gz",
-        "crc": "16fbdfe6",
+        "definition_file": "database-protocols-voxceleb-defd6717.tar.gz",
+        "crc": "defd6717",
     },
 }
 
