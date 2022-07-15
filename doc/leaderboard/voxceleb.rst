@@ -28,11 +28,29 @@ It contains:
 GMM
 ---
 
+.. table:: [Min. criterion: EER ] Threshold on Development set: 1.062216e-01
 
+    =====================  ==================
+    ..                     Development
+    =====================  ==================
+    Failure to Acquire     0.0%
+    False Match Rate       18.8% (3538/18860)
+    False Non Match Rate   18.8% (3538/18860)
+    False Accept Rate      18.8%
+    False Reject Rate      18.8%
+    Half Total Error Rate  18.8%
+    =====================  ==================
+
+Command used::
+
+    $ bob bio pipeline -d voxceleb gmm-mobio -l sge-demanding -o results/gmm_voxceleb -n 512
+
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 10 hours.
 
 ISV
 ---
 
+TODO
 
 
 Speechbrain ECAPA-TDNN
@@ -54,9 +72,16 @@ Speechbrain ECAPA-TDNN
 
 Command used::
 
-    $ bob bio pipeline -d voxceleb -p speechbrain-ecapa-voxceleb -g dev -l sge-demanding -o results/speechbrain_voxceleb
+    $ bob bio pipeline -d voxceleb -p speechbrain-ecapa-voxceleb -l sge-demanding -o results/speechbrain_voxceleb
 
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 3 minutes (no training).
+
+
+.. note::
+
+    ECAPA-TDNN gives a reference result of 0.8% EER on VoxCeleb. However, they were
+    using a customized version of the dataset (``VoxCeleb (cleaned)``) which ignores
+    109 probe files (presumably containing wrong data) from our own dataset.
 
 
 .. rubric:: Footnotes
