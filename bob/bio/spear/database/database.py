@@ -8,11 +8,14 @@ from typing import Optional
 
 from sklearn.pipeline import Pipeline
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import (
+    AnnotationsLoader,
+    CSVDatabase,
+    FileSampleLoader,
+)
 from bob.bio.spear.transformer import PathToAudio
 from bob.extension import rc
 from bob.extension.download import get_file
-from bob.pipelines.sample_loaders import AnnotationsLoader
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +71,7 @@ def get_protocol_file(database_name: str):
     if database_name not in known_databases:
         raise ValueError(
             f"The provided database '{database_name}' name is unknown. Use one of "
-            f"{known_databases.keys()} or specify a dataset_protocol_path to "
+            f"{known_databases.keys()} or specify a dataset_protocols_path to "
             "'SpearBioDatabase'."
         )
     proto_def_hash = known_databases[database_name]["crc"]
@@ -94,7 +97,7 @@ def path_loader(path: str):
 def SpearBioDatabase(
     name: str,
     protocol: Optional[str] = None,
-    dataset_protocol_path: Optional[str] = None,
+    dataset_protocols_path: Optional[str] = None,
     data_path: Optional[str] = None,
     data_ext: str = ".wav",
     annotations_path: Optional[str] = None,
@@ -142,7 +145,7 @@ def SpearBioDatabase(
     protocol
         protocol to use (sub-folder containing the protocol definition files).
 
-    dataset_protocol_path
+    dataset_protocols_path
         Path to an existing protocol definition folder structure.
         If None: will download the definition files to a datasets folder in the path
         pointed by the ``bob_data_folder`` config (see
@@ -173,11 +176,11 @@ def SpearBioDatabase(
         otherwise all channels will be loaded in a 2D array if multiple are present.
     """
 
-    if dataset_protocol_path is None:
-        dataset_protocol_path = get_protocol_file(name)
+    if dataset_protocols_path is None:
+        dataset_protocols_path = get_protocol_file(name)
 
     logger.info(
-        f"Database: Will read the CSV protocol definitions in '{dataset_protocol_path}'."
+        f"Database: Will read the CSV protocol definitions in '{dataset_protocols_path}'."
     )
 
     rc_db_name = known_databases.get(name, {}).get("rc_name", name)
@@ -196,11 +199,11 @@ def SpearBioDatabase(
     # Define the data loading transformers
 
     # Load a path into the data of the sample
-    sample_loader = CSVToSampleLoaderBiometrics(
+    sample_loader = FileSampleLoader(
         data_loader=path_loader,
         dataset_original_directory=data_path,
         extension=data_ext,
-        reference_id_equal_subject_id=name not in ["voxceleb"],
+        # reference_id_equal_subject_id=name not in ["voxceleb"],
     )
 
     # Read the file at path and set the data and metadata of a sample
@@ -232,12 +235,12 @@ def SpearBioDatabase(
             ]
         )
 
-    return CSVDataset(
+    return CSVDatabase(
         name=name,
         protocol=protocol,
-        dataset_protocol_path=dataset_protocol_path,
-        csv_to_sample_loader=sample_loader,
-        score_all_vs_all=name not in ["voxceleb"],
-        is_sparse=name in ["voxceleb"],
+        dataset_protocols_path=dataset_protocols_path,
+        transformer=sample_loader,
+        # score_all_vs_all=name not in ["voxceleb"],
+        # is_sparse=name in ["voxceleb"],
         **kwargs,
     )

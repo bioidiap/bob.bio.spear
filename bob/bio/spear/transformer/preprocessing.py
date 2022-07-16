@@ -23,7 +23,7 @@ class ReferenceIdEncoder(OrdinalEncoder):
         )
 
     def fit(self, X, y=None):
-        # X is a SampleBatch or list of reference_id strings
+        # X is a SampleBatch or list of template_id strings
         # we want a 2d array of shape (N, 1)
         X = np.asarray(X).reshape((-1, 1))
         return super().fit(X)
@@ -35,6 +35,6 @@ class ReferenceIdEncoder(OrdinalEncoder):
 
     def _more_tags(self):
         return {
-            "bob_input": "reference_id",
-            "bob_output": "reference_id_int",
+            "bob_input": "template_id",
+            "bob_output": "template_id_int",
         }

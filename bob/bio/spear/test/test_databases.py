@@ -21,7 +21,7 @@
 
 from pkg_resources import load_entry_point
 
-from bob.bio.base.database import CSVDataset
+from bob.bio.base.database import CSVDatabase
 from bob.extension import rc
 from bob.pipelines import DelayedSample, SampleSet
 
@@ -43,7 +43,7 @@ def _check_database(
     Checks the number of samples of each subsets, if a count is provided.
     """
 
-    assert isinstance(database, CSVDataset)
+    assert isinstance(database, CSVDatabase)
 
     if n_train:
         train = database.background_model_samples()

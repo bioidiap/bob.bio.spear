@@ -43,7 +43,7 @@ transformer = Pipeline(
         ("annotator", Energy_2Gauss()),
         ("extractor", Cepstral()),
         ("ubm", ubm),
-        ("reference_id_encoder", ReferenceIdEncoder()),
+        ("template_id_encoder", ReferenceIdEncoder()),
         ("isv", bioalgorithm),
     ]
 )
