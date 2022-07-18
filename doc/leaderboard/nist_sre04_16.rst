@@ -59,32 +59,24 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
 Speechbrain ECAPA-TDNN
 ----------------------
 
-.. table:: [Min. criterion: EER] Threshold on Development set: -2.857224e-01
+.. table:: [Min. criterion: EER ] Threshold on Development set: -3.860876e-01
 
-    =====================  ===================  =======================
+    =====================  ===================  ======================
     ..                     Development          Evaluation
-    =====================  ===================  =======================
+    =====================  ===================  ======================
     Failure to Acquire     0.0%                 0.0%
-    False Match Rate       28.4% (27400/96342)  28.7% (2142253/7453619)
-    False Non Match Rate   28.4% (62/218)       33.7% (57/169)
-    False Accept Rate      28.4%                28.7%
-    False Reject Rate      28.4%                33.7%
-    Half Total Error Rate  28.4%                31.2%
-    =====================  ===================  =======================
-
-.. todo::
-
-    These results are not taking into account the ``C_ID_X`` unknown identity...
-
-    In the *core* protocol, there are probes with the ``"C_ID_X"`` ``reference_id``.
-    These samples do not come from the same person and will be treated as one person by
-    the analysis scripts. This is not good. We have to handle them.
+    False Match Rate       12.9% (12434/96342)  11.4% (852522/7453619)
+    False Non Match Rate   12.8% (28/218)       23.7% (40/169)
+    False Accept Rate      12.9%                11.4%
+    False Reject Rate      12.8%                23.7%
+    Half Total Error Rate  12.9%                17.6%
+    =====================  ===================  ======================
 
 Command used::
 
     $ bob bio pipeline -d nist-sre04to16 -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_nist
 
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 50 minutes (no training).
+On 70\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 55 minutes (no training).
 
 
 .. rubric:: Footnotes
