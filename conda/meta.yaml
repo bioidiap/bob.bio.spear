@@ -35,6 +35,7 @@ requirements:
     - pytorch {{ pytorch }}
     - scikit-learn {{ scikit_learn }}
     - tqdm {{ tqdm }}
+    - pysoundfile {{ pysoundfile }}
   run:
     - python
     - setuptools
@@ -42,6 +43,7 @@ requirements:
     - {{ pin_compatible('scikit-learn') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('tqdm') }}
+    - {{ pin_compatible('pysoundfile') }}
 
 test:
   imports:

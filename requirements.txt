@@ -8,3 +8,4 @@ tqdm
 six
 scikit-learn  # For pipelines Tranformers
 torch
+pysoundfile
