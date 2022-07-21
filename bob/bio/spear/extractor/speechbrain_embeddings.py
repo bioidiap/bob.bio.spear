@@ -9,6 +9,12 @@ class SpeechbrainEmbeddings(BaseEstimator):
         # later on we will add source and savedir as input parameters to allow
         # loading of different models
         super().__init__(**kwargs)
+
+        # set model to None for load_model call
+        self.model = None
+        # ensure the files are downloaded before dask execution
+        self.load_model()
+        # only load models when they are used. (Prevents model transfer over the network)
         self.model = None
 
     def load_model(self):
@@ -31,6 +37,7 @@ class SpeechbrainEmbeddings(BaseEstimator):
         ).numpy()
 
     def transform(self, audio_tracks, y=None):
+        # actual load of the model (on the workers)
         self.load_model()
         embeddings = [
             self.transform_one(audio_track) for audio_track in audio_tracks
