@@ -74,7 +74,7 @@ Command used::
 
     $ bob bio pipeline -d voxceleb -p speechbrain-ecapa-voxceleb -l sge-demanding -o results/speechbrain_voxceleb
 
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 3 minutes (no training).
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in around 9 minutes (no training).
 
 
 .. note::
