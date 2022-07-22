@@ -67,7 +67,7 @@ This baseline reproduces the (speechbrain_). The original paper's reference is t
       title = {{ECAPA-TDNN:} Emphasized Channel Attention, Propagation and Aggregation in {TDNN} Based Speaker Verification},
       booktitle = {Interspeech 2020},
       year = {2020},
-      url = {DBLP:conf/interspeech/DesplanquesTD20},
+      url = {https://www.isca-speech.org/archive_v0/Interspeech_2020/pdfs/2650.pdf},
     }
 
 To run the baseline, use the following command::
