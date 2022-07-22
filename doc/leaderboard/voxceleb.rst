@@ -60,21 +60,14 @@ TODO
 Speechbrain ECAPA-TDNN
 ----------------------
 
-This baseline reproduces the (speechbrain_). The original paper's reference is the following:
+This baseline reproduces the (speechbrain_). The original paper's reference is the following::
 
-    @inproceedings{DBLP:conf/interspeech/DesplanquesTD20,
-      author    = {Brecht Desplanques and
-                   Jenthe Thienpondt and
-                   Kris Demuynck},
-      editor    = {Helen Meng and
-                   Bo Xu and
-                   Thomas Fang Zheng},
-      title     = {{ECAPA-TDNN:} Emphasized Channel Attention, Propagation and Aggregation
-                   in {TDNN} Based Speaker Verification},
+    @inproceedings{spear,
+      author = {Brecht Desplanques, Jenthe Thienpondt and Kris Demuynck},
+      title = {{ECAPA-TDNN:} Emphasized Channel Attention, Propagation and Aggregation in {TDNN} Based Speaker Verification},
       booktitle = {Interspeech 2020},
-      pages     = {3830--3834},
-      publisher = {{ISCA}},
-      year      = {2020},
+      year = {2020},
+      url = {DBLP:conf/interspeech/DesplanquesTD20},
     }
 
 To run the baseline, use the following command::
