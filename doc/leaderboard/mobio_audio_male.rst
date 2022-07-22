@@ -30,6 +30,15 @@ Mobio is a collection of English voice recordings. The set of male subjects cont
 GMM
 ---
 
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d mobio-audio-male gmm-mobio -g dev -g eval -l sge -o results/gmm_mobio_male
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/gmm_mobio_male/scores-{dev,eval}.csv
+
+
 .. table:: [Min. criterion: EER] Threshold on Development set: 6.918534e-01
 
     =====================  ===================  ==================
@@ -43,14 +52,19 @@ GMM
     Half Total Error Rate  18.3%                16.8%
     =====================  ===================  ==================
 
-Command used to generate scores::
-
-    $ bob bio pipeline -d mobio-audio-male gmm-mobio -g dev -g eval -l sge -o results/gmm_mobio_male
-
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 39 minutes (30 minutes of training).
 
 ISV
 ---
+
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d mobio-audio-male -p isv-voxforge -g dev -g eval -l sge -o results/isv_mobio_male
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/isv_mobio_male/scores-{dev,eval}.csv
+
 
 .. table:: [Min. criterion: EER] Threshold on Development set: 2.974263e-01
 
@@ -65,14 +79,19 @@ ISV
     Half Total Error Rate  12.7%               14.5%
     =====================  ==================  ====================
 
-Command used to generate scores::
-
-    $ bob bio pipeline -d mobio-audio-male -p isv-voxforge -g dev -g eval -l sge -o results/isv_mobio_male
-
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 18 minutes (11 minutes of training).
 
 Speechbrain ECAPA-TDNN
 ----------------------
+
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d mobio-audio-male -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_mobio_male
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/speechbrain_mobio_male/scores-{dev,eval}.csv
+
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -5.583622e-01
 
@@ -86,11 +105,6 @@ Speechbrain ECAPA-TDNN
     False Reject Rate      1.4%              1.1%
     Half Total Error Rate  1.4%              2.1%
     =====================  ================  ==================
-
-
-Command used to generate scores::
-
-    $ bob bio pipeline -d mobio-audio-male -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_mobio_male
 
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: 19 minutes (no training).
 

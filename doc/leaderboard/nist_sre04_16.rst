@@ -29,35 +29,53 @@ This is an aggregation of the NIST-SRE datasets from 2004 to 2016.
 GMM
 ---
 
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d nist-sre04to16 -p gmm-nist -g dev -g eval -l sge -o results/gmm_nist
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/gmm_nist/scores-{dev,eval}.csv
+
+
 .. table:: [Min. criterion: EER] Threshold on Development set: TODO
 
     =====================  ================  ==================
     ..                     Development       Evaluation
     =====================  ================  ==================
-
-Command used::
-
-    $ bob bio pipeline -d nist-sre04to16 -p gmm-nist -g dev -g eval -l sge -o results/gmm_nist
 
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
 
 ISV
 ---
 
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d nist-sre04to16 -p isv-nist -g dev -g eval -l sge -o results/isv_nist
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/isv_nist/scores-{dev,eval}.csv
+
 .. table:: [Min. criterion: EER] Threshold on Development set: TODO
 
     =====================  ================  ==================
     ..                     Development       Evaluation
     =====================  ================  ==================
 
-Command used::
-
-    $ bob bio pipeline -d nist-sre04to16 -p isv-nist -g dev -g eval -l sge -o results/isv_nist
-
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
 
 Speechbrain ECAPA-TDNN
 ----------------------
+
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d nist-sre04to16 -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_nist
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/speechbrain_mobio_male/scores-{dev,eval}.csv
+
 
 .. table:: [Min. criterion: EER ] Threshold on Development set: -3.860876e-01
 
@@ -71,10 +89,6 @@ Speechbrain ECAPA-TDNN
     False Reject Rate      12.8%                23.7%
     Half Total Error Rate  12.9%                17.6%
     =====================  ===================  ======================
-
-Command used::
-
-    $ bob bio pipeline -d nist-sre04to16 -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_nist
 
 On 70\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 55 minutes (no training).
 
