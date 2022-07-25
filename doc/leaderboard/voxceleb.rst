@@ -93,6 +93,7 @@ Then, to generate the scores, use::
 
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 
+On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in around 9 minutes (no training).
 
 
 .. note::
