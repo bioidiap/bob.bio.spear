@@ -60,7 +60,7 @@ TODO
 Speechbrain ECAPA-TDNN
 ----------------------
 
-This baseline reproduces the (speechbrain_). The original paper's reference is the following::
+This baseline reproduces the speaker verification experiment with a pretrained ECAPA-TDNN model using SpeechBrain (`speechbrain`_). The original paper's reference is the following::
 
     @inproceedings{spear,
       author = {Brecht Desplanques, Jenthe Thienpondt and Kris Demuynck},
@@ -107,3 +107,5 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 .. [#nodes] The number of nodes is a requested maximum amount and can vary depending on
     the number of jobs currently running on the grid as well as the scheduler's load
     estimation. The execution time can then also vary.
+
+.. include:: ../links.rst

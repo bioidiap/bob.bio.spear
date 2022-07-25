@@ -112,3 +112,5 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 .. [#nodes] The number of nodes is a requested maximum amount and can vary depending on
     the number of jobs currently running on the grid as well as the scheduler's load
     estimation. The execution time can then also vary.
+
+.. include:: ../links.rst
