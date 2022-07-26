@@ -25,6 +25,9 @@ It contains:
 | eval  | probes     | 40         | 37720        |
 +-------+------------+------------+--------------+
 
+The *dev* and *eval* sets are a copy of each other for this protocol.
+The following results will then only show the development set.
+
 GMM
 ---
 
@@ -34,7 +37,7 @@ To run the baseline, use the following command::
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/gmm_voxceleb/scores-{dev,eval}.csv
+    $ bob bio metrics -e ./results/gmm_voxceleb/scores-dev.csv
 
 .. table:: [Min. criterion: EER ] Threshold on Development set: 1.062216e-01
 
@@ -60,7 +63,7 @@ TODO
 Speechbrain ECAPA-TDNN
 ----------------------
 
-This baseline reproduces the speaker verification experiment with a pretrained ECAPA-TDNN model using SpeechBrain (`speechbrain`_). The original paper's reference is the following::
+This baseline reproduces the speaker verification experiment with a pretrained ECAPA-TDNN model using `the SpeechBrain library <speechbrain>`_. The original paper's reference is the following::
 
     @inproceedings{spear,
       author = {Brecht Desplanques, Jenthe Thienpondt and Kris Demuynck},
@@ -72,28 +75,26 @@ This baseline reproduces the speaker verification experiment with a pretrained E
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -vvv -d voxceleb -p speechbrain-ecapa-voxceleb -g dev -g eval -o ./results/speechbrain_voxceleb
+    $ bob bio pipeline simple -vvv -d voxceleb -p speechbrain-ecapa-voxceleb -g dev -o ./results/speechbrain_voxceleb
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/speechbrain_voxceleb/scores-{dev,eval}.csv
+    $ bob bio metrics -e ./results/speechbrain_voxceleb/scores-dev.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -6.159925e-01
 
-    =====================  ================  ================
-    ..                     Development       Evaluation
-    =====================  ================  ================
-    Failure to Acquire     0.0%              0.0%
-    False Match Rate       1.0% (189/18860)  1.0% (189/18860)
-    False Non Match Rate   1.0% (189/18860)  1.0% (189/18860)
-    False Accept Rate      1.0%              1.0%
-    False Reject Rate      1.0%              1.0%
-    Half Total Error Rate  1.0%              1.0%
-    =====================  ================  ================
+    =====================  ================
+    ..                     Development
+    =====================  ================
+    Failure to Acquire     0.0%
+    False Match Rate       1.0% (189/18860)
+    False Non Match Rate   1.0% (189/18860)
+    False Accept Rate      1.0%
+    False Reject Rate      1.0%
+    Half Total Error Rate  1.0%
+    =====================  ================
 
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in around 9 minutes (no training).
 
 
 .. note::
