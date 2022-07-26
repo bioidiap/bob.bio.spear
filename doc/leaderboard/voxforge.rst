@@ -31,6 +31,14 @@ use in ``bob.bio.spear`` is a part of the English VoxForge corpus. It contains:
 GMM
 ---
 
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d voxforge -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_voxforge
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/gmm_voxforge/scores-{dev,eval}.csv
+
 .. table:: [Min. criterion: EER] Threshold on Development set: 2.128360e+00
 
     =====================  ==============  ==============
@@ -44,14 +52,18 @@ GMM
     Half Total Error Rate  2.0%            1.6%
     =====================  ==============  ==============
 
-Command used to generate scores::
-
-    $ bob bio pipeline -d voxforge -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_voxforge
-
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (5 minutes of training).
 
 ISV
 ---
+
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d voxforge -p isv-voxforge -g dev -g eval -l sge -o results/isv_voxforge
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/isv_voxforge/scores-{dev,eval}.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development: 1.680925e+00
 
@@ -66,14 +78,18 @@ ISV
     Half Total Error Rate  1.3%            1.7%
     =====================  ==============  ==============
 
-Command used::
-
-    $ bob bio pipeline -d voxforge -p isv-voxforge -g dev -g eval -l sge -o results/isv_voxforge
-
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (7 minutes of training).
 
 Speechbrain ECAPA-TDNN
 ----------------------
+
+To run the baseline, use the following command::
+
+    $ bob bio pipeline simple -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_voxforge
+
+Then, to generate the scores, use::
+
+    $ bob bio metrics -e ./results/speechbrain_voxforge/scores-{dev,eval}.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -6.159925e-01
 
@@ -88,10 +104,6 @@ Speechbrain ECAPA-TDNN
     Half Total Error Rate  0.0%           0.4%
     =====================  =============  ==============
 
-Command used::
-
-    $ bob bio pipeline -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_voxforge
-
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 
 
@@ -100,3 +112,5 @@ On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 9 minutes (no training).
 .. [#nodes] The number of nodes is a requested maximum amount and can vary depending on
     the number of jobs currently running on the grid as well as the scheduler's load
     estimation. The execution time can then also vary.
+
+.. include:: ../links.rst
