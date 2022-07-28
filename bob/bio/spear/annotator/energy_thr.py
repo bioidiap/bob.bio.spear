@@ -95,7 +95,7 @@ class Energy_Thr(Annotator):
 
         labels = self._compute_energy(data, sample_rate)
         if (labels == 0).all():
-            logger.warn("No Audio was detected in the sample!")
+            logger.warning("No Audio was detected in the sample!")
             return None
 
         return labels

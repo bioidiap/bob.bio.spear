@@ -226,7 +226,7 @@ class Mod_4Hz(Annotator):
         """
         [labels, energy_array, mod_4hz] = self.mod_4hz(data, sample_rate)
         if (labels == 0).all():
-            logger.warn("No Audio was detected in the sample!")
+            logger.warning("No Audio was detected in the sample!")
             return None
 
         return labels

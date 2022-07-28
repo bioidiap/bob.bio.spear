@@ -18,6 +18,27 @@ import torch
 logger = logging.getLogger(__name__)
 
 
+def compute_delta_win2(signal):
+    """Computes the delta coefficients of a signal with a window of length 2.
+
+    Taken from the implementation in bob.ap that skips the normalization.
+
+    **Parameters:**
+    signal:
+        The Cepstral coefficients in a 2D array.
+    """
+
+    deltas = numpy.zeros(signal.shape)
+
+    for frame in range(signal.shape[0]):
+        for width in range(1, 3):
+            up = signal[frame + width] if frame + width < signal.shape[0] else 0
+            down = signal[frame - width] if frame - width >= 0 else 0
+            deltas[frame] += width * (up - down)
+
+    return deltas
+
+
 def fft(src, dst=None):
     out = numpy.fft.fft(src)
     if dst is not None:
@@ -408,6 +429,45 @@ def energy_legacy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
 
 
 def spectrogram(
+    data: numpy.ndarray,
+    rate: int,
+    *,
+    win_length_ms: float = 20.0,
+    win_shift_ms: float = 10.0,
+    n_filters: int = 24,
+    f_min: float = 0.0,
+    f_max: float = 4000.0,
+    pre_emphasis_coef: float = 0.95,
+    mel_scale: bool = True,
+    energy_filter: bool = False,
+    log_filter: Optional[bool] = None,
+    energy_bands: Optional[bool] = None,
+) -> numpy.ndarray:
+    """Returns the spectrogram of a signal."""
+    if log_filter is not None:
+        logger.warning(f"log_filter parameter was ignored ({log_filter=})")
+    if energy_bands is not None:
+        logger.warning(f"energy_bands parameter was ignored ({energy_bands=})")
+
+    win_length = int(rate * win_length_ms / 1000)
+    win_shift = int(rate * win_shift_ms / 1000)
+
+    import torchaudio
+
+    spectrogram_transformer = torchaudio.transforms.Spectrogram(
+        n_fft=win_length,
+        win_length=win_length,
+        hop_length=win_shift,
+        pad=0,
+        window_fn=torch.hamming_window,
+    )
+
+    spect = spectrogram_transformer(torch.tensor(data))
+
+    return spect.numpy()
+
+
+def spectrogram_legacy(
     data,
     rate,
     *,
@@ -451,14 +511,14 @@ def spectrogram(
 
     # create features set
     features = numpy.zeros(
-        [n_frames, int(win_size / 2) + 1], dtype=numpy.float32
+        [n_frames, int(win_size / 2) + 1], dtype=numpy.float64
     )
 
     last_frame_elem = 0
     # compute cepstral coefficients
     for i in range(n_frames):
         # create a frame
-        frame = numpy.zeros(win_size, dtype=numpy.float32)
+        frame = numpy.zeros(win_size, dtype=numpy.float64)
         vec = numpy.arange(win_length)
         frame[vec] = data[vec + i * win_shift]
         som = numpy.sum(frame)
@@ -497,7 +557,8 @@ def cepstral(
     with_energy: bool = True,
     with_delta: bool = True,
     with_delta_delta: bool = True,
-    delta_win_length: int = 3,
+    delta_win: int = 3,
+    dct_norm: bool = True,
 ) -> numpy.ndarray:
     """
     Computes the cepstral coefficients of the given audio signal with torchaudio.
@@ -528,7 +589,7 @@ def cepstral(
     n_ceps:
         Number of cepstral coefficients.
     pre_emphasis_coef:
-        Coefficient of the pre-emphasis filter.
+        Coefficient of the pre-emphasis filter. (not implemented yet)
     mel_scale:
         Whether to use the mel scale for the filterbank.
     with_energy:
@@ -537,8 +598,10 @@ def cepstral(
         Whether to include the delta coefficients.
     with_delta_delta:
         Whether to include the delta-delta coefficients. (requires ``with_delta``)
-    delta_win_length:
+    delta_win:
         Length of the window in frames for the delta and delta-delta coefficients.
+    dct_norm:
+        Whether to normalize the cepstral coefficients with the DCT.
 
     **returns**:
     cepstral:
@@ -574,10 +637,10 @@ def cepstral(
         pad_mode="constant",
         center=False,
     )
-    print("Computing cepstral coefficients...")
+    # print("Computing cepstral coefficients...")
     cepstral = cepstral_transformer(torch.tensor(data))
 
-    print(cepstral.size())
+    # print(cepstral.size())
 
     if mel_scale:
         mel_scale_transformer = torchaudio.transforms.MelScale(
@@ -587,16 +650,16 @@ def cepstral(
             f_max=f_max,
             n_stft=win_length // 2 + 1,
         )
-        print("Computing Mel scale...")
+        # print("Computing Mel scale...")
         cepstral = mel_scale_transformer(cepstral)
 
     cepstral = torchaudio.transforms.AmplitudeToDB(stype="power", top_db=80.0)(
         cepstral
     )
 
-    print("DCT")
+    # print("DCT")
     dct_mat = torchaudio.functional.create_dct(
-        n_mfcc=n_ceps, n_mels=n_filters, norm="ortho"
+        n_mfcc=n_ceps, n_mels=n_filters, norm="ortho" if dct_norm else None
     )
 
     cepstral = torch.matmul(cepstral.transpose(-1, -2), dct_mat)
@@ -618,21 +681,23 @@ def cepstral(
         cepstral = torch.tensor(features)
 
     if with_delta:
-        delta_transformer = torchaudio.transforms.ComputeDeltas(
-            win_length=delta_win_length, mode="constant"
-        )
-        deltas = delta_transformer(cepstral)
-        print(features)
-        print()
-        print(cepstral)
-        print()
-        print(deltas)
-        features = numpy.hstack([features, deltas.numpy()])
+        if delta_win == 2:
+            deltas = compute_delta_win2(cepstral.numpy())
+            features = numpy.hstack([features, deltas])
+        else:  # torchaudio delta does not support window length < 3
+            delta_transformer = torchaudio.transforms.ComputeDeltas(
+                win_length=delta_win, mode="constant"
+            )
+            deltas = delta_transformer(cepstral)
+            features = numpy.hstack([features, deltas.numpy()])
 
         if with_delta_delta:
-            features = numpy.hstack(
-                [features, delta_transformer(deltas).numpy()]
-            )
+            if delta_win == 2:
+                features = numpy.hstack([features, compute_delta_win2(deltas)])
+            else:
+                features = numpy.hstack(
+                    [features, delta_transformer(deltas).numpy()]
+                )
 
     return features
 
