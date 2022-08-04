@@ -68,7 +68,7 @@ class Energy_Thr(Annotator):
         return label
 
     def _compute_energy(self, data, sample_rate):
-        """retreive the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
+        """retrieve the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
 
         energy_array = ap.energy(
             data,
@@ -87,14 +87,11 @@ class Energy_Thr(Annotator):
         return labels
 
     def transform_one(self, data, sample_rate, annotations=None):
-        """labels speech (1) and non-speech (0) parts of the given input wave file using thresholded Energy
-        Input parameter:
-           * input_signal[0] --> rate
-           * input_signal[1] --> signal TODO doc
-        """
+        """labels speech (True) and non-speech (False) parts of the given input wave file using thresholded Energy"""
 
         labels = self._compute_energy(data, sample_rate)
-        if (labels == 0).all():
+        labels = labels.astype(bool)
+        if not labels.any():
             logger.warning("No Audio was detected in the sample!")
             return None
 

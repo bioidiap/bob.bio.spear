@@ -5,8 +5,8 @@ def normalize_std_array(vector: np.ndarray):
     """Applies a unit mean and variance normalization to an arrayset"""
     return (
         vector
-        if vector.std(axis=0) == 0
-        else (vector - vector.mean(axis=0)) / vector.std(axis=0)
+        if (v_std := vector.std(axis=0)) == 0
+        else (vector - vector.mean(axis=0)) / v_std
     )
 
 

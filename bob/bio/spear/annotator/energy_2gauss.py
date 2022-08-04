@@ -43,7 +43,7 @@ class Energy_2Gauss(Annotator):
         variance_threshold=0.0005,
         win_length_ms=20.0,  # 20 ms
         win_shift_ms=10.0,  # 10 ms
-        smoothing_window=10,  # 10 frames (i.e. 100 ms)
+        smoothing_window=10,  # 10 frames (1 frame per win shift, i.e. 100 ms)
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -59,7 +59,7 @@ class Energy_2Gauss(Annotator):
         n_samples = len(energy_array)
         # if energy does not change a lot, it may not be audio?
         if np.std(energy_array) < 10e-5:
-            return np.zeros(shape=n_samples)
+            return np.zeros(shape=n_samples, dtype=bool)
 
         # Add an epsilon small Gaussian noise to avoid numerical issues (mainly due to artificial silence).
         energy_array = (1e-6 * np.random.randn(n_samples)) + energy_array
@@ -70,7 +70,7 @@ class Energy_2Gauss(Annotator):
         )
 
         # Note: self.max_iterations and self.convergence_threshold are used for both
-        # k-means and GMM training.
+        # k-means and GMM training parameters.
         kmeans_trainer = KMeansMachine(
             n_clusters=2,
             convergence_threshold=self.convergence_threshold,
@@ -104,7 +104,7 @@ class Energy_2Gauss(Annotator):
         else:  # High energy in means[1]
             labels = labels.argmax(axis=0)
 
-        return labels
+        return labels.astype(bool)
 
     def _compute_energy(
         self, audio_signal: np.ndarray, sample_rate: int
@@ -140,7 +140,7 @@ class Energy_2Gauss(Annotator):
         labels = self._compute_energy(
             audio_signal=audio_signal, sample_rate=sample_rate
         )
-        if (labels == 0).all():
+        if not labels.any():
             logger.warning(
                 "Could not annotate: No audio was detected in the sample!"
             )
