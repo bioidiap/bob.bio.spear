@@ -29,22 +29,37 @@ This is an aggregation of the NIST-SRE datasets from 2004 to 2016.
 GMM
 ---
 
-To run the baseline, use the following command::
+As this dataset contains a lot of training data, in the idiap grid, we have to split
+the training into chunks::
 
-    $ bob bio pipeline simple -d nist-sre04to16 -p gmm-nist -g dev -g eval -l sge -o results/gmm_nist
+    bob bio pipeline train --split-training --n-splits 8 -d nist-sre04to16 -p gmm-voxforge -o results/gmm_nist -l sge-demanding -n 512
+
+To run the evaluation part of the baseline, use the following command::
+
+    $ bob bio pipeline simple -d nist-sre04to16 -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_nist
 
 Then, to generate the scores, use::
 
     $ bob bio metrics -e ./results/gmm_nist/scores-{dev,eval}.csv
 
 
-.. table:: [Min. criterion: EER] Threshold on Development set: TODO
+This was using the 256 Gaussians GMM.
 
-    =====================  ================  ==================
-    ..                     Development       Evaluation
-    =====================  ================  ==================
+.. table:: [Min. criterion: EER] Threshold on Development set: 1.007006e+00
 
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
+    =====================  ===================  =======================
+    ..                     Development          Evaluation
+    =====================  ===================  =======================
+    Failure to Acquire     0.0%                 0.0%
+    False Match Rate       22.2% (21395/96342)  27.0% (2013356/7453619)
+    False Non Match Rate   22.0% (48/218)       7.7% (13/169)
+    False Accept Rate      22.2%                27.0%
+    False Reject Rate      22.0%                7.7%
+    Half Total Error Rate  22.1%                17.4%
+    =====================  ===================  =======================
+
+On 64\ [#nodes]_ CPU nodes on the SGE Grid: Training took 24 hours (split in 8 chunks)
+and evaluation took 5 minutes.
 
 ISV
 ---
