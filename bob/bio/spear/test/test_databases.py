@@ -19,8 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from pkg_resources import load_entry_point
+
 from bob.bio.base.database import CSVDataset
-from bob.bio.spear.database import SpearBioDatabase
+from bob.extension import rc
 from bob.pipelines import DelayedSample, SampleSet
 
 
@@ -101,7 +103,10 @@ def _check_database(
 
 
 def test_mobio_male():
-    database = SpearBioDatabase("mobio", protocol="male", data_path="dummy/")
+    rc["bob.db.mobio.audio.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "mobio-audio-male"
+    )
 
     _check_database(
         database,
@@ -118,7 +123,10 @@ def test_mobio_male():
 
 
 def test_mobio_female():
-    database = SpearBioDatabase("mobio", protocol="female", data_path="dummy/")
+    rc["bob.db.mobio.audio.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "mobio-audio-female"
+    )
 
     _check_database(
         database,
@@ -135,7 +143,10 @@ def test_mobio_female():
 
 
 def test_avspoof_licit():
-    database = SpearBioDatabase("avspoof", protocol="licit", data_path="dummy/")
+    rc["bob.db.avspoof.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "avspoof-licit"
+    )
 
     _check_database(
         database,
@@ -152,7 +163,10 @@ def test_avspoof_licit():
 
 
 def test_avspoof_spoof():
-    database = SpearBioDatabase("avspoof", protocol="spoof", data_path="dummy/")
+    rc["bob.db.avspoof.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "avspoof-spoof"
+    )
 
     _check_database(
         database,
@@ -169,8 +183,9 @@ def test_avspoof_spoof():
 
 
 def test_asvspoof_licit():
-    database = SpearBioDatabase(
-        "asvspoof", protocol="licit", data_path="dummy/"
+    rc["bob.db.asvspoof.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "asvspoof-licit"
     )
 
     _check_database(
@@ -188,8 +203,9 @@ def test_asvspoof_licit():
 
 
 def test_asvspoof_spoof():
-    database = SpearBioDatabase(
-        "asvspoof", protocol="spoof", data_path="dummy/"
+    rc["bob.db.asvspoof.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "asvspoof-spoof"
     )
 
     _check_database(
@@ -207,8 +223,9 @@ def test_asvspoof_spoof():
 
 
 def test_voicepa_licit():
-    database = SpearBioDatabase(
-        "voicepa", protocol="grandtest-licit", data_path="dummy/"
+    rc["bob.db.voicepa.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "voicepa-licit"
     )
 
     _check_database(
@@ -226,8 +243,9 @@ def test_voicepa_licit():
 
 
 def test_voicepa_spoof():
-    database = SpearBioDatabase(
-        "voicepa", protocol="grandtest-spoof", data_path="dummy/"
+    rc["bob.db.voicepa.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "voicepa-spoof"
     )
 
     _check_database(
@@ -245,7 +263,8 @@ def test_voicepa_spoof():
 
 
 def test_timit():
-    database = SpearBioDatabase("timit", protocol="2", data_path="dummy/")
+    rc["bob.db.timit.directory"] = "dummy/"
+    database = load_entry_point("bob.bio.spear", "bob.bio.database", "timit")
 
     _check_database(
         database,
@@ -258,9 +277,8 @@ def test_timit():
 
 
 def test_voxforge():
-    database = SpearBioDatabase(
-        "voxforge", protocol="Default", data_path="dummy/"
-    )
+    rc["bob.db.voxforge.directory"] = "dummy/"
+    database = load_entry_point("bob.bio.spear", "bob.bio.database", "voxforge")
 
     _check_database(
         database,
@@ -277,8 +295,9 @@ def test_voxforge():
 
 
 def test_nist_sre04to16():
-    database = SpearBioDatabase(
-        "nist_sre04to16", protocol="core", data_path="dummy/"
+    rc["bob.db.nist_sre04to16.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "nist-sre04to16"
     )
 
     _check_database(
@@ -291,5 +310,23 @@ def test_nist_sre04to16():
         n_eval_references=802,
         n_eval_references_samples=None,  # Variable sample count
         n_eval_probes=9294,
+        n_eval_probes_samples=1,
+    )
+
+
+def test_voxceleb():
+    rc["bob.db.voxceleb.directory"] = "dummy/"
+    database = load_entry_point("bob.bio.spear", "bob.bio.database", "voxceleb")
+
+    _check_database(
+        database,
+        n_train=148642,
+        n_dev_references=4874,
+        n_dev_references_samples=1,  # Variable sample count
+        n_dev_probes=4713,
+        n_dev_probes_samples=1,
+        n_eval_references=4874,
+        n_eval_references_samples=1,  # Variable sample count
+        n_eval_probes=4713,
         n_eval_probes_samples=1,
     )
