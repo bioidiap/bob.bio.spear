@@ -2,15 +2,6 @@
 # @author: Yannick Dayer <yannick.dayer@idiap.ch>
 # @date: Fri 02 Jul 2021 15:41:48 UTC+02
 
-from sklearn.pipeline import Pipeline
-
-from bob.bio.base.algorithm import GMM
-from bob.bio.base.pipelines import PipelineSimple
-from bob.bio.spear.annotator import Energy_2Gauss
-from bob.bio.spear.extractor import Cepstral
-from bob.learn.em import KMeansMachine
-from bob.pipelines import wrap
-
 """Creates a biometric PipelineSimple for the `bob bio pipeline simple` command.
 
 These parameters were chosen to work best with the VoxForge database.
@@ -21,6 +12,15 @@ This pipeline is composed of the following steps:
     - algorithm: GMM (trained in the pipeline as a Transformer, and used as BioAlgorithm
         for enrollment and scoring)
 """
+
+from sklearn.pipeline import Pipeline
+
+from bob.bio.base.algorithm import GMM
+from bob.bio.base.pipelines import PipelineSimple
+from bob.bio.spear.annotator import Energy_2Gauss
+from bob.bio.spear.extractor import Cepstral
+from bob.learn.em import KMeansMachine
+from bob.pipelines import wrap
 
 # Number of Gaussians for the UBM (used by kmeans and GMM)
 n_gaussians = 256
