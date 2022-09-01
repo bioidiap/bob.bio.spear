@@ -68,7 +68,7 @@ class Energy_Thr(Annotator):
         return label
 
     def _compute_energy(self, data, sample_rate):
-        """retreive the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
+        """retrieve the speech / non speech labels for the speech sample given by the tuple (rate, wave signal)"""
 
         energy_array = ap.energy(
             data,
@@ -95,7 +95,7 @@ class Energy_Thr(Annotator):
 
         labels = self._compute_energy(data, sample_rate)
         if (labels == 0).all():
-            logger.warn("No Audio was detected in the sample!")
+            logger.warning("No Audio was detected in the sample!")
             return None
 
         return labels
