@@ -5,6 +5,8 @@
 # Pavel Korshunov <Pavel.Korshunov@idiap.ch>
 # Amir Mohammadi <amir.mohammadi@idiap.ch>
 
+
+import logging
 import math
 import sys
 
@@ -12,6 +14,29 @@ from typing import Optional, Tuple, Union
 
 import numpy
 import torch
+
+logger = logging.getLogger(__name__)
+
+
+def compute_delta_win2(signal):
+    """Computes the delta coefficients of a signal with a window of length 2.
+
+    Taken from the implementation in bob.ap that skips the normalization.
+
+    **Parameters:**
+    signal:
+        The Cepstral coefficients in a 2D array.
+    """
+
+    deltas = numpy.zeros(signal.shape)
+
+    for frame in range(signal.shape[0]):
+        for width in range(1, 3):
+            up = signal[frame + width] if frame + width < signal.shape[0] else 0
+            down = signal[frame - width] if frame - width >= 0 else 0
+            deltas[frame] += width * (up - down)
+
+    return deltas
 
 
 def fft(src, dst=None):
@@ -33,7 +58,7 @@ def init_hamming_kernel(win_length):
 
 def init_freqfilter(rate, win_size, mel_scale, n_filters, f_min, f_max):
     # Compute cut-off frequencies
-    p_index = numpy.array(numpy.zeros(n_filters + 2), dtype=numpy.float64)
+    p_index = numpy.array(numpy.zeros(n_filters + 2), dtype=numpy.float32)
     if mel_scale:
         # Mel scale
         m_max = mel_python(f_max)
@@ -54,7 +79,7 @@ def init_freqfilter(rate, win_size, mel_scale, n_filters, f_min, f_max):
 
 
 def init_dct_kernel(n_filters, n_ceps, dct_norm):
-    dct_kernel = numpy.zeros([n_ceps, n_filters], dtype=numpy.float64)
+    dct_kernel = numpy.zeros([n_ceps, n_filters], dtype=numpy.float32)
 
     dct_coeff = 1.0
     if dct_norm:
@@ -67,7 +92,7 @@ def init_dct_kernel(n_filters, n_ceps, dct_norm):
             )
 
     if dct_norm:
-        column_multiplier = numpy.ones(n_ceps, dtype=numpy.float64)
+        column_multiplier = numpy.ones(n_ceps, dtype=numpy.float32)
         column_multiplier[0] = math.sqrt(
             0.5
         )  # first element sqrt(0.5), the rest are 1.
@@ -137,7 +162,7 @@ def read(
 
     Returns
     -------
-    signal and sampling rate
+    signal, sampling rate
         The signal in int16 range (-32768 to 32767) and float32 format, and the
         sampling rate in Hz.
     """
@@ -195,7 +220,27 @@ def mel_inv_python(value):
     return 700.0 * (10 ** (value / 2595.0) - 1)
 
 
-def sig_norm(win_length, frame, flag):
+def sig_norm(
+    win_length: int, frame: numpy.ndarray, normalize_frame: bool
+) -> float:
+    """Normalizes the frame in place and returns the gain."""
+    gain = (frame[:win_length] * frame[:win_length]).sum()
+    gain_1 = 0
+    for i in range(win_length):
+        gain_1 += frame[i] * frame[i]
+
+    assert gain_1 == gain
+
+    ENERGY_FLOOR = 1.0
+    gain = math.log(gain) if gain >= ENERGY_FLOOR else math.log(ENERGY_FLOOR)
+
+    if normalize_frame and gain != 0.0:
+        frame[:win_length] = frame[:win_length] / gain
+
+    return gain
+
+
+def sig_norm_legacy(win_length, frame, flag):
     gain = 0.0
     for i in range(win_length):
         gain = gain + frame[i] * frame[i]
@@ -212,16 +257,17 @@ def sig_norm(win_length, frame, flag):
     return gain
 
 
-def pre_emphasis(frame, win_shift, coef, last_frame_elem):
+def pre_emphasis(frame, win_shift, coefficient, last_frame_elem):
 
-    if (coef <= 0.0) or (coef > 1.0):
-        print("Error: The emphasis coeff. should be between 0 and 1")
+    if (coefficient <= 0.0) or (coefficient > 1.0):
+        raise ValueError("The emphasis coefficient should be between 0 and 1")
         return None
 
     last_element = frame[win_shift - 1]
     return (
         numpy.append(
-            frame[0] - coef * last_frame_elem, frame[1:] - coef * frame[:-1]
+            frame[0] - coefficient * last_frame_elem,
+            frame[1:] - coefficient * frame[:-1],
         ),
         last_element,
     )
@@ -249,7 +295,7 @@ def log_filter_bank(frame, n_filters, p_index, win_size, energy_filter):
 
 
 def log_triangular_bank(data, n_filters, p_index):
-    res_ = numpy.zeros(n_filters, dtype=numpy.float64)
+    res_ = numpy.zeros(n_filters, dtype=numpy.float32)
 
     denominator = 1.0 / (
         p_index[1 : n_filters + 2] - p_index[0 : n_filters + 1]
@@ -270,7 +316,7 @@ def log_triangular_bank(data, n_filters, p_index):
             data[vec_right] * denominator[i + 1] * (p_index[i + 2] - vec_right)
         )
         # alternative but equivalent implementation:
-        # filt = numpy.zeros(ri-li+1, dtype=numpy.float64)
+        # filt = numpy.zeros(ri-li+1, dtype=numpy.float32)
         # filt_l = denominator[i] * (vec_left-p_index[i])
         # filt_p = denominator[i+1] * (p_index[i+2]-vec_right)
         # filt = numpy.append(filt_l, filt_p)
@@ -291,10 +337,60 @@ def dct_transform(filters, n_filters, dct_kernel, n_ceps):
     return ceps
 
 
-def energy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
+def energy(
+    data: numpy.ndarray,
+    rate: int,
+    *,
+    win_length_ms: float = 20.0,
+    win_shift_ms: float = 10.0,
+):
+    """Returns the energy of an audio signal with a sliding window.
+
+    **parameters**:
+    data:
+        Audio data of the shape (n_audio_samples,)
+    rate:
+        Sample rate of ``data``
+    win_length_ms:
+        Length of the window in milliseconds.
+    win_shift_ms:
+        Shift of the window in milliseconds.
+
+    **returns**:
+    energy:
+        The energy of the audio signal.
+    """
+
+    win_length = int(rate * win_length_ms / 1000)
+    win_shift = int(rate * win_shift_ms / 1000)
+    win_size = int(2.0 ** math.ceil(math.log(win_length) / math.log(2)))
+
+    n_frames = int(1 + (data.shape[0] - win_length) / win_shift)
+
+    features = numpy.zeros(shape=(n_frames,), dtype=numpy.float32)
+
+    # Compute the Energy frame by frame
+    for i in range(n_frames):
+        # Create a frame and normalize it
+        # (watch out, win_size is not the length of the frame)
+        frame = numpy.array(
+            data[i * win_shift : i * win_shift + win_length],
+            dtype=numpy.float32,
+        )
+        frame[:] -= frame.sum() / win_size
+        # Energy is the signal squared and summed over the frame
+        features[i] = numpy.power(frame[:win_length], 2).sum()
+
+    # Return the log of it
+    features = numpy.where(features < 1, 0, numpy.ma.log(features))
+
+    return features
+
+
+def energy_legacy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
 
     #########################
-    # Initialisation part ##
+    # Initialization part ##
     #########################
 
     win_length = int(rate * win_length_ms / 1000)
@@ -302,7 +398,7 @@ def energy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
     win_size = int(2.0 ** math.ceil(math.log(win_length) / math.log(2)))
 
     ######################################
-    # End of the Initialisation part ###
+    # End of the Initialization part ###
     ######################################
 
     ######################################
@@ -319,20 +415,59 @@ def energy(data, rate, *, win_length_ms=20.0, win_shift_ms=10.0):
     # compute cepstral coefficients
     for i in range(n_frames):
         # create a frame
-        frame = numpy.zeros(win_size, dtype=numpy.float64)
+        frame = numpy.zeros(win_size, dtype=numpy.float32)
         vec = numpy.arange(win_length)
         frame[vec] = data[vec + i * win_shift]
         som = numpy.sum(frame)
         som = som / win_size
         frame[vec] -= som  # normalization by mean here
 
-        energy = sig_norm(win_length, frame, False)
+        energy = sig_norm_legacy(win_length, frame, False)
         features[i] = energy
 
     return numpy.array(features)
 
 
 def spectrogram(
+    data: numpy.ndarray,
+    rate: int,
+    *,
+    win_length_ms: float = 20.0,
+    win_shift_ms: float = 10.0,
+    n_filters: int = 24,
+    f_min: float = 0.0,
+    f_max: float = 4000.0,
+    pre_emphasis_coef: float = 0.95,
+    mel_scale: bool = True,
+    energy_filter: bool = False,
+    log_filter: Optional[bool] = None,
+    energy_bands: Optional[bool] = None,
+) -> numpy.ndarray:
+    """Returns the spectrogram of a signal."""
+    if log_filter is not None:
+        logger.warning(f"log_filter parameter was ignored ({log_filter=})")
+    if energy_bands is not None:
+        logger.warning(f"energy_bands parameter was ignored ({energy_bands=})")
+
+    win_length = int(rate * win_length_ms / 1000)
+    win_shift = int(rate * win_shift_ms / 1000)
+
+    import torchaudio
+
+    spectrogram_transformer = torchaudio.transforms.Spectrogram(
+        n_fft=win_length,
+        win_length=win_length,
+        hop_length=win_shift,
+        pad=0,
+        window_fn=torch.hamming_window,
+    )
+
+    spect = spectrogram_transformer(torch.tensor(data))
+
+    return spect.numpy()
+
+
+def spectrogram_legacy(
     data,
     rate,
     *,
@@ -408,6 +543,166 @@ def spectrogram(
 
 
 def cepstral(
+    data: numpy.ndarray,
+    rate: int,
+    *,
+    win_length_ms: float = 20.0,
+    win_shift_ms: float = 10.0,
+    n_filters: int = 20,
+    f_min: float = 0.0,
+    f_max: float = 4000.0,
+    n_ceps: int = 19,
+    pre_emphasis_coef: float = 1.0,
+    mel_scale: bool = True,
+    with_energy: bool = True,
+    with_delta: bool = True,
+    with_delta_delta: bool = True,
+    delta_win: int = 3,
+    dct_norm: bool = True,
+) -> numpy.ndarray:
+    """
+    Computes the cepstral coefficients of the given audio signal with torchaudio.
+
+    Outputs a numpy array containing the following columns in this order:
+    - cepstral coefficients (n_filters columns)
+    - energy (1 column)
+    - delta coefficients (n_filters columns)
+    - delta energy (1 column)
+    - delta delta coefficients (n_filters columns)
+    - delta delta energy (1 column)
+
+    **parameters**:
+    data:
+        The audio signal to compute the cepstral coefficients.
+    rate:
+        The sampling rate of the audio signal.
+    win_length_ms:
+        Length of the window in milliseconds.
+    win_shift_ms:
+        Shift of the window in milliseconds.
+    n_filters:
+        Number of filters in the filterbank.
+    f_min:
+        Minimum frequency of the filterbank.
+    f_max:
+        Maximum frequency of the filterbank.
+    n_ceps:
+        Number of cepstral coefficients.
+    pre_emphasis_coef:
+        Coefficient of the pre-emphasis filter. (not implemented yet)
+    mel_scale:
+        Whether to use the mel scale for the filterbank.
+    with_energy:
+        Whether to include the energy in the cepstral coefficients.
+    with_delta:
+        Whether to include the delta coefficients.
+    with_delta_delta:
+        Whether to include the delta-delta coefficients. (requires ``with_delta``)
+    delta_win:
+        Length of the window in frames for the delta and delta-delta coefficients.
+    dct_norm:
+        Whether to normalize the cepstral coefficients with the DCT.
+
+    **returns**:
+    cepstral:
+        The cepstral coefficients in a numpy array. The shape depends on the flags:
+        - None: (n_frames, n_ceps)
+        - with_energy: (n_frames, n_ceps + 1)
+        - with_delta: (n_frames, n_ceps*2)
+        - with_delta & with_energy: (n_frames, n_ceps*2 + 2)
+        - with_delta_delta: (n_frames, n_ceps*3)
+        - with_delta_delta & with_energy: (n_frames, n_ceps*3 + 3)
+    """
+
+    win_length = int(rate * win_length_ms / 1000)
+    win_shift = int(rate * win_shift_ms / 1000)
+    # win_size = int(2.0 ** math.ceil(math.log(win_length) / math.log(2)))
+
+    if not with_delta and with_delta_delta:
+        raise ValueError(
+            "Cannot compute delta-delta coefficients without delta coefficients."
+        )
+
+    import torchaudio
+
+    cepstral_transformer = torchaudio.transforms.Spectrogram(
+        n_fft=win_length,
+        win_length=win_length,
+        hop_length=win_shift,
+        pad=0,
+        power=2.0,
+        normalized=False,
+        onesided=True,
+        window_fn=torch.hamming_window,
+        pad_mode="constant",
+        center=False,
+    )
+    # print("Computing cepstral coefficients...")
+    cepstral = cepstral_transformer(torch.tensor(data))
+
+    # print(cepstral.size())
+
+    if mel_scale:
+        mel_scale_transformer = torchaudio.transforms.MelScale(
+            n_mels=n_filters,
+            sample_rate=rate,
+            f_min=f_min,
+            f_max=f_max,
+            n_stft=win_length // 2 + 1,
+        )
+        # print("Computing Mel scale...")
+        cepstral = mel_scale_transformer(cepstral)
+
+    cepstral = torchaudio.transforms.AmplitudeToDB(stype="power", top_db=80.0)(
+        cepstral
+    )
+
+    # print("DCT")
+    dct_mat = torchaudio.functional.create_dct(
+        n_mfcc=n_ceps, n_mels=n_filters, norm="ortho" if dct_norm else None
+    )
+
+    cepstral = torch.matmul(cepstral.transpose(-1, -2), dct_mat)
+
+    features = cepstral.numpy()
+
+    if with_energy:
+        features = numpy.hstack(
+            [
+                features,
+                energy(
+                    data,
+                    rate,
+                    win_length_ms=win_length_ms,
+                    win_shift_ms=win_shift_ms,
+                ).reshape(-1, 1),
+            ],
+        )
+        cepstral = torch.tensor(features)
+
+    if with_delta:
+        if delta_win == 2:
+            deltas = compute_delta_win2(cepstral.numpy())
+            features = numpy.hstack([features, deltas])
+        else:  # torchaudio delta does not support window length < 3
+            delta_transformer = torchaudio.transforms.ComputeDeltas(
+                win_length=delta_win, mode="constant"
+            )
+            deltas = delta_transformer(cepstral)
+            features = numpy.hstack([features, deltas.numpy()])
+
+        if with_delta_delta:
+            if delta_win == 2:
+                features = numpy.hstack([features, compute_delta_win2(deltas)])
+            else:
+                features = numpy.hstack(
+                    [features, delta_transformer(deltas).numpy()]
+                )
+
+    return features
+
+
+def cepstral_legacy(
     data,
     rate,
     *,
@@ -473,22 +768,28 @@ def cepstral(
     else:
         with_delta_delta = False
 
-    features = numpy.zeros([n_frames, dim], dtype=numpy.float64)
+    features = numpy.zeros([n_frames, dim], dtype=numpy.float32)
+
+    if with_energy:
+        energy_frames = energy(
+            data, rate, win_length_ms=win_length_ms, win_shift_ms=win_shift_ms
+        )
 
     last_frame_elem = 0
     # compute cepstral coefficients
     for i in range(n_frames):
         # create a frame
-        frame = numpy.zeros(win_size, dtype=numpy.float64)
+        frame = numpy.zeros(win_size, dtype=numpy.float32)
         vec = numpy.arange(win_length)
         frame[vec] = data[vec + i * win_shift]
         som = numpy.sum(frame)
         som = som / win_size
         frame[vec] -= som  # normalization by mean here
 
-        if with_energy:
-            energy = sig_norm(win_length, frame, False)
+        # if with_energy:
+        # energy = sig_norm(win_length, frame, False)
 
+        # __import__("ipdb").set_trace()
         # pre-emphasis filtering
         frame_, last_frame_elem = pre_emphasis(
             frame[vec], win_shift, pre_emphasis_coef, last_frame_elem
@@ -513,7 +814,7 @@ def cepstral(
         d1 = n_ceps
         if with_energy:
             d1 = n_ceps + 1
-            ceps = numpy.append(ceps, energy)
+            ceps = numpy.append(ceps, energy_frames[i])
 
         # stock the results in features matrix
         vec = numpy.arange(d1)
