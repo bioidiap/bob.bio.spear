@@ -44,8 +44,7 @@ install_requires = load_requirements()
 # The only thing we do in this file is to call the setup() function with all
 # parameters that define our package.
 setup(
-    # This is the basic information about your project. Modify all this
-    # information before releasing code publicly.
+    # This is the basic information about your project.
     name="bob.bio.spear",
     version=open("version.txt").read().rstrip(),
     description="Tools for running speaker recognition experiments",
@@ -56,7 +55,7 @@ setup(
     keywords="bob, biometric recognition, evaluation",
     # If you have a better, long description of your package, place it on the
     # 'doc' directory and then hook it here
-    long_description=open("README.rst").read(),
+    long_description=open("README.rst", "rt", encoding="utf_8").read(),
     # This line is required for any distutils based packaging.
     packages=find_packages(),
     include_package_data=True,
@@ -88,9 +87,6 @@ setup(
     # installed under 'example/foo.py' that contains a function which
     # implements the 'main()' function of particular script you want to have
     # should be referred as 'example.foo:main'.
-    #
-    # In this simple example we will create a single program that will print
-    # the version of bob.
     entry_points={
         "bob.bio.database": [
             "timit              = bob.bio.spear.config.database.timit:database",
@@ -116,16 +112,19 @@ setup(
             "external      = bob.bio.spear.config.annotator.external:annotator",  # external VAD
         ],
         "bob.bio.pipeline": [
-            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge:pipeline",
-            "isv-voxforge  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
+            "gmm-voxforge                 = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge:pipeline",
+            "isv-voxforge                 = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
             "speechbrain-ecapa-voxceleb   = bob.bio.spear.config.pipeline.speechbrain_ecapa_voxceleb:pipeline",  # Do not call it `speechbrain` as it would try to load the speechbrain module instead
+            "ivector-default              = bob.bio.spear.config.pipeline.mfcc60_ivector:pipeline",
         ],
+        # Config entries load all defined objects in the target file
+        # They don't require an option specifier (`-p` or `-d`) in the CLI.
         "bob.bio.config": [
-            # databases:
+            # Databases:
             "voxforge      = bob.bio.spear.config.database.voxforge",
             "mini-voxforge = bob.bio.spear.config.database.mini_voxforge",
             "voxceleb      = bob.bio.spear.config.database.voxceleb",
-            # PipelineSimple config (pipeline and db):
+            # PipelineSimple config:
             "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge",
             "gmm-mobio     = bob.bio.spear.config.pipeline.mfcc60_gmm_mobio",
             "isv-voxforge  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge",

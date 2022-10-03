@@ -114,9 +114,7 @@ class Mod_4Hz(Annotator):
 
     def averaging(self, list_1s_shift):
         len_list = len(list_1s_shift)
-        sample_level_value = numpy.array(
-            numpy.zeros(len_list, dtype=numpy.float)
-        )
+        sample_level_value = numpy.array(numpy.zeros(len_list, dtype=float))
         sample_level_value[0] = numpy.array(list_1s_shift[0])
         for j in range(2, numpy.min([len_list, 100])):
             sample_level_value[j - 1] = ((j - 1.0) / j) * sample_level_value[
@@ -226,7 +224,7 @@ class Mod_4Hz(Annotator):
         """
         [labels, energy_array, mod_4hz] = self.mod_4hz(data, sample_rate)
         if (labels == 0).all():
-            logger.warn("No Audio was detected in the sample!")
+            logger.warning("No Audio was detected in the sample!")
             return None
 
         return labels
