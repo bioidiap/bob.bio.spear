@@ -47,7 +47,7 @@ ubm = GMM(
     return_stats_in_transform=True,
 )
 
-ivector_transformer = IVectorMachine(ubm=ubm, dim_t=5, max_iterations=16)
+ivector_transformer = IVectorMachine(ubm=ubm, dim_t=200, max_iterations=8)
 
 
 class LenghtNorm(BaseEstimator):
