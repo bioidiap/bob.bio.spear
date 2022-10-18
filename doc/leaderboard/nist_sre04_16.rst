@@ -38,13 +38,18 @@ Then, to generate the scores, use::
     $ bob bio metrics -e ./results/gmm_nist/scores-{dev,eval}.csv
 
 
-.. table:: [Min. criterion: EER] Threshold on Development set: TODO
+.. table:: [Min. criterion: EER ] Threshold on Development set: 1.007006e+00
 
-    =====================  ================  ==================
-    ..                     Development       Evaluation
-    =====================  ================  ==================
-
-On 128\ [#nodes]_ CPU nodes on the SGE Grid: TODO
+    =====================  ===================  =======================
+    ..                     Development          Evaluation
+    =====================  ===================  =======================
+    Failure to Acquire     0.0%                 0.0%
+    False Match Rate       22.2% (21395/96342)  27.0% (2013356/7453619)
+    False Non Match Rate   22.0% (48/218)       7.7% (13/169)
+    False Accept Rate      22.2%                27.0%
+    False Reject Rate      22.0%                7.7%
+    Half Total Error Rate  22.1%                17.4%
+    =====================  ===================  =======================
 
 ISV
 ---
