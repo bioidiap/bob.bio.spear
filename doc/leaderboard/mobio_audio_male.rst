@@ -59,7 +59,7 @@ ISV
 
 To run the baseline, use the following command::
 
-    bob bio pipeline simple -d mobio-audio-male -p isv-voxforge -g dev -g eval -l sge -o results/isv_mobio_male
+    bob bio pipeline simple -d mobio-audio-male -p isv-default -g dev -g eval -l sge -o results/isv_mobio_male
 
 Then, to generate the scores, use::
 

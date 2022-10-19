@@ -33,7 +33,7 @@ GMM
 
 To run the baseline, use the following command::
 
-    bob bio pipeline simple -d voxforge -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_voxforge
+    bob bio pipeline simple -d voxforge -p gmm-default -g dev -g eval -l sge -o results/gmm_voxforge
 
 Then, to generate the scores, use::
 
@@ -59,7 +59,7 @@ ISV
 
 To run the baseline, use the following command::
 
-    bob bio pipeline simple -d voxforge -p isv-voxforge -g dev -g eval -l sge -o results/isv_voxforge
+    bob bio pipeline simple -d voxforge -p isv-default -g dev -g eval -l sge -o results/isv_voxforge
 
 Then, to generate the scores, use::
 
@@ -93,7 +93,6 @@ Then, to generate the scores, use::
 
 .. table::
 
-    todo
 
 
 Speechbrain ECAPA-TDNN
