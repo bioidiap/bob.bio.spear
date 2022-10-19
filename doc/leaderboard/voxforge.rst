@@ -33,11 +33,11 @@ GMM
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d voxforge -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_voxforge
+    bob bio pipeline simple -d voxforge -p gmm-voxforge -g dev -g eval -l sge -o results/gmm_voxforge
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/gmm_voxforge/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/gmm_voxforge/scores-{dev,eval}.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development set: 2.128360e+00
 
@@ -59,11 +59,11 @@ ISV
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d voxforge -p isv-voxforge -g dev -g eval -l sge -o results/isv_voxforge
+    bob bio pipeline simple -d voxforge -p isv-voxforge -g dev -g eval -l sge -o results/isv_voxforge
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/isv_voxforge/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/isv_voxforge/scores-{dev,eval}.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development: 1.680925e+00
 
@@ -80,16 +80,32 @@ Then, to generate the scores, use::
 
 On 128\ [#nodes]_ CPU nodes on the SGE Grid: Ran in 13 minutes (7 minutes of training).
 
+I-Vector
+--------
+
+To run the baseline, use the following command::
+
+    bob bio pipeline simple -d voxforge -p ivector-default -g dev -g eval -l sge-demanding -o results/ivector_voxforge
+
+Then, to generate the scores, use::
+
+    bob bio metrics -e ./results/ivector_voxforge/scores-{dev,eval}.csv
+
+.. table::
+
+    todo
+
+
 Speechbrain ECAPA-TDNN
 ----------------------
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_voxforge
+    bob bio pipeline simple -d voxforge -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_voxforge
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/speechbrain_voxforge/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/speechbrain_voxforge/scores-{dev,eval}.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -6.159925e-01
 

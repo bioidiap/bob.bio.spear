@@ -32,11 +32,11 @@ GMM
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d mobio-audio-female gmm-mobio -g dev -g eval -l sge -o results/gmm_mobio_female
+    bob bio pipeline simple -d mobio-audio-female gmm-mobio -g dev -g eval -l sge -o results/gmm_mobio_female
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/gmm_mobio_female/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/gmm_mobio_female/scores-{dev,eval}.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development set: 7.550647e-01
 
@@ -58,11 +58,11 @@ ISV
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d mobio-audio-female -p isv-voxforge -g dev -g eval -l sge -o results/isv_mobio_female
+    bob bio pipeline simple -d mobio-audio-female -p isv-voxforge -g dev -g eval -l sge -o results/isv_mobio_female
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/isv_mobio_female/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/isv_mobio_female/scores-{dev,eval}.csv
 
 
 .. table:: [Min. criterion: EER] Threshold on Development set: 3.483318e-01
@@ -87,11 +87,11 @@ Speechbrain ECAPA-TDNN
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d mobio-audio-female -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_mobio_female
+    bob bio pipeline simple -d mobio-audio-female -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_mobio_female
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/speechbrain_mobio_female/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/speechbrain_mobio_female/scores-{dev,eval}.csv
 
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -5.091601e-01

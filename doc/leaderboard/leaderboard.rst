@@ -31,7 +31,7 @@ Metrics generation (score analysis)
 
 In the following pages, the metrics tables are generated using the command::
 
-    $ bob bio metrics -e ./results/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/scores-{dev,eval}.csv
 
 
 Leaderboard for each dataset
