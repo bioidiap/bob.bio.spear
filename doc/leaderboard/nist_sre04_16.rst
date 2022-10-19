@@ -29,13 +29,14 @@ This is an aggregation of the NIST-SRE datasets from 2004 to 2016.
 GMM
 ---
 
-To run the baseline, use the following command::
+To run the baseline, use the following commands::
 
-    $ bob bio pipeline simple -d nist-sre04to16 -p gmm-nist -g dev -g eval -l sge -o results/gmm_nist
+    bob bio pipeline train -d nist-sre04to16 -p gmm-default -o results/gmm_nist -l sge-demanding -n 512 --split-training --n-splits 8
+    bob bio pipeline simple -d nist-sre04to16 -p gmm-default -g dev -g eval -l sge -o results/gmm_nist
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/gmm_nist/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/gmm_nist/scores-{dev,eval}.csv
 
 
 .. table:: [Min. criterion: EER ] Threshold on Development set: 1.007006e+00
@@ -56,11 +57,11 @@ ISV
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d nist-sre04to16 -p isv-nist -g dev -g eval -l sge -o results/isv_nist
+    bob bio pipeline simple -d nist-sre04to16 -p isv-nist -g dev -g eval -l sge -o results/isv_nist
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/isv_nist/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/isv_nist/scores-{dev,eval}.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development set: TODO
 
@@ -75,11 +76,11 @@ Speechbrain ECAPA-TDNN
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d nist-sre04to16 -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_nist
+    bob bio pipeline simple -d nist-sre04to16 -p speechbrain-ecapa-voxceleb -g dev -g eval -l sge -o results/speechbrain_nist
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/speechbrain_mobio_male/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/speechbrain_mobio_male/scores-{dev,eval}.csv
 
 
 .. table:: [Min. criterion: EER ] Threshold on Development set: -3.860876e-01

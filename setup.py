@@ -112,8 +112,8 @@ setup(
             "external      = bob.bio.spear.config.annotator.external:annotator",  # external VAD
         ],
         "bob.bio.pipeline": [
-            "gmm-voxforge                 = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge:pipeline",
-            "isv-voxforge                 = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
+            "gmm-default                  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge:pipeline",
+            "isv-default                  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
             "speechbrain-ecapa-voxceleb   = bob.bio.spear.config.pipeline.speechbrain_ecapa_voxceleb:pipeline",  # Do not call it `speechbrain` as it would try to load the speechbrain module instead
             "ivector-default              = bob.bio.spear.config.pipeline.mfcc60_ivector:pipeline",
         ],
@@ -125,9 +125,9 @@ setup(
             "mini-voxforge = bob.bio.spear.config.database.mini_voxforge",
             "voxceleb      = bob.bio.spear.config.database.voxceleb",
             # PipelineSimple config:
-            "gmm-voxforge  = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge",
+            "gmm-default   = bob.bio.spear.config.pipeline.mfcc60_gmm_voxforge",
             "gmm-mobio     = bob.bio.spear.config.pipeline.mfcc60_gmm_mobio",
-            "isv-voxforge  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge",
+            "isv-default   = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge",
         ],
         "bob.db.cli": [
             "download-voxforge = bob.bio.spear.database.voxforge:download_voxforge",
