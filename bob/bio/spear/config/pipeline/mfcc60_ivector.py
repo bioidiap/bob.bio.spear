@@ -14,15 +14,13 @@ This pipeline is composed of the following steps:
 import numpy
 
 from sklearn.base import BaseEstimator
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.algorithm import GMM, Distance
 from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.spear.annotator import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
-from bob.bio.spear.transformer import ReferenceIdEncoder
-from bob.learn.em import WCCN, IVectorMachine, KMeansMachine, Whitening
+from bob.learn.em import IVectorMachine, KMeansMachine
 from bob.pipelines import wrap
 
 # Number of Gaussians for the UBM (used by kmeans and GMM)
@@ -65,25 +63,6 @@ transformer = Pipeline(
         ("extractor", wrap(["sample"], Cepstral())),
         ("ubm", wrap(["sample"], ubm)),
         ("ivector", wrap(["sample"], ivector_transformer)),
-        ("whitening", wrap(["sample"], Whitening())),
-        ("length-norm", wrap(["sample"], LenghtNorm())),
-        ("reference_id_encoder", wrap(["sample"], ReferenceIdEncoder())),
-        (
-            "lda",
-            wrap(
-                ["sample"],
-                LinearDiscriminantAnalysis(),
-                fit_extra_arguments=[("y", "reference_id_int")],
-            ),
-        ),
-        (
-            "wccn",
-            wrap(
-                ["sample"],
-                WCCN(),
-                fit_extra_arguments=[("y", "reference_id_int")],
-            ),
-        ),
     ]
 )
 
