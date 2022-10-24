@@ -85,15 +85,24 @@ I-Vector
 
 To run the baseline, use the following command::
 
-    bob bio pipeline simple -d voxforge -p ivector-default -g dev -g eval -l sge-demanding -o results/ivector_voxforge
+    bob bio pipeline simple -d voxforge -p ivector-default -g dev -g eval -l sge -o results/ivector_voxforge
 
 Then, to generate the scores, use::
 
     bob bio metrics -e ./results/ivector_voxforge/scores-{dev,eval}.csv
 
-.. table::
+.. table:: [Min. criterion: EER ] Threshold on Development set: -7.924394e-01
 
-
+    =====================  ===============  ===============
+    ..                     Development      Evaluation
+    =====================  ===============  ===============
+    Failure to Acquire     0.0%             0.0%
+    False Match Rate       4.3% (116/2700)  6.9% (186/2700)
+    False Non Match Rate   4.3% (13/300)    4.3% (13/300)
+    False Accept Rate      4.3%             6.9%
+    False Reject Rate      4.3%             4.3%
+    Half Total Error Rate  4.3%             5.6%
+    =====================  ===============  ===============
 
 Speechbrain ECAPA-TDNN
 ----------------------
