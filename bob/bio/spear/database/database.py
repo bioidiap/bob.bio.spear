@@ -19,44 +19,52 @@ from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
 
-
 known_databases = {
-    "voxforge": {
-        "definition_file": "database-protocols-voxforge-f032929d.tar.gz",
-        "crc": "f032929d",
-    },
-    "mobio": {
-        "definition_file": "database-protocols-mobio-e069c6aa.tar.gz",
-        "crc": "e069c6aa",
-        "rc_name": "mobio.audio",
-    },
-    "timit": {
-        "definition_file": "database-protocols-timit-1f14a1b4.tar.gz",
-        "crc": "1f14a1b4",
-    },
-    "avspoof": {
-        "definition_file": "database-protocols-avspoof-109c8110.tar.gz",
-        "crc": "109c8110",
-    },
     "asvspoof": {
-        "definition_file": "database-protocols-asvspoof-e96b5728.tar.gz",
-        "crc": "e96b5728",
+        "local_filename": "asvspoof.tar.gz",
+        "definition_file": "asvspoof-24ec0e06.tar.gz",
+        "crc": "24ec0e06",
     },
     "asvspoof2017": {
-        "definition_file": "database-protocols-asvspoof2017-db087bb7.tar.gz",
+        "local_filename": "asvspoof2017.tar.gz",
+        "definition_file": "asvspoof2017-db087bb7.tar.gz",  # TODO new format
         "crc": "db087bb7",
     },
-    "voicepa": {
-        "definition_file": "database-protocols-voicepa-25ce140b.tar.gz",
-        "crc": "25ce140b",
+    "avspoof": {
+        "local_filename": "avspoof.tar.gz",
+        "definition_file": "avspoof-d58a537b.tar.gz",
+        "crc": "d58a537b",
+    },
+    "mobio": {
+        "local_filename": "mobio.tar.gz",  # TODO check that it is in a spear subfolder in bob_data, otherwise name it differently.
+        "definition_file": "mobio-fb456ae5.tar.gz",
+        "crc": "fb456ae5",
+        "rc_name": "mobio.audio",
     },
     "nist_sre04to16": {
-        "definition_file": "database-protocols-nist_sre04to16-8aea7733.tar.gz",
-        "crc": "8aea7733",
+        "local_filename": "nist_sre04to16.tar.gz",
+        "definition_file": "nist_sre04to16-8bebb8d3.tar.gz",
+        "crc": "8bebb8d3",
+    },
+    "timit": {
+        "local_filename": "timit.tar.gz",
+        "definition_file": "timit-7eee299f.tar.gz",
+        "crc": "7eee299f",
+    },
+    "voicepa": {
+        "local_filename": "voicepa.tar.gz",
+        "definition_file": "voicepa-25ce140b.tar.gz",  # TODO new format
+        "crc": "25ce140b",
     },
     "voxceleb": {
-        "definition_file": "database-protocols-voxceleb-defd6717.tar.gz",
-        "crc": "defd6717",
+        "local_filename": "voxceleb.tar.gz",
+        "definition_file": "voxceleb-bbd6d488.tar.gz",
+        "crc": "bbd6d488",
+    },
+    "voxforge": {
+        "local_filename": "voxforge.tar.gz",
+        "definition_file": "voxforge-e97cc73a.tar.gz",
+        "crc": "e97cc73a",
     },
 }
 
@@ -74,15 +82,16 @@ def get_protocol_file(database_name: str):
             f"{known_databases.keys()} or specify a dataset_protocols_path to "
             "'SpearBioDatabase'."
         )
+    local_filename = known_databases[database_name]["local_filename"]
     proto_def_hash = known_databases[database_name]["crc"]
     proto_def_name = known_databases[database_name]["definition_file"]
     proto_def_urls = [
-        f"https://www.idiap.ch/software/bob/data/bob/bob.bio.spear/{proto_def_name}",
-        f"http://www.idiap.ch/software/bob/data/bob/bob.bio.spear/{proto_def_name}",
+        f"https://www.idiap.ch/software/bob/databases/latest/spear/{proto_def_name}",
+        f"http://www.idiap.ch/software/bob/databases/latest/spear/{proto_def_name}",
     ]
     logger.info(f"Retrieving protocol definition file '{proto_def_name}'.")
     return get_file(
-        filename=proto_def_name,
+        filename=local_filename,
         urls=proto_def_urls,
         file_hash=proto_def_hash,
         cache_subdir="datasets",
