@@ -14,13 +14,15 @@ This pipeline is composed of the following steps:
 import numpy
 
 from sklearn.base import BaseEstimator
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.algorithm import GMM, Distance
 from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.spear.annotator import Energy_2Gauss
 from bob.bio.spear.extractor import Cepstral
-from bob.learn.em import IVectorMachine, KMeansMachine
+from bob.bio.spear.transformer import ReferenceIdEncoder
+from bob.learn.em import WCCN, IVectorMachine, KMeansMachine, Whitening
 from bob.pipelines import wrap
 
 # Number of Gaussians for the UBM (used by kmeans and GMM)
@@ -45,10 +47,10 @@ ubm = GMM(
     return_stats_in_transform=True,
 )
 
-ivector_transformer = IVectorMachine(ubm=ubm, dim_t=200, max_iterations=8)
+ivector_transformer = IVectorMachine(ubm=ubm, dim_t=200, max_iterations=4)
 
 
-class LenghtNorm(BaseEstimator):
+class LengthNorm(BaseEstimator):
     def transform(self, X):
         return [x / numpy.linalg.norm(x) for x in X]
 
@@ -63,6 +65,25 @@ transformer = Pipeline(
         ("extractor", wrap(["sample"], Cepstral())),
         ("ubm", wrap(["sample"], ubm)),
         ("ivector", wrap(["sample"], ivector_transformer)),
+        ("whitening", wrap(["sample"], Whitening())),
+        ("length-norm", wrap(["sample"], LengthNorm())),
+        ("reference_id_encoder", wrap(["sample"], ReferenceIdEncoder())),
+        (
+            "lda",
+            wrap(
+                ["sample"],
+                LinearDiscriminantAnalysis(),
+                fit_extra_arguments=[("y", "reference_id_int")],
+            ),
+        ),
+        (
+            "wccn",
+            wrap(
+                ["sample"],
+                WCCN(),
+                fit_extra_arguments=[("y", "reference_id_int")],
+            ),
+        ),
     ]
 )
 
