@@ -13,7 +13,7 @@ Pipelines description
 
 Each pipeline configuration is available in the ``bob/bio/spear/config/pipeline``
 folder. Some pipelines configurations are tuned for a specific dataset (e.g.
-``gmm-voxforge`` has its ``number_of_gaussians`` parameter adapted to VoxForge).
+``gmm-default`` has its ``number_of_gaussians`` parameter adapted to VoxForge).
 
 GMM:
     Consists of a training step to train the GMM UBM, and two biometric experiments
@@ -31,7 +31,7 @@ Metrics generation (score analysis)
 
 In the following pages, the metrics tables are generated using the command::
 
-    $ bob bio metrics -e ./results/scores-{dev,eval}.csv
+    bob bio metrics -e ./results/scores-{dev,eval}.csv
 
 
 Leaderboard for each dataset

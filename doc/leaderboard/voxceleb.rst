@@ -33,11 +33,11 @@ GMM
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -d voxceleb gmm-mobio -l sge-demanding -o results/gmm_voxceleb -n 512
+    bob bio pipeline simple -d voxceleb gmm-mobio -l sge-demanding -o results/gmm_voxceleb -n 512
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/gmm_voxceleb/scores-dev.csv
+    bob bio metrics -e ./results/gmm_voxceleb/scores-dev.csv
 
 .. table:: [Min. criterion: EER ] Threshold on Development set: 1.062216e-01
 
@@ -75,11 +75,11 @@ This baseline reproduces the speaker verification experiment with a pretrained E
 
 To run the baseline, use the following command::
 
-    $ bob bio pipeline simple -vvv -d voxceleb -p speechbrain-ecapa-voxceleb -g dev -o ./results/speechbrain_voxceleb
+    bob bio pipeline simple -vvv -d voxceleb -p speechbrain-ecapa-voxceleb -g dev -o ./results/speechbrain_voxceleb
 
 Then, to generate the scores, use::
 
-    $ bob bio metrics -e ./results/speechbrain_voxceleb/scores-dev.csv
+    bob bio metrics -e ./results/speechbrain_voxceleb/scores-dev.csv
 
 .. table:: [Min. criterion: EER] Threshold on Development set: -6.159925e-01
 

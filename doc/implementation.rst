@@ -69,12 +69,12 @@ The fusion of scores from different systems is done using `logistic regression`_
 ~~~~~~~~~~~~~
 One way to compute the final result is to use ``bob bio evaluate`` e.g., by calling::
 
-  $ bob bio evaluate --eval PATH/TO/USER/DIRECTORY/scores-dev PATH/TO/USER/DIRECTORY/scores-eval --criterion EER --output results.pdf
+  bob bio evaluate --eval PATH/TO/USER/DIRECTORY/scores-dev PATH/TO/USER/DIRECTORY/scores-eval --criterion EER --output results.pdf
 
 This will compute the EER, the minCLLR, CLLR, and draw the DET curve.
 To better compare different systems using DET curves, a separate command can be used::
 
-  $ bob bio det --split gmm-scores.csv isv-scores.csv ivector-scores.csv --titles "GMM,ISV,i-vectors"
+  bob bio det --split gmm-scores.csv isv-scores.csv ivector-scores.csv --titles "GMM,ISV,i-vectors"
 
 
 .. include:: links.rst

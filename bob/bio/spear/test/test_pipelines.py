@@ -86,10 +86,10 @@ def _run_pipeline_on_dummy(pipeline):
     assert all(isinstance(s.data, float) for r in result_ for s in r)
 
 
-def test_mfcc_gmm_voxforge_config():
-    """Creating the gmm-voxforge pipeline."""
+def test_mfcc_gmm_default_config():
+    """Creating the gmm-default pipeline."""
     pipeline = load_entry_point(
-        "bob.bio.spear", "bob.bio.pipeline", "gmm-voxforge"
+        "bob.bio.spear", "bob.bio.pipeline", "gmm-default"
     )
     assert isinstance(pipeline, PipelineSimple)
     assert isinstance(pipeline.transformer, SklearnPipeline)
@@ -97,10 +97,10 @@ def test_mfcc_gmm_voxforge_config():
 
 
 @is_library_available("torchaudio")
-def test_mfcc_gmm_voxforge_pipeline():
-    """Running the gmm-voxforge pipeline."""
+def test_mfcc_gmm_default_pipeline():
+    """Running the gmm-default pipeline."""
     pipeline = load_entry_point(
-        "bob.bio.spear", "bob.bio.pipeline", "gmm-voxforge"
+        "bob.bio.spear", "bob.bio.pipeline", "gmm-default"
     )
     _run_pipeline_on_dummy(pipeline)
 
@@ -126,10 +126,10 @@ def test_mfcc_gmm_mobio_pipeline():
     _run_pipeline_on_dummy(pipeline)
 
 
-def test_mfcc_isv_voxforge_config():
-    """Creating the isv-voxforge pipeline."""
+def test_mfcc_isv_default_config():
+    """Creating the isv-default pipeline."""
     pipeline = load_entry_point(
-        "bob.bio.spear", "bob.bio.pipeline", "isv-voxforge"
+        "bob.bio.spear", "bob.bio.pipeline", "isv-default"
     )
     assert isinstance(pipeline, PipelineSimple)
     assert isinstance(pipeline.transformer, SklearnPipeline)
@@ -137,10 +137,10 @@ def test_mfcc_isv_voxforge_config():
 
 
 @is_library_available("torchaudio")
-def test_mfcc_isv_voxforge_pipeline():
-    """Creating the isv-voxforge pipeline."""
+def test_mfcc_isv_default_pipeline():
+    """Creating the isv-default pipeline."""
     pipeline = load_entry_point(
-        "bob.bio.spear", "bob.bio.pipeline", "isv-voxforge"
+        "bob.bio.spear", "bob.bio.pipeline", "isv-default"
     )
     _run_pipeline_on_dummy(pipeline)
 
