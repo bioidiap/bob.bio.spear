@@ -71,15 +71,26 @@ The algorithms present a set of state-of-the-art speaker recognition algorithms.
 
 * ``gmm``: *Gaussian Mixture Models* (GMM) [Rey00]_.
 
-  - algorithm : :py:class:`bob.bio.spear.algorithm.GMM`
+  - algorithm: :class:`bob.bio.base.algorithm.GMM`
 
 * ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [Vogt08]_ is used to learn what variations in samples are introduced by identity changes and which not.
 
-  - algorithm : :py:class:`bob.bio.spear.algorithm.ISV`
+  - algorithm: :class:`bob.bio.base.algorithm.ISV`
 
-* ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling [Dehak11]_ (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
+* ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV)
+  modeling [Dehak11]_ (aka. I-Vector), which tries to learn a subspace in the GMM
+  super-vector space. The default pipeline uses the cosine distance to score
+  embeddings.
 
-  - algorithm : To be done
+  - transformer: :class:`bob.learn.gmm.IVector`
+
+* ``ivector-plda``: This is the same transformer as ``ivector``, but the scoring is
+  done with PLDA.
+
+  - transformer: :class:`bob.learn.gmm.IVector`
+  - algorithm: :class:`speechbrain.processing.PLDA_LDA.PLDA`
+
+.. TODO
 
 .. note::
   The ``ivector`` algorithm needs a lot of training data and fails on small databases such as the `Voxforge`_ database.

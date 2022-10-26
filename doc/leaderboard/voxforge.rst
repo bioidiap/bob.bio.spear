@@ -104,6 +104,19 @@ Then, to generate the scores, use::
     Half Total Error Rate  4.3%             5.6%
     =====================  ===============  ===============
 
+I-Vector PLDA
+-------------
+
+To run the baseline, use the following command::
+
+    bob bio pipeline simple -d voxforge -p ivector-plda -g dev -g eval -l sge -o results/ivector_plda_voxforge
+
+Then, to generate the scores, use::
+
+    bob bio metrics -e ./results/ivector_plda_voxforge/scores-{dev,eval}.csv
+
+.. TODO
+
 Speechbrain ECAPA-TDNN
 ----------------------
 
