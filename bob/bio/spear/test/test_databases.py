@@ -18,12 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from functools import reduce
 
 from pkg_resources import load_entry_point
 
 from bob.bio.base.database import CSVDatabase
 from bob.extension import rc
 from bob.pipelines import DelayedSample, SampleSet
+
+
+def _min_max_len(list_of_list):
+    return reduce(
+        lambda a, b: (
+            a[0] if a[0] < len(b) else len(b),
+            a[1] if a[1] > len(b) else len(b),
+        ),
+        list_of_list,
+        (float("inf"), 0),
+    )
 
 
 def _check_database(
@@ -37,6 +49,7 @@ def _check_database(
     n_eval_references_samples=None,
     n_eval_probes=None,
     n_eval_probes_samples=None,
+    sparse=False,
 ):
     """Verifies that a SpearBioDatabase instance is constructed correctly.
 
@@ -44,6 +57,7 @@ def _check_database(
     """
 
     assert isinstance(database, CSVDatabase)
+    assert database.score_all_vs_all != sparse
 
     if n_train:
         train = database.background_model_samples()
@@ -59,7 +73,7 @@ def _check_database(
         if n_dev_references_samples:
             assert all(
                 len(s) == n_dev_references_samples for s in dev_ref
-            ), f"Not all dev references haves the same sample count ({len(dev_ref[0])})"
+            ), f"Not all dev references haves the same sample count ({_min_max_len(dev_ref)})"
         assert all(isinstance(s, DelayedSample) for s in dev_ref[0])
 
     if n_dev_probes or n_dev_probes_samples:
@@ -72,7 +86,7 @@ def _check_database(
         if n_dev_probes_samples:
             assert all(
                 len(s) == n_dev_probes_samples for s in dev_pro
-            ), f"Not all dev probes haves the same sample count ({len(dev_pro[0])})"
+            ), f"Not all dev probes haves the same sample count ({_min_max_len(dev_pro)})"
         assert all(isinstance(s[0], DelayedSample) for s in dev_pro)
 
     if n_eval_references or n_eval_references_samples:
@@ -85,7 +99,7 @@ def _check_database(
         if n_eval_references_samples:
             assert all(
                 len(s) == n_eval_references_samples for s in eval_ref
-            ), f"Not all eval references haves the same sample count ({len(eval_ref[0])})"
+            ), f"Not all eval references haves the same sample count ({_min_max_len(eval_ref)})"
         assert all(isinstance(s, DelayedSample) for s in eval_ref[0])
 
     if n_eval_probes or n_eval_probes_samples:
@@ -98,7 +112,7 @@ def _check_database(
         if n_dev_probes_samples:
             assert all(
                 len(s) == n_eval_probes_samples for s in eval_pro
-            ), f"Not all eval probes haves the same sample count ({len(eval_pro[0])})"
+            ), f"Not all eval probes haves the same sample count ({_min_max_len(eval_pro)})"
         assert all(isinstance(s[0], DelayedSample) for s in eval_pro)
 
 
@@ -222,6 +236,46 @@ def test_asvspoof_spoof():
     )
 
 
+def test_asvspoof2017_licit():
+    rc["bob.db.asvspoof.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "asvspoof2017-licit"
+    )
+
+    _check_database(
+        database,
+        n_train=None,
+        n_dev_references=20,
+        n_dev_references_samples=5,
+        n_dev_probes=5700,
+        n_dev_probes_samples=1,
+        n_eval_references=26,
+        n_eval_references_samples=5,
+        n_eval_probes=10400,
+        n_eval_probes_samples=1,
+    )
+
+
+def test_asvspoof2017_spoof():
+    rc["bob.db.asvspoof.directory"] = "dummy/"
+    database = load_entry_point(
+        "bob.bio.spear", "bob.bio.database", "asvspoof2017-spoof"
+    )
+
+    _check_database(
+        database,
+        n_train=None,
+        n_dev_references=20,
+        n_dev_references_samples=5,
+        n_dev_probes=28500,
+        n_dev_probes_samples=1,
+        n_eval_references=26,
+        n_eval_references_samples=5,
+        n_eval_probes=104000,
+        n_eval_probes_samples=1,
+    )
+
+
 def test_voicepa_licit():
     rc["bob.db.voicepa.directory"] = "dummy/"
     database = load_entry_point(
@@ -322,11 +376,12 @@ def test_voxceleb():
         database,
         n_train=148642,
         n_dev_references=4874,
-        n_dev_references_samples=1,  # Variable sample count
+        n_dev_references_samples=1,
         n_dev_probes=4713,
         n_dev_probes_samples=1,
         n_eval_references=4874,
-        n_eval_references_samples=1,  # Variable sample count
+        n_eval_references_samples=1,
         n_eval_probes=4713,
         n_eval_probes_samples=1,
+        sparse=True,
     )

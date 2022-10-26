@@ -3,6 +3,7 @@
 # Wed 16 Mar 2022 09:32:47 UTC+01
 
 import logging
+import os
 
 from typing import Optional
 
@@ -36,7 +37,7 @@ known_databases = {
         "crc": "d58a537b",
     },
     "mobio": {
-        "local_filename": "mobio.tar.gz",  # TODO check that it is in a spear subfolder in bob_data, otherwise name it differently.
+        "local_filename": "mobio.tar.gz",
         "definition_file": "mobio-fb456ae5.tar.gz",
         "crc": "fb456ae5",
         "rc_name": "mobio.audio",
@@ -58,13 +59,13 @@ known_databases = {
     },
     "voxceleb": {
         "local_filename": "voxceleb.tar.gz",
-        "definition_file": "voxceleb-bbd6d488.tar.gz",
-        "crc": "bbd6d488",
+        "definition_file": "voxceleb-4e0ba09d.tar.gz",
+        "crc": "4e0ba09d",
     },
     "voxforge": {
         "local_filename": "voxforge.tar.gz",
-        "definition_file": "voxforge-e97cc73a.tar.gz",
-        "crc": "e97cc73a",
+        "definition_file": "voxforge-e97cc7a3.tar.gz",
+        "crc": "e97cc7a3",
     },
 }
 
@@ -90,8 +91,14 @@ def get_protocol_file(database_name: str):
         f"http://www.idiap.ch/software/bob/databases/latest/spear/{proto_def_name}",
     ]
     logger.info(f"Retrieving protocol definition file '{proto_def_name}'.")
+    os.makedirs(
+        os.path.join(
+            rc.get("bob_data_folder", "~/bob_data"), "datasets", "spear"
+        ),
+        exist_ok=True,
+    )
     return get_file(
-        filename=local_filename,
+        filename=os.path.join("spear", local_filename),
         urls=proto_def_urls,
         file_hash=proto_def_hash,
         cache_subdir="datasets",
@@ -212,7 +219,6 @@ def SpearBioDatabase(
         data_loader=path_loader,
         dataset_original_directory=data_path,
         extension=data_ext,
-        # reference_id_equal_subject_id=name not in ["voxceleb"],
     )
 
     # Read the file at path and set the data and metadata of a sample
@@ -249,7 +255,5 @@ def SpearBioDatabase(
         protocol=protocol,
         dataset_protocols_path=dataset_protocols_path,
         transformer=sample_loader,
-        # score_all_vs_all=name not in ["voxceleb"],
-        # is_sparse=name in ["voxceleb"],
         **kwargs,
     )
