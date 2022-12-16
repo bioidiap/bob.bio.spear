@@ -8,8 +8,9 @@ from sklearn.pipeline import Pipeline as SklearnPipeline
 
 from bob.bio.base.algorithm import GMM, ISV
 from bob.bio.base.pipelines import PipelineSimple, dask_bio_pipeline
-from bob.bio.base.test.utils import is_library_available
 from bob.pipelines import Sample, SampleSet
+
+from .utils import is_library_available
 
 
 class dummyDatabase:
@@ -24,7 +25,7 @@ class dummyDatabase:
                 ),
                 rate=16000,
                 key=id * 10 + s,
-                reference_id=str(id),
+                subject_id=str(id),
             )
             for s in range(3)
             for id in range(10)
@@ -41,7 +42,7 @@ class dummyDatabase:
                         ).astype("int32"),
                         rate=16000,
                         key=100 + 10 * id + s,
-                        reference_id=str(10 * id),
+                        template_id=str(10 * id),
                     )
                     for s in range(4)
                 ]
@@ -60,7 +61,7 @@ class dummyDatabase:
                         ).astype("int32"),
                         rate=16000,
                         key=200 + 10 * id + s,
-                        reference_id=str(100 * id),
+                        template_id=str(100 * id),
                     )
                     for s in range(4)
                 ]

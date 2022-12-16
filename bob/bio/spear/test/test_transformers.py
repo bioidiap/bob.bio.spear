@@ -7,9 +7,10 @@ import numpy as np
 from pkg_resources import resource_filename
 from sklearn.pipeline import make_pipeline
 
-from bob.bio.base.test.utils import is_library_available
 from bob.bio.spear.transformer import PathToAudio, Resample
 from bob.pipelines import Sample, wrap
+
+from .utils import is_library_available
 
 
 @is_library_available("torchaudio")

@@ -113,7 +113,7 @@ setup(
         ],
         "bob.bio.pipeline": [
             "gmm-default                  = bob.bio.spear.config.pipeline.mfcc60_gmm_default:pipeline",
-            "isv-default                  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
+            "isv-default                  = bob.bio.spear.config.pipeline.mfcc60_isv_default:pipeline",
             "speechbrain-ecapa-voxceleb   = bob.bio.spear.config.pipeline.speechbrain_ecapa_voxceleb:pipeline",  # Do not call it `speechbrain` as it would try to load the speechbrain module instead
             "ivector-default              = bob.bio.spear.config.pipeline.mfcc60_ivector:pipeline",
         ],
@@ -127,7 +127,7 @@ setup(
             # PipelineSimple config:
             "gmm-default   = bob.bio.spear.config.pipeline.mfcc60_gmm_default",
             "gmm-mobio     = bob.bio.spear.config.pipeline.mfcc60_gmm_mobio",
-            "isv-default   = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge",
+            "isv-default   = bob.bio.spear.config.pipeline.mfcc60_isv_default",
         ],
         "bob.db.cli": [
             "download-voxforge = bob.bio.spear.database.voxforge:download_voxforge",

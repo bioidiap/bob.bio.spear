@@ -24,8 +24,9 @@ import pkg_resources
 import bob.bio.base
 import bob.bio.spear
 
-from bob.bio.base.test.utils import is_library_available
 from bob.pipelines import Sample, wrap
+
+from .utils import is_library_available
 
 regenerate_refs = False
 

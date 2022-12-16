@@ -35,6 +35,6 @@ class ReferenceIdEncoder(OrdinalEncoder):
 
     def _more_tags(self):
         return {
-            "bob_input": "template_id",
-            "bob_output": "template_id_int",
+            "bob_input": "subject_id",
+            "bob_output": "subject_id_int",
         }

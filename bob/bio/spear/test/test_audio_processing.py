@@ -5,7 +5,6 @@ import pkg_resources
 
 from h5py import File as HDF5File
 
-from bob.bio.base.test.utils import is_library_available
 from bob.bio.spear.audio_processing import (
     cepstral,
     energy,
@@ -13,6 +12,8 @@ from bob.bio.spear.audio_processing import (
     resample,
     spectrogram,
 )
+
+from .utils import is_library_available
 
 TEST_DATA_FOLDER = pkg_resources.resource_filename(__name__, "data")
 WAV_PATH = os.path.join(TEST_DATA_FOLDER, "sample.wav")
