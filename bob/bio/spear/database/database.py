@@ -64,8 +64,8 @@ known_databases = {
     },
     "voxforge": {
         "local_filename": "voxforge.tar.gz",
-        "definition_file": "voxforge-e97cc7a3.tar.gz",
-        "crc": "e97cc7a3",
+        "definition_file": "voxforge-9d4ab3a3.tar.gz",
+        "crc": "9d4ab3a3",
     },
 }
 

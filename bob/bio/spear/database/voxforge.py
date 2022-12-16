@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
     help=(
         "A path to a the protocol definition file of VoxForge. "
         "If omitted, will use the default protocol definition file at "
-        "`https://www.idiap.ch/software/bob/data/bob/bob.bio.spear`."
+        "`https://www.idiap.ch/software/bob/databases/latest/spear`."
     ),
 )
 @click.option(
