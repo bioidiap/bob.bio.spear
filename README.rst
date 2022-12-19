@@ -2,11 +2,11 @@
 .. Sun Aug 21 09:26:51 CEST 2016
 
 .. image:: https://img.shields.io/badge/docs-latest-orange.svg
-   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/master/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/master/sphinx/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/pipeline.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/coverage.svg
-   :target: https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/master/coverage/index.html
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.spear
 
@@ -37,7 +37,7 @@ Installation
 Complete Bob's `installation`_ instructions. Then, to install this package,
 run::
 
-  $ conda install bob.bio.spear
+  $ pip install bob.bio.spear
 
 
 Contact
