@@ -1,4 +1,4 @@
 include:
-  - project: bob/citools
-    ref: master
-    file: /src/citools/data/python.yml
+  - project: bob/dev-profile
+    ref: main
+    file: gitlab/python.yml
