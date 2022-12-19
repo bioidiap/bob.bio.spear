@@ -238,46 +238,6 @@ def test_asvspoof_spoof():
     )
 
 
-def test_asvspoof2017_licit():
-    rc["bob.db.asvspoof.directory"] = "dummy/"
-    database = load_entry_point(
-        "bob.bio.spear", "bob.bio.database", "asvspoof2017-licit"
-    )
-
-    _check_database(
-        database,
-        n_train=None,
-        n_dev_references=20,
-        n_dev_references_samples=5,
-        n_dev_probes=5700,
-        n_dev_probes_samples=1,
-        n_eval_references=26,
-        n_eval_references_samples=5,
-        n_eval_probes=10400,
-        n_eval_probes_samples=1,
-    )
-
-
-def test_asvspoof2017_spoof():
-    rc["bob.db.asvspoof.directory"] = "dummy/"
-    database = load_entry_point(
-        "bob.bio.spear", "bob.bio.database", "asvspoof2017-spoof"
-    )
-
-    _check_database(
-        database,
-        n_train=None,
-        n_dev_references=20,
-        n_dev_references_samples=5,
-        n_dev_probes=28500,
-        n_dev_probes_samples=1,
-        n_eval_references=26,
-        n_eval_references_samples=5,
-        n_eval_probes=104000,
-        n_eval_probes_samples=1,
-    )
-
-
 def test_voicepa_licit():
     rc["bob.db.voicepa.directory"] = "dummy/"
     database = load_entry_point(

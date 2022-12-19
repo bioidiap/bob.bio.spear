@@ -27,11 +27,6 @@ known_databases = {
         "definition_file": "asvspoof-24ec0e06.tar.gz",
         "crc": "24ec0e06",
     },
-    "asvspoof2017": {
-        "local_filename": "asvspoof2017.tar.gz",
-        "definition_file": "asvspoof2017-db087bb7.tar.gz",  # TODO new format
-        "crc": "db087bb7",
-    },
     "avspoof": {
         "local_filename": "avspoof.tar.gz",
         "definition_file": "avspoof-d58a537b.tar.gz",
@@ -55,8 +50,8 @@ known_databases = {
     },
     "voicepa": {
         "local_filename": "voicepa.tar.gz",
-        "definition_file": "voicepa-25ce140b.tar.gz",  # TODO new format
-        "crc": "25ce140b",
+        "definition_file": "voicepa-6da95ba2.tar.gz",
+        "crc": "6da95ba2",
     },
     "voxceleb": {
         "local_filename": "voxceleb.tar.gz",
