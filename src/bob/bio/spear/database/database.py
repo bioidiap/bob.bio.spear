@@ -7,6 +7,7 @@ import os
 
 from typing import Optional
 
+from exposed.rc import UserDefaults
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.database import (
@@ -15,10 +16,10 @@ from bob.bio.base.database import (
     FileSampleLoader,
 )
 from bob.bio.spear.transformer import PathToAudio
-from bob.extension import rc
 from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 known_databases = {
     "asvspoof": {

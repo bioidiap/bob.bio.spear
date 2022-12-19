@@ -20,11 +20,13 @@
 
 from functools import reduce
 
+from exposed.rc import UserDefaults
 from pkg_resources import load_entry_point
 
 from bob.bio.base.database import CSVDatabase
-from bob.extension import rc
 from bob.pipelines import DelayedSample, SampleSet
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 def _min_max_len(list_of_list):

@@ -9,11 +9,11 @@ from pathlib import Path
 
 import click
 
+from exposed.click import verbosity_option
 from tqdm import tqdm
 
 from bob.bio.spear.database.database import get_protocol_file
 from bob.extension.download import download_and_unzip, search_file
-from bob.extension.scripts.click_helper import verbosity_option
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
     help="Download a file even if it already exists locally.",
 )
 @click.argument("destination")
-@verbosity_option()
+@verbosity_option(logger=logger)
 def download_voxforge(
     protocol_definition, destination, force_download, **kwargs
 ):
