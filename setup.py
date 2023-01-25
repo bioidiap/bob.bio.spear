@@ -116,6 +116,7 @@ setup(
             "isv-default                  = bob.bio.spear.config.pipeline.mfcc60_isv_voxforge:pipeline",
             "speechbrain-ecapa-voxceleb   = bob.bio.spear.config.pipeline.speechbrain_ecapa_voxceleb:pipeline",  # Do not call it `speechbrain` as it would try to load the speechbrain module instead
             "ivector-default              = bob.bio.spear.config.pipeline.mfcc60_ivector:pipeline",
+            "ivector-plda                 = bob.bio.spear.config.pipeline.mfcc60_ivector_plda:pipeline",
         ],
         # Config entries load all defined objects in the target file
         # They don't require an option specifier (`-p` or `-d`) in the CLI.
