@@ -20,6 +20,7 @@
 """Feature extraction tools"""
 
 from .Cepstral import Cepstral
+from .pytorch_embeddings import PyTorchModel
 from .speechbrain_embeddings import SpeechbrainEmbeddings
 
 
@@ -42,5 +43,6 @@ def __appropriate__(*args):
 __appropriate__(
     Cepstral,
     SpeechbrainEmbeddings,
+    PyTorchModel,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]
