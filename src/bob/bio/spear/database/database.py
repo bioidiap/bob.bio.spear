@@ -9,6 +9,7 @@ from typing import Optional
 
 from exposed.rc import UserDefaults
 from sklearn.pipeline import Pipeline
+from wdr.download import download_file
 
 from bob.bio.base.database import (
     AnnotationsLoader,
@@ -16,7 +17,6 @@ from bob.bio.base.database import (
     FileSampleLoader,
 )
 from bob.bio.spear.transformer import PathToAudio
-from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
 rc = UserDefaults("~/.bobrc", "BOBRC")
@@ -93,11 +93,11 @@ def get_protocol_file(database_name: str):
         ),
         exist_ok=True,
     )
-    return get_file(
-        filename=os.path.join("spear", local_filename),
+    return download_file(
         urls=proto_def_urls,
-        file_hash=proto_def_hash,
-        cache_subdir="datasets",
+        destination_sub_directory="datasets",
+        destination_filename=os.path.join("spear", local_filename),
+        checksum=proto_def_hash,
     )
 
 

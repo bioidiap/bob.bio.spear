@@ -11,9 +11,10 @@ import click
 
 from exposed.click import verbosity_option
 from tqdm import tqdm
+from wdr.download import download_file
+from wdr.local import search_and_open
 
 from bob.bio.spear.database.database import get_protocol_file
-from bob.extension.download import download_and_unzip, search_file
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ def download_voxforge(
 
     # Open the list file
     list_file = f"{protocol}/data_files_urls.csv"
-    open_list_file = search_file(protocol_definition, [list_file])
+    open_list_file = search_and_open(protocol_definition, list_file)
 
     num_files = sum(1 for _ in open_list_file) - 1
     open_list_file.seek(0, 0)
@@ -80,7 +81,11 @@ def download_voxforge(
         full_filename = destination / row["filename"]
         if force_download or not full_filename.exists():
             logger.debug(f"Downloading {row['filename']} from {row['url']}")
-            download_and_unzip(urls=[row["url"]], filename=full_filename)
+            download_file(
+                urls=[row["url"]],
+                destination_directory=full_filename.parent,
+                destination_filename=full_filename.name,
+            )
             logger.debug(f"Downloaded to {full_filename}")
 
     logger.info(f"Download of {num_files} files completed.")

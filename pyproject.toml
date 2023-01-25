@@ -25,11 +25,11 @@
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ]
     dependencies = [
-        "bob.extension",
         "bob.io.base",
         "bob.measure",
         "bob.bio.base",
         "bob.pipelines",
+        "wdr",
         "tqdm",
         "six",
         "scikit-learn",
