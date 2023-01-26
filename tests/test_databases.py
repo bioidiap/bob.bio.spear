@@ -26,7 +26,7 @@ from pkg_resources import load_entry_point
 from bob.bio.base.database import CSVDatabase
 from bob.pipelines import DelayedSample, SampleSet
 
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 
 def _min_max_len(list_of_list):

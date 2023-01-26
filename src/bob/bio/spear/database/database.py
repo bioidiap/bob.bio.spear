@@ -19,7 +19,7 @@ from bob.bio.base.database import (
 from bob.bio.spear.transformer import PathToAudio
 
 logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 known_databases = {
     "asvspoof": {
