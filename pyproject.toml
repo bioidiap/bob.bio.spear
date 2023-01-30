@@ -131,7 +131,7 @@
     addopts = [
         "--import-mode=append",
         "--cov-report=term-missing",
-        "--cov=bob.bio.video",
+        "--cov=bob.bio.spear",
     ]
     markers = [
         "slow: marks tests as slow (deselect with '-m \"not slow\"')",
