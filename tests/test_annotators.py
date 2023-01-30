@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from pathlib import Path
+
 import h5py
 import numpy as np
 import pkg_resources
@@ -29,6 +31,9 @@ from bob.pipelines import Sample, wrap
 from .utils import is_library_available
 
 regenerate_refs = False
+
+
+DATA_PATH = Path(__file__).parent / "data"
 
 
 def _compare(
@@ -47,8 +52,8 @@ def _compare(
     np.testing.assert_allclose(data, reference, atol=1e-5)
 
 
-def _wav(filename="data/sample.wav"):
-    path = pkg_resources.resource_filename("bob.bio.spear.test", filename)
+def _wav(filename="sample.wav"):
+    path = DATA_PATH / filename
     waveform, sample_rate = bob.bio.spear.audio_processing.read(path)
     return sample_rate, waveform
 
@@ -57,7 +62,9 @@ def _wav(filename="data/sample.wav"):
 def test_energy_2gauss():
     """Loading and running the energy-2gauss annotator."""
     # Test setup and config
-    annotator = bob.bio.base.load_resource("energy-2gauss", "annotator")
+    annotator = pkg_resources.load_entry_point(
+        "bob.bio.spear", "bob.bio.annotator", "energy-2gauss"
+    )
     assert isinstance(annotator, bob.bio.spear.annotator.Energy_2Gauss)
 
     # Read input
@@ -67,9 +74,7 @@ def test_energy_2gauss():
     annotator = bob.bio.spear.annotator.Energy_2Gauss()
     _compare(
         annotator.transform_one(wav, sample_rate=rate),
-        pkg_resources.resource_filename(
-            "bob.bio.spear.test", "data/vad_energy_2gauss.hdf5"
-        ),
+        DATA_PATH / "vad_energy_2gauss.hdf5",
     )
 
     # Test the processing of Sample objects and tags of annotator transformer
@@ -80,9 +85,7 @@ def test_energy_2gauss():
     # Annotations should be in attribute `annotations` of result samples (tags)
     _compare(
         result[0].annotations,
-        pkg_resources.resource_filename(
-            "bob.bio.spear.test", "data/vad_energy_2gauss.hdf5"
-        ),
+        DATA_PATH / "vad_energy_2gauss.hdf5",
     )
 
 
@@ -90,7 +93,10 @@ def test_energy_2gauss():
 def test_mod_4hz():
     """Loading and running the mod-4hz annotator."""
     # Test setup and config
-    annotator = bob.bio.base.load_resource("mod-4hz", "annotator")
+    annotator = pkg_resources.load_entry_point(
+        "bob.bio.spear", "bob.bio.annotator", "mod-4hz"
+    )
+
     assert isinstance(annotator, bob.bio.spear.annotator.Mod_4Hz)
 
     # Read input
@@ -100,9 +106,7 @@ def test_mod_4hz():
     annotator = bob.bio.spear.annotator.Mod_4Hz()
     _compare(
         annotator.transform_one(wav, sample_rate=rate),
-        pkg_resources.resource_filename(
-            "bob.bio.spear.test", "data/vad_mod_4hz.hdf5"
-        ),
+        DATA_PATH / "vad_mod_4hz.hdf5",
     )
 
     # Test the processing of Sample objects and tags of annotator transformer
@@ -113,9 +117,7 @@ def test_mod_4hz():
     # Annotations should be in attribute `annotations` of result samples (tags)
     _compare(
         result[0].annotations,
-        pkg_resources.resource_filename(
-            "bob.bio.spear.test", "data/vad_mod_4hz.hdf5"
-        ),
+        DATA_PATH / "vad_mod_4hz.hdf5",
     )
 
 
@@ -123,7 +125,9 @@ def test_mod_4hz():
 def test_energy_thr():
     """Loading and running the mod-4hz annotator."""
     # Test setup and config
-    annotator = bob.bio.base.load_resource("energy-thr", "annotator")
+    annotator = pkg_resources.load_entry_point(
+        "bob.bio.spear", "bob.bio.annotator", "energy-thr"
+    )
     assert isinstance(annotator, bob.bio.spear.annotator.Energy_Thr)
 
     # Read input
@@ -133,9 +137,7 @@ def test_energy_thr():
     annotator = bob.bio.spear.annotator.Energy_Thr()
     _compare(
         annotator.transform_one(wav, sample_rate=rate),
-        pkg_resources.resource_filename(
-            "bob.bio.spear.test", "data/vad_energy_thr.hdf5"
-        ),
+        DATA_PATH / "vad_energy_thr.hdf5",
     )
 
     # Test the processing of Sample objects and tags of annotator transformer
@@ -146,9 +148,7 @@ def test_energy_thr():
     # Annotations should be in attribute `annotations` of result samples (tags)
     _compare(
         result[0].annotations,
-        pkg_resources.resource_filename(
-            "bob.bio.spear.test", "data/vad_energy_thr.hdf5"
-        ),
+        DATA_PATH / "vad_energy_thr.hdf5",
     )
 
 
@@ -156,7 +156,7 @@ def test_energy_thr():
 def test_mute_audio():
     """Running annotators on silence data to ensure None is returned."""
     # read input
-    rate, wav = _wav("data/silence.wav")
+    rate, wav = _wav("silence.wav")
     for annotator in [
         bob.bio.spear.annotator.Mod_4Hz(),
         bob.bio.spear.annotator.Energy_Thr(),
