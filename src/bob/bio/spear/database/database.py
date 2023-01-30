@@ -87,12 +87,7 @@ def get_protocol_file(database_name: str):
         f"http://www.idiap.ch/software/bob/databases/latest/spear/{proto_def_name}",
     ]
     logger.info(f"Retrieving protocol definition file '{proto_def_name}'.")
-    os.makedirs(
-        os.path.join(
-            rc.get("bob_data_folder", "~/bob_data"), "datasets", "spear"
-        ),
-        exist_ok=True,
-    )
+
     return download_file(
         urls=proto_def_urls,
         destination_sub_directory="datasets",
