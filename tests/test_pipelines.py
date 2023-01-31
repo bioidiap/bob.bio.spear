@@ -43,6 +43,7 @@ class dummyDatabase:
                         rate=16000,
                         key=100 + 10 * id + s,
                         template_id=str(10 * id),
+                        subject_id=str(id),
                     )
                     for s in range(4)
                 ]
@@ -62,6 +63,7 @@ class dummyDatabase:
                         rate=16000,
                         key=200 + 10 * id + s,
                         template_id=str(100 * id),
+                        subject_id=str(id),
                     )
                     for s in range(4)
                 ]
