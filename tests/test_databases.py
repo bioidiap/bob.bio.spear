@@ -20,13 +20,11 @@
 
 from functools import reduce
 
-from exposed.rc import UserDefaults
 from pkg_resources import load_entry_point
 
 from bob.bio.base.database import CSVDatabase
+from bob.bio.spear.database.utils import get_rc
 from bob.pipelines import DelayedSample, SampleSet
-
-rc = UserDefaults("~/.bobrc")
 
 
 def _min_max_len(list_of_list):
@@ -119,7 +117,7 @@ def _check_database(
 
 
 def test_mobio_male():
-    rc["bob.db.mobio.audio.directory"] = "dummy/"
+    get_rc()["bob.db.mobio.audio.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "mobio-audio-male"
     )
@@ -139,7 +137,7 @@ def test_mobio_male():
 
 
 def test_mobio_female():
-    rc["bob.db.mobio.audio.directory"] = "dummy/"
+    get_rc()["bob.db.mobio.audio.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "mobio-audio-female"
     )
@@ -159,7 +157,7 @@ def test_mobio_female():
 
 
 def test_avspoof_licit():
-    rc["bob.db.avspoof.directory"] = "dummy/"
+    get_rc()["bob.db.avspoof.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "avspoof-licit"
     )
@@ -179,7 +177,7 @@ def test_avspoof_licit():
 
 
 def test_avspoof_spoof():
-    rc["bob.db.avspoof.directory"] = "dummy/"
+    get_rc()["bob.db.avspoof.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "avspoof-spoof"
     )
@@ -199,7 +197,7 @@ def test_avspoof_spoof():
 
 
 def test_asvspoof_licit():
-    rc["bob.db.asvspoof.directory"] = "dummy/"
+    get_rc()["bob.db.asvspoof.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "asvspoof-licit"
     )
@@ -219,7 +217,7 @@ def test_asvspoof_licit():
 
 
 def test_asvspoof_spoof():
-    rc["bob.db.asvspoof.directory"] = "dummy/"
+    get_rc()["bob.db.asvspoof.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "asvspoof-spoof"
     )
@@ -239,7 +237,7 @@ def test_asvspoof_spoof():
 
 
 def test_voicepa_licit():
-    rc["bob.db.voicepa.directory"] = "dummy/"
+    get_rc()["bob.db.voicepa.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "voicepa-licit"
     )
@@ -259,7 +257,7 @@ def test_voicepa_licit():
 
 
 def test_voicepa_spoof():
-    rc["bob.db.voicepa.directory"] = "dummy/"
+    get_rc()["bob.db.voicepa.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "voicepa-spoof"
     )
@@ -279,7 +277,7 @@ def test_voicepa_spoof():
 
 
 def test_timit():
-    rc["bob.db.timit.directory"] = "dummy/"
+    get_rc()["bob.db.timit.directory"] = "dummy/"
     database = load_entry_point("bob.bio.spear", "bob.bio.database", "timit")
 
     _check_database(
@@ -293,7 +291,7 @@ def test_timit():
 
 
 def test_voxforge():
-    rc["bob.db.voxforge.directory"] = "dummy/"
+    get_rc()["bob.db.voxforge.directory"] = "dummy/"
     database = load_entry_point("bob.bio.spear", "bob.bio.database", "voxforge")
 
     _check_database(
@@ -311,7 +309,7 @@ def test_voxforge():
 
 
 def test_nist_sre04to16():
-    rc["bob.db.nist_sre04to16.directory"] = "dummy/"
+    get_rc()["bob.db.nist_sre04to16.directory"] = "dummy/"
     database = load_entry_point(
         "bob.bio.spear", "bob.bio.database", "nist-sre04to16"
     )
@@ -331,7 +329,7 @@ def test_nist_sre04to16():
 
 
 def test_voxceleb():
-    rc["bob.db.voxceleb.directory"] = "dummy/"
+    get_rc()["bob.db.voxceleb.directory"] = "dummy/"
     database = load_entry_point("bob.bio.spear", "bob.bio.database", "voxceleb")
 
     _check_database(

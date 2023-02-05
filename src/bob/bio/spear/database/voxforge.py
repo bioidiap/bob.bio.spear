@@ -11,12 +11,34 @@ import click
 
 from exposed.click import verbosity_option
 from tqdm import tqdm
-from wdr.download import download_file
-from wdr.local import search_and_open
 
-from bob.bio.spear.database.database import get_protocol_file
+from bob.bio.base.database import CSVDatabase
+from bob.bio.base.database.utils import download_file, search_and_open
+from bob.bio.spear.database.utils import create_sample_loader, get_rc
 
 logger = logging.getLogger(__name__)
+
+
+class VoxforgeDatabase(CSVDatabase):
+    """VoxForge database definition."""
+
+    name = "voxforge"
+    category = "spear"
+    dataset_protocols_name = "voxforge.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/spear/voxforge-9d4ab3a3.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/spear/voxforge-9d4ab3a3.tar.gz",
+    ]
+    dataset_protocols_hash = "9d4ab3a3"
+
+    def __init__(self, protocol):
+        super().__init__(
+            name=self.name,
+            protocol=protocol,
+            transformer=create_sample_loader(
+                data_path=get_rc()[f"bob.db.{self.name}.directory"],
+            ),
+        )
 
 
 @click.command(
@@ -47,10 +69,8 @@ logger = logging.getLogger(__name__)
     help="Download a file even if it already exists locally.",
 )
 @click.argument("destination")
-@verbosity_option(logger=logger)
-def download_voxforge(
-    protocol_definition, destination, force_download, **kwargs
-):
+@verbosity_option(logger=logger, expose_value=False)
+def download_voxforge(protocol_definition, destination, force_download):
     """Downloads a series of VoxForge data files from their repository and untar them.
 
     The files will be downloaded and saved in the `destination` folder then extracted.
@@ -62,7 +82,7 @@ def download_voxforge(
     destination.mkdir(exist_ok=True)
 
     if protocol_definition is None:
-        protocol_definition = get_protocol_file("voxforge")
+        protocol_definition = VoxforgeDatabase.retrieve_dataset_protocols()
 
     # Use the `Default` protocol
     protocol = "Default"

@@ -4,9 +4,6 @@
 
 """VoxCeleb CSV database interface default configuration"""
 
-from bob.bio.spear.database import SpearBioDatabase
+from bob.bio.spear.database import VoxcelebDatabase
 
-database = SpearBioDatabase(
-    "voxceleb",
-    protocol="voxceleb1",
-)
+database = VoxcelebDatabase(protocol="voxceleb1")

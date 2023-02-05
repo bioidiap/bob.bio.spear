@@ -29,7 +29,6 @@
         "bob.measure",
         "bob.bio.base",
         "bob.pipelines",
-        "wdr",
         "tqdm",
         "six",
         "scikit-learn",

@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 
-from bob.bio.spear.database import SpearBioDatabase
+from bob.bio.spear.database import AsvspoofDatabase
 
-database_licit = SpearBioDatabase(
-    "asvspoof",
-    protocol="licit",
-)
+database_licit = AsvspoofDatabase(protocol="licit")
 
-database_spoof = SpearBioDatabase(
-    "asvspoof",
-    protocol="spoof",
-)
+database_spoof = AsvspoofDatabase(protocol="spoof")
+
+database = database_licit  # Default for chain loading

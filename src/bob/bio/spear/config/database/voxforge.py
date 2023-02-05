@@ -26,11 +26,11 @@ configuration::
     $ bob bio pipeline simple voxforge <pipeline_name> -vv
 """
 
-from bob.bio.spear.database import SpearBioDatabase
+from bob.bio.spear.database import VoxforgeDatabase
 
 default_protocol = "Default"
 
 if "protocol" not in locals():
     protocol = default_protocol
 
-database = SpearBioDatabase("voxforge", protocol=protocol)
+database = VoxforgeDatabase(protocol=protocol)

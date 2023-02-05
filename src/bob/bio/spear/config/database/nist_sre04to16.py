@@ -39,14 +39,9 @@ subfolders:
     - ``nist_sre/SRE10``: used for training.
 """
 
-from bob.bio.spear.database import SpearBioDatabase
+from bob.bio.spear.database import NistSRE04To16Database
 
 if "protocol" not in locals():
     protocol = "core"
 
-database = SpearBioDatabase(
-    "nist_sre04to16",
-    protocol=protocol,
-    data_ext=".sph",
-    force_sample_rate=16000,
-)
+database = NistSRE04To16Database(protocol=protocol)

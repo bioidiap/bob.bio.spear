@@ -19,7 +19,14 @@
 
 """Feature extraction tools"""
 
-from .database import SpearBioDatabase
+from .asvspoof import AsvspoofDatabase
+from .avspoof import AvspoofDatabase
+from .mobio import MobioDatabase
+from .nist_sre04to16 import NistSRE04To16Database
+from .timit import TimitDatabase
+from .voicepa import VoicepaDatabase
+from .voxceleb import VoxcelebDatabase
+from .voxforge import VoxforgeDatabase
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -39,6 +46,13 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    SpearBioDatabase,
+    AsvspoofDatabase,
+    AvspoofDatabase,
+    MobioDatabase,
+    NistSRE04To16Database,
+    TimitDatabase,
+    VoicepaDatabase,
+    VoxcelebDatabase,
+    VoxforgeDatabase,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

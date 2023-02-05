@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 
-from bob.bio.spear.database import SpearBioDatabase
+from bob.bio.spear.database import VoicepaDatabase
 
-database_licit = SpearBioDatabase(
-    "voicepa",
-    protocol="grandtest-licit",
-)
+database_licit = VoicepaDatabase(protocol="grandtest-licit")
 
-database_spoof = SpearBioDatabase(
-    "voicepa",
-    protocol="grandtest-spoof",
-)
+database_spoof = VoicepaDatabase(protocol="grandtest-spoof")
+
+database = database_licit  # Default for chain loading

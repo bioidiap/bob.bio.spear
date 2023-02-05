@@ -26,7 +26,6 @@ requirements:
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - wdr
     - pysoundfile {{ pysoundfile }}
     - pytorch {{ pytorch }}
     - scikit-learn {{ scikit_learn }}
@@ -40,7 +39,6 @@ requirements:
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - wdr
     - exposed
     - {{ pin_compatible('pysoundfile') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
