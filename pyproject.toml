@@ -10,8 +10,7 @@
     dynamic         = ["readme"]
     license         = {text = "GPLv3"}
     authors         = [
-    {name = "Andre Anjos"},
-    {email = "andre.anjos@idiap.ch"},
+    {name = "Andre Anjos", email = "andre.anjos@idiap.ch"},
     ]
     keywords = ["bob", "biometric recognition", "evaluation"]
 
