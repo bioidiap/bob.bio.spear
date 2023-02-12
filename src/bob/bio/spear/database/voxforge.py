@@ -9,7 +9,7 @@ from pathlib import Path
 
 import click
 
-from exposed.click import verbosity_option
+from clapp.click import verbosity_option
 from tqdm import tqdm
 
 from bob.bio.base.database import CSVDatabase

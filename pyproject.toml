@@ -25,6 +25,7 @@
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ]
     dependencies = [
+        "clapp",
         "bob.io.base",
         "bob.measure",
         "bob.bio.base",

@@ -2,7 +2,7 @@ import logging
 
 from typing import Union
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.pipeline import Pipeline
 
 from bob.bio.base.database import AnnotationsLoader, FileSampleLoader

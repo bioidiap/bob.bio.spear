@@ -21,6 +21,7 @@ requirements:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - pip {{ pip }}
+    - clapp
     - bob.io.base
     - bob.learn.em
     - bob.measure
@@ -30,16 +31,15 @@ requirements:
     - pytorch {{ pytorch }}
     - scikit-learn {{ scikit_learn }}
     - tqdm {{ tqdm }}
-    - exposed
   run:
     - python
     - setuptools
+    - clapp
     - bob.io.base
     - bob.learn.em
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - exposed
     - {{ pin_compatible('pysoundfile') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('scikit-learn') }}
