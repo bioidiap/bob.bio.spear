@@ -11,12 +11,9 @@ from sklearn.pipeline import make_pipeline
 from bob.bio.spear.transformer import PathToAudio, Resample
 from bob.pipelines import Sample, wrap
 
-from .utils import is_library_available
-
 DATA_PATH = Path(__file__).parent / "data"
 
 
-@is_library_available("torchaudio")
 def test_path_to_audio():
     """Tries to load the audio data from a file."""
     audio_path = DATA_PATH / "sample.wav"
@@ -41,7 +38,6 @@ def test_path_to_audio():
     assert results.data.shape == (audio_n_samples // 2,), results.data.shape
 
 
-@is_library_available("torchaudio")
 def test_resample():
     """Resample using the transformer."""
     audio_path = DATA_PATH / "sample.wav"

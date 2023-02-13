@@ -28,10 +28,7 @@ import bob.bio.spear
 
 from bob.pipelines import Sample, wrap
 
-from .utils import is_library_available
-
 regenerate_refs = False
-
 
 DATA_PATH = Path(__file__).parent / "data"
 
@@ -58,7 +55,6 @@ def _wav(filename="sample.wav"):
     return sample_rate, waveform
 
 
-@is_library_available("torchaudio")
 def test_energy_2gauss():
     """Loading and running the energy-2gauss annotator."""
     # Test setup and config
@@ -89,7 +85,6 @@ def test_energy_2gauss():
     )
 
 
-@is_library_available("torchaudio")
 def test_mod_4hz():
     """Loading and running the mod-4hz annotator."""
     # Test setup and config
@@ -121,7 +116,6 @@ def test_mod_4hz():
     )
 
 
-@is_library_available("torchaudio")
 def test_energy_thr():
     """Loading and running the mod-4hz annotator."""
     # Test setup and config
@@ -152,7 +146,6 @@ def test_energy_thr():
     )
 
 
-@is_library_available("torchaudio")
 def test_mute_audio():
     """Running annotators on silence data to ensure None is returned."""
     # read input

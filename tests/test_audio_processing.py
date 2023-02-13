@@ -13,8 +13,6 @@ from bob.bio.spear.audio_processing import (
     spectrogram,
 )
 
-from .utils import is_library_available
-
 TEST_DATA_FOLDER = pkg_resources.resource_filename(__name__, "data")
 WAV_PATH = os.path.join(TEST_DATA_FOLDER, "sample.wav")
 DATA_PATH = os.path.join(TEST_DATA_FOLDER, "sample.hdf5")
@@ -24,7 +22,6 @@ with HDF5File(DATA_PATH, "r") as f:
     RATE = f["rate"][()]
 
 
-@is_library_available("torchaudio")
 def test_read():
     data, sr = read(WAV_PATH)
     assert isinstance(data, np.ndarray)
@@ -41,7 +38,6 @@ def test_read():
     assert sr == 8000
 
 
-@is_library_available("torchaudio")
 def test_resample():
     resampled = resample(DATA, RATE, 41100)
     assert isinstance(resampled, np.ndarray)

@@ -10,8 +10,6 @@ from bob.bio.base.algorithm import GMM, ISV
 from bob.bio.base.pipelines import PipelineSimple, dask_bio_pipeline
 from bob.pipelines import Sample, SampleSet
 
-from .utils import is_library_available
-
 
 class dummyDatabase:
     """Provides dummy samples to pipelines."""
@@ -99,7 +97,6 @@ def test_mfcc_gmm_default_config():
     assert isinstance(pipeline.biometric_algorithm, GMM)
 
 
-@is_library_available("torchaudio")
 def test_mfcc_gmm_default_pipeline():
     """Running the gmm-default pipeline."""
     pipeline = load_entry_point(
@@ -119,7 +116,6 @@ def test_mfcc_gmm_mobio_config():
     assert isinstance(pipeline.biometric_algorithm, GMM)
 
 
-@is_library_available("torchaudio")
 def test_mfcc_gmm_mobio_pipeline():
     """Running the gmm-mobio pipeline."""
     config_module = load_entry_point(
@@ -139,7 +135,6 @@ def test_mfcc_isv_default_config():
     assert isinstance(pipeline.biometric_algorithm, ISV)
 
 
-@is_library_available("torchaudio")
 def test_mfcc_isv_default_pipeline():
     """Creating the isv-default pipeline."""
     pipeline = load_entry_point(
@@ -157,7 +152,6 @@ def test_mfcc_ivector_config():
     assert isinstance(pipeline.transformer, SklearnPipeline)
 
 
-@is_library_available("torchaudio")
 def test_mfcc_ivector_pipeline():
     """Creating the IVector pipeline."""
     pipeline = load_entry_point(
