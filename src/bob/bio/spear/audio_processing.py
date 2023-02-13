@@ -5,6 +5,7 @@
 # Pavel Korshunov <Pavel.Korshunov@idiap.ch>
 # Amir Mohammadi <amir.mohammadi@idiap.ch>
 
+import importlib
 import logging
 import math
 import sys
@@ -143,13 +144,16 @@ def read(
     """
 
     try:
-        torchaudio.set_audio_backend("soundfile")
-    except RuntimeError as e:
+        importlib.__import__(
+            "soundfile"
+        )  # Try to import missing soundfile may throw an OSError.
+        torchaudio.set_audio_backend("soundfile")  # May throw a RuntimeError.
+    except (RuntimeError, OSError) as e:
         logger.warning(
-            "'soundfile' could not be specified as torchaudio backend. "
-            "torchaudio may have trouble loading '.sph' files."
+            "'soundfile' could not be imported or specified as torchaudio "
+            "backend. torchaudio may have trouble loading '.sph' files."
         )
-        logger.info("error was {}", e)
+        logger.info("error was %s", e)
 
     data, rate = torchaudio.load(str(filename))
 
