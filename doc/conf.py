@@ -8,9 +8,6 @@ import time
 import pkg_resources
 import sphinx_rtd_theme
 
-# For inter-documentation mapping:
-from bob.extension.utils import link_documentation, load_requirements
-
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -30,6 +27,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
+    "auto_intersphinx",
 ]
 
 # Be picky about warnings
@@ -234,14 +232,13 @@ autodoc_default_flags = [
     "show-inheritance",
 ]
 
-sphinx_requirements = "extra-intersphinx.txt"
-if os.path.exists(sphinx_requirements):
-    intersphinx_mapping = link_documentation(
-        additional_packages=load_requirements(sphinx_requirements)
-    )
-else:
-    intersphinx_mapping = link_documentation()
-
+auto_intersphinx_packages = [
+    ("python", "3"),
+    "numpy",
+    "scikit-learn",
+    "bob.bio.base",
+    "bob.pipelines",
+]
 
 # We want to remove all private (i.e. _. or __.__) members
 # that are not in the list of accepted functions

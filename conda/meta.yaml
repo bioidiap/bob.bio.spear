@@ -1,32 +1,27 @@
-{% set name = 'bob.bio.spear' %}
-{% set project_dir = environ.get('RECIPE_DIR') + '/..' %}
+{% set data = load_file_data(RECIPE_DIR + '/../pyproject.toml') %}
+{% set name = data['project']['name'] %}
 
 package:
   name: {{ name }}
-  version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
+  version: {{ data['project']['version'] }}
+
+source:
+  path: ..
 
 build:
+  noarch: python
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:
     - {{ pin_subpackage(name) }}
   script:
-    - cd {{ project_dir }}
-    {% if environ.get('BUILD_EGG') %}
-    - "{{ PYTHON }} setup.py sdist --formats=zip"
-    {% endif %}
-    - "{{ PYTHON }} -m pip install . -vv"
-    # installs the documentation source, readme to share/doc so it is available
-    # during test time
-    - install -d "${PREFIX}/share/doc/{{ name }}"
-    - cp -R README.rst requirements.txt doc "${PREFIX}/share/doc/{{ name }}/"
-
+    - "{{ PYTHON }} -m pip install {{ SRC_DIR }} -vv"
 
 requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - pip {{ pip }}
-    - bob.extension
+    - clapp
     - bob.io.base
     - bob.learn.em
     - bob.measure
@@ -39,6 +34,12 @@ requirements:
   run:
     - python
     - setuptools
+    - clapp
+    - bob.io.base
+    - bob.learn.em
+    - bob.measure
+    - bob.bio.base
+    - bob.pipelines
     - {{ pin_compatible('pysoundfile') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('scikit-learn') }}
@@ -48,9 +49,6 @@ test:
   imports:
     - {{ name }}
   commands:
-    - pytest --verbose --cov {{ name }} --cov-report term-missing --cov-report html:{{ project_dir }}/sphinx/coverage --cov-report xml:{{ project_dir }}/coverage.xml --junitxml={{ project_dir }}/test_results.xml --pyargs {{ name }}
-    - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
-    - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
@@ -62,7 +60,7 @@ test:
     - librosa
 
 about:
-  home: https://www.idiap.ch/software/bob/
-  license: GNU General Public License v3 (GPLv3)
-  summary: Tools for running speaker recognition experiments
+  home: {{ data['project']['urls']['homepage'] }}
+  summary: {{ data['project']['description'] }}
+  license: {{ data['project']['license']['text'] }}
   license_family: GPL

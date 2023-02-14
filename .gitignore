@@ -7,7 +7,6 @@ parts
 .installed.cfg
 .mr.developer.cfg
 *.egg-info
-src
 develop-eggs
 sphinx
 dist
