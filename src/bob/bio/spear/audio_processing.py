@@ -14,7 +14,6 @@ from typing import Optional, Tuple, Union
 
 import numpy
 import torch
-import torchaudio
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +101,8 @@ def resample(
         Arguments passed to :py:class:``torchaudio.transforms.Resample``.
     """
 
+    import torchaudio
+
     if rate == new_rate:
         return audio
 
@@ -142,6 +143,8 @@ def read(
         The signal in int16 range (-32768 to 32767) and float32 format, and the
         sampling rate in Hz.
     """
+
+    import torchaudio
 
     try:
         importlib.__import__(
@@ -186,6 +189,8 @@ def audio_info(filename: str):
     info: torchaudio.backend.common.AudioMetaData
         A dictionary containing the audio information.
     """
+
+    import torchaudio
 
     return torchaudio.info(str(filename))
 
