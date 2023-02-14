@@ -1,12 +1,139 @@
 [build-system]
-    requires = ["setuptools", "wheel", "bob.extension"]
+    requires      = ["setuptools>=61.0.0", "wheel"]
     build-backend = "setuptools.build_meta"
 
+[project]
+    name            = "bob.bio.spear"
+    version         = "4.1.1b0"
+    requires-python = ">=3.9"
+    description     = ""
+    dynamic         = ["readme"]
+    license         = {text = "GPLv3"}
+    authors         = [
+    {name = "Andre Anjos", email = "andre.anjos@idiap.ch"},
+    ]
+    keywords = ["bob", "biometric recognition", "evaluation"]
+
+    classifiers=[
+        "Framework :: Bob",
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Natural Language :: English",
+        "Programming Language :: Python",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    ]
+    dependencies = [
+        "clapp",
+        "bob.io.base",
+        "bob.measure",
+        "bob.bio.base",
+        "bob.pipelines",
+        "tqdm",
+        "six",
+        "scikit-learn",
+        "torch",
+        "torchaudio",
+        "pysoundfile",
+    ]
+
+[project.urls]
+    documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/stable/"
+    homepage      = "https://pypi.org/project/bob.bio.spear/"
+    repository    = "https://gitlab.idiap.ch/bob/bob.bio.spear"
+    changelog     = "https://gitlab.idiap.ch/bob/bob.bio.spear/-/releases"
+
+[project.optional-dependencies]
+    qa  = ["pre-commit"]
+    doc = [
+        "sphinx",
+        "sphinx_rtd_theme",
+        "sphinx-autodoc-typehints",
+        "auto-intersphinx",
+        "sphinxcontrib-programoutput",
+        "matplotlib",
+        ]
+    test = [
+        "pytest",
+        "pytest-cov",
+        "coverage",
+        "dask",
+        ]
+
+[tool.setuptools]
+    zip-safe    = false
+    package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+    readme = {file = "README.rst"}
+
+[project.entry-points."bob.bio.database"]
+    timit              = "bob.bio.spear.config.database.timit:database"
+    mobio-audio-male   = "bob.bio.spear.config.database.mobio_audio_male:database"
+    mobio-audio-female = "bob.bio.spear.config.database.mobio_audio_female:database"
+    avspoof-licit      = "bob.bio.spear.config.database.avspoof:database_licit"
+    avspoof-spoof      = "bob.bio.spear.config.database.avspoof:database_spoof"
+    asvspoof-licit     = "bob.bio.spear.config.database.asvspoof:database_licit"
+    asvspoof-spoof     = "bob.bio.spear.config.database.asvspoof:database_spoof"
+    voicepa-licit      = "bob.bio.spear.config.database.voicepa:database_licit"
+    voicepa-spoof      = "bob.bio.spear.config.database.voicepa:database_spoof"
+    asvspoof2017-licit = "bob.bio.spear.config.database.asvspoof2017:database_licit"
+    asvspoof2017-spoof = "bob.bio.spear.config.database.asvspoof2017:database_spoof"
+    voxforge           = "bob.bio.spear.config.database.voxforge:database"
+    mini-voxforge      = "bob.bio.spear.config.database.mini_voxforge:database"  # For tests only
+    nist-sre04to16     = "bob.bio.spear.config.database.nist_sre04to16:database"
+    voxceleb           = "bob.bio.spear.config.database.voxceleb:database"
+
+[project.entry-points."bob.bio.annotator"]
+    energy-2gauss = "bob.bio.spear.config.annotator.energy_2gauss:annotator"  # Two Gaussian GMM energy VAD
+    energy-thr    = "bob.bio.spear.config.annotator.energy_thr:annotator"  # Energy threshold VAD
+    mod-4hz       = "bob.bio.spear.config.annotator.mod_4hz:annotator"  # mod_4hz VAD
+    external      = "bob.bio.spear.config.annotator.external:annotator"  # external VAD
+
+[project.entry-points."bob.bio.pipeline"]
+    gmm-default                  = "bob.bio.spear.config.pipeline.mfcc60_gmm_default:pipeline"
+    isv-default                  = "bob.bio.spear.config.pipeline.mfcc60_isv_default:pipeline"
+    speechbrain-ecapa-voxceleb   = "bob.bio.spear.config.pipeline.speechbrain_ecapa_voxceleb:pipeline"  # Do not call it `speechbrain` as it would try to load the speechbrain module instead
+    ivector-default              = "bob.bio.spear.config.pipeline.mfcc60_ivector:pipeline"
+
+# Config entries load all defined objects in the target file
+# They don't require an option specifier (`-p` or `-d`) in the CLI.
+[project.entry-points."bob.bio.config"]
+    # Databases:
+    voxforge      = "bob.bio.spear.config.database.voxforge"
+    mini-voxforge = "bob.bio.spear.config.database.mini_voxforge"
+    voxceleb      = "bob.bio.spear.config.database.voxceleb"
+    # PipelineSimple config:
+    gmm-default   = "bob.bio.spear.config.pipeline.mfcc60_gmm_default"
+    gmm-mobio     = "bob.bio.spear.config.pipeline.mfcc60_gmm_mobio"
+    isv-default   = "bob.bio.spear.config.pipeline.mfcc60_isv_default"
+
+[project.entry-points."bob.db.cli"]
+    download-voxforge = "bob.bio.spear.database.voxforge:download_voxforge"
+
+[tool.distutils.bdist_wheel]
+    universal = true
+
 [tool.isort]
-    profile = "black"
-    line_length = 80
-    order_by_type = true
+    profile             = "black"
+    line_length         = 80
+    order_by_type       = true
     lines_between_types = 1
 
 [tool.black]
     line-length = 80
+
+[tool.coverage.run]
+    relative_files = true
+
+[tool.pytest.ini_options]
+    addopts = [
+        "--import-mode=append",
+        "--cov-report=term-missing",
+        "--cov=bob.bio.spear",
+    ]
+    markers = [
+        "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    ]
+    junit_logging           = "all"
+    junit_log_passing_tests = false
