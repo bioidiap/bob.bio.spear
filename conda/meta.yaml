@@ -21,7 +21,7 @@ requirements:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - pip {{ pip }}
-    - clapp
+    - clapper
     - bob.io.base
     - bob.learn.em
     - bob.measure
@@ -34,7 +34,7 @@ requirements:
   run:
     - python
     - setuptools
-    - clapp
+    - clapper
     - bob.io.base
     - bob.learn.em
     - bob.measure
