@@ -26,7 +26,6 @@ as:
 For further information about `bob.bio`, please read
 [its Documentation](https://www.idiap.ch/software/bob/docs/bob/bob.bio.base/master/sphinx/index.html).
 
-
 ## Installation
 
 Complete Bob's
