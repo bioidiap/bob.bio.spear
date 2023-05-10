@@ -24,7 +24,7 @@ as:
 * Recognition algorithms based on acoustic features
 
 For further information about `bob.bio`, please read
-[its Documentation](https://www.idiap.ch/software/bob/docs/bob/bob.bio.base/master/index.html).
+[its Documentation](https://www.idiap.ch/software/bob/docs/bob/bob.bio.base/master/sphinx/index.html).
 
 
 ## Installation
