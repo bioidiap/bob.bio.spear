@@ -13,7 +13,7 @@ databases.
 
 This package contains functionality to run speaker recognition experiments.
 It is an extension to the
-[bob.bio.base](http://pypi.python.org/pypi/bob.bio.base) package, which
+[bob.bio.base](https://pypi.python.org/pypi/bob.bio.base) package, which
 provides the basic scripts.
 This package contains utilities that are specific for speaker recognition, such
 as:
