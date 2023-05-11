@@ -1,4 +1,4 @@
-include README.rst COPYING
+include README.md COPYING
 recursive-include doc *.py *.rst
 recursive-include tests/data *.hdf5 *.wav *.npy
 recursive-include src/bob/bio/spear/config/database *.py *.lst
