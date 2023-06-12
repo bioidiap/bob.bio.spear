@@ -12,6 +12,20 @@ Dataset Description
 
 This is an aggregation of the NIST-SRE datasets from 2004 to 2016.
 
+Related paper:
+
+.. code-block::
+
+    @inproceedings{nist16,
+        title={The 2016 NIST Speaker Recognition Evaluation},
+        author={ Sadjadi, Seyed Omid and Kheyrkhah, Timothee and Tong, Audrey and Greenberg, Craig and Reynolds, Douglas and Singer, Elliot and Mason, Lisa and Hernandez-Cordero, Jaime},
+        booktitle={Proc. of Interspeech 2017},
+        pages={1353--1357},
+        year={2017}
+    }
+
+The ``core`` protocol contains:
+
 +--------------------+------------+--------------+
 |                    | Identities | Sample count |
 +--------------------+------------+--------------+
