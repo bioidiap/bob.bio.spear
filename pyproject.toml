@@ -24,17 +24,19 @@
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ]
     dependencies = [
-        "clapper",
+        "bob",
         "bob.io.base",
         "bob.measure",
-        "bob.bio.base",
         "bob.pipelines",
-        "tqdm",
-        "six",
+        "bob.learn.em",
+        "bob.bio.base",
+        "clapper",
+        "pysoundfile",
         "scikit-learn",
+        "six",
         "torch",
         "torchaudio",
-        "pysoundfile",
+        "tqdm",
     ]
 
 [project.urls]
