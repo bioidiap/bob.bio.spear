@@ -21,12 +21,13 @@ requirements:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - pip {{ pip }}
-    - clapper
+    - bob
     - bob.io.base
-    - bob.learn.em
     - bob.measure
-    - bob.bio.base
     - bob.pipelines
+    - bob.learn.em
+    - bob.bio.base
+    - clapper {{ clapper }}
     - pysoundfile {{ pysoundfile }}
     - pytorch {{ pytorch }}
     - scikit-learn {{ scikit_learn }}
@@ -34,12 +35,13 @@ requirements:
   run:
     - python
     - setuptools
-    - clapper
+    - bob
     - bob.io.base
-    - bob.learn.em
     - bob.measure
-    - bob.bio.base
     - bob.pipelines
+    - bob.learn.em
+    - bob.bio.base
+    - {{ pin_compatible('clapper') }}
     - {{ pin_compatible('pysoundfile') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('scikit-learn') }}
