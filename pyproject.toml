@@ -67,7 +67,7 @@
     package-dir = {"" = "src"}
 
 [tool.setuptools.dynamic]
-    readme = {file = "README.md", content-type = "text/markdow"}
+    readme = {file = "README.md", content-type = "text/markdown"}
 
 [project.entry-points."bob.bio.database"]
     timit              = "bob.bio.spear.config.database.timit:database"
