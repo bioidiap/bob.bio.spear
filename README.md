@@ -1,6 +1,6 @@
-[![badge doc](https://img.shields.io/badge/docs-latest-orange.svg)](https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/master/sphinx/index.html)
-[![badge pipeline](https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/pipeline.svg)](https://gitlab.idiap.ch/bob/bob.bio.spear/commits/master)
-[![badge coverage](https://gitlab.idiap.ch/bob/bob.bio.spear/badges/master/coverage.svg)](https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/master/coverage/index.html)
+[![badge doc](https://img.shields.io/badge/docs-v5.0.0-orange.svg)](https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/v5.0.0/sphinx/index.html)
+[![badge pipeline](https://gitlab.idiap.ch/bob/bob.bio.spear/badges/v5.0.0/pipeline.svg)](https://gitlab.idiap.ch/bob/bob.bio.spear/commits/v5.0.0)
+[![badge coverage](https://gitlab.idiap.ch/bob/bob.bio.spear/badges/v5.0.0/coverage.svg)](https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/v5.0.0/coverage/index.html)
 [![badge gitlab](https://img.shields.io/badge/gitlab-project-0000c0.svg)](https://gitlab.idiap.ch/bob/bob.bio.spear)
 
 # Run speaker recognition algorithms

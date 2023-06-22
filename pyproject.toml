@@ -4,7 +4,7 @@
 
 [project]
     name            = "bob.bio.spear"
-    version         = "5.0.1b0"
+    version         = "5.0.0"
     requires-python = ">=3.9"
     description     = ""
     dynamic         = ["readme"]
@@ -24,23 +24,23 @@
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ]
     dependencies = [
-        "bob",
-        "bob.io.base",
-        "bob.measure",
-        "bob.pipelines",
-        "bob.learn.em",
-        "bob.bio.base",
-        "clapper",
+        "bob==12.0.0",
+        "bob.io.base==5.1.0",
+        "bob.measure==6.1.0",
+        "bob.pipelines==4.0.0",
+        "bob.learn.em==3.3.0",
+        "bob.bio.base==8.0.0",
+        "clapper==1.0.1",
         "pysoundfile",
-        "scikit-learn",
-        "six",
-        "torch",
+        "scikit-learn==1.1.2",
+        "six==1.16.0",
+        "torch==1.13.0",
         "torchaudio",
-        "tqdm",
+        "tqdm==4.64.1",
     ]
 
 [project.urls]
-    documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/stable/"
+    documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.bio.spear/v5.0.0/"
     homepage      = "https://pypi.org/project/bob.bio.spear/"
     repository    = "https://gitlab.idiap.ch/bob/bob.bio.spear"
     changelog     = "https://gitlab.idiap.ch/bob/bob.bio.spear/-/releases"
@@ -48,18 +48,18 @@
 [project.optional-dependencies]
     qa  = ["pre-commit"]
     doc = [
-        "sphinx",
-        "sphinx_rtd_theme",
-        "sphinx-autodoc-typehints",
-        "auto-intersphinx",
-        "sphinxcontrib-programoutput",
-        "matplotlib",
+        "sphinx==5.3.0",
+        "sphinx-rtd-theme==1.1.1",
+        "sphinx-autodoc-typehints==1.21.8",
+        "auto-intersphinx==1.0.2",
+        "sphinxcontrib-programoutput==0.17",
+        "matplotlib==3.6.2",
         ]
     test = [
-        "pytest",
-        "pytest-cov",
-        "coverage",
-        "dask",
+        "pytest==7.2.1",
+        "pytest-cov==4.0.0",
+        "coverage==7.0.5",
+        "dask==2023.1.0",
         ]
 
 [tool.setuptools]
@@ -139,3 +139,7 @@
     ]
     junit_logging           = "all"
     junit_log_passing_tests = false
+
+[profile]
+    repository_url = "git@gitlab.idiap.ch:bob/dev-profile.git"
+    commit_hash = "ade723be1f11feddb7bece235de32cc98953dc07"
